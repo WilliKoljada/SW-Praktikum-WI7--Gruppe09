@@ -1,5 +1,5 @@
 from server.bo.Aktivität import Aktivität
-from server.db.Mapper import Mapper
+from server.db.Mapper im
 
 
 class AktivitätMapper(Mapper):
