@@ -13,7 +13,7 @@ class AktivitätMapper(Mapper):
         super().__init__()
 
     def find_all(self):
-        """Auslesen aller Chats.
+        """Auslesen aller Aktivität.
         :return Eine Sammlung mit Aktivität-Objekten, die sämtliche Aktivität repräsentieren.
         """
         result = []
@@ -135,7 +135,7 @@ class AktivitätMapper(Mapper):
             aktivität.set_creation_time(creation_time)
             aktivität.set_bezeichnung(bezeichnung)
             aktivität.set_kapazität_in_personentagen(kapazität_in_personentagen)
-            result.append(chat)
+            result.append(aktivität)
 
         self._cnx.commit()
         cursor.close()
