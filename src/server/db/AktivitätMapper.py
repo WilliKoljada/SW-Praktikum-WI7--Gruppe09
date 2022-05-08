@@ -44,7 +44,7 @@ class AktivitaetMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM aktivität WHERE id={}".format(key)
+        command = "SELECT * FROM aktivitaet WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
         for (id, creation_time, bezeichnung, kapazitaet_in_personentagen) in tuples:
@@ -89,7 +89,7 @@ class AktivitaetMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-        return aktivität
+        return aktivitaet
 
     def update(self, aktivitaet):
         """Wiederholtes Schreiben eines Objekts in die Datenbank.
@@ -146,7 +146,7 @@ class AktivitaetMapper(Mapper):
     # Zum Testen ausführen
     if (__name__ == "__main__"):
         with AktivitaetMapper() as mapper:
-            aktivitaet = aktivität()
+            aktivitaet = aktivitaet()
             aktivitaet.set_name("Mathe Chat")
             aktivitaet.set_id(2)
 
