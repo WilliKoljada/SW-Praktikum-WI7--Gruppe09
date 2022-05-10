@@ -21,7 +21,7 @@ class ZeitintervallbuchungMapper(Mapper):
         cursor.execute("SELECT * from zeitintervallbuchung")
         tuples = cursor.fetchall()
 
-        for (id,creation_time,bezeichnung) in tuples:
+        for (id,creation_time) in tuples:
             zeitintervallbuchung= Zeitintervallbuchung()
             zeitintervallbuchung.set_id(id)
             zeitintervallbuchung.set_creation_time(creation_time)
