@@ -75,7 +75,7 @@ class AktivitaetMapper(Mapper):
             if maxid[0] is not None:
                 """Wenn wir eine maximale ID festellen konnten, zählen wir diese
                 um 1 hoch und weisen diesen Wert als ID dem User-Objekt zu."""
-                chat.set_id(maxid[0] + 1)
+                aktivitaet.set_id(maxid[0] + 1)
             else:
                 """Wenn wir keine maximale ID feststellen konnten, dann gehen wir
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
@@ -146,7 +146,7 @@ class AktivitaetMapper(Mapper):
     # Zum Testen ausführen
     if (__name__ == "__main__"):
         with AktivitaetMapper() as mapper:
-            aktivitaet = aktivitaet()
+            aktivitaet = Aktivitaet()
             aktivitaet.set_name("Mathe Chat")
             aktivitaet.set_id(2)
 
