@@ -1,5 +1,5 @@
 from server.bo.Person import Person
-from server.db.Mapper im
+from server.db.Mapper import Mapper
 
 
 class PersonMapper(Mapper):
@@ -21,7 +21,7 @@ class PersonMapper(Mapper):
         cursor.execute("SELECT * from Person")
         tuples = cursor.fetchall()
 
-        for (id,creation_time, person_id, bezeichnung, kapazität_in_personentagen,) in tuples:
+        for (id,creation_time, person_id, vorname, nachname, email,benutzername) in tuples:
             person= Person()
             person.set_id(id)
             person.set_creation_time(creation_time)
@@ -49,7 +49,7 @@ class PersonMapper(Mapper):
         command = "SELECT * FROM person WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_time, person_id, bezeichnung, kapazität_in_personentagen,) in tuples:
+        for (id, creation_time, person_id, vorname, nachname, email, benutzername) in tuples:
             person = Person()
             person.set_id(id)
             person.set_creation_time(creation_time)
@@ -86,12 +86,12 @@ class PersonMapper(Mapper):
                 person.set_id(1)
 
         command = "INSERT INTO person (id, creation_time, vorname, nachname, email, benutzername) VALUES (%s,%s,%s,%s,%s,%s)"
-        data = person.get_id(), person.get_creation_time(),  person.get_vorname(vorname), person.get_nachname(nachname), person.get_email(email) person.get_benutzername(benutzername)())
+        data = (
+        person.get_id(), person.get_creation_time(), person.get_vorname(), person.get_nachname(), person.get_email() person.get_benutzername())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
-
         return person
 
     def update(self, person):
@@ -100,11 +100,10 @@ class PersonMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE person SET bezeichnung=%s,kapazität_in_personentagen=%s,WHERE id=%s"
-        data = (chat.get_bezeichnung(), chat.get_kapazität_in_personentagen(),chat.get_id())
+        command = "UPDATE person SET WHERE id=%s,vorname=%s,nachname=%s, email=%s, benutzername=%s"
+        data = (person.get_id(), person.get_vorname(),person.get_nachname, person.get_email, person.get_benutzername())
 
         cursor.execute(command, data)
-
         self._cnx.commit()
         cursor.close()
 
@@ -126,12 +125,12 @@ class PersonMapper(Mapper):
         result = []
 
         cursor = self._cnx.cursor()
-        command = " SELECT id, creation_time, bezeic, is_accepted,sender, message FROM chat WHERE learngroup_id ={} ORDER BY id".format(
+        command = " SELECT id, creation_time, bezeichnung, is_accepted,sender, message FROM chat WHERE learngroup_id ={} ORDER BY id".format(
             person_id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creation_time, person_id, bezeichnung, kapazität_in_personentagen) in tuples:
+        for (id, creation_time, person_id, vorname, nachname, email, benutzername) in tuples:
             person = Person()
             person.set_id(id)
             person.set_creation_time(creation_time)
@@ -148,7 +147,7 @@ class PersonMapper(Mapper):
 
     # Zum Testen ausführen
     if (__name__ == "__main__"):
-        with PersontMapper() as mapper:
+        with PersonMapper() as mapper:
             person = person()
             person.set_name("Mathe Chat")
             person.set_id(2)
