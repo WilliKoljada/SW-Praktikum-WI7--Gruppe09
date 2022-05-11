@@ -145,3 +145,4 @@ class ZeitintervallbuchungMapper(Mapper):
             zeitintervallbuchung.set_id(2)
 
             mapper.insert(zeitintervallbuchung)
+
