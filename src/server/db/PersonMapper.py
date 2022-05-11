@@ -1,5 +1,5 @@
 from server.bo.Person import Person
-from server.db.Mapper im
+from server.db.Mapper import Mapper
 
 
 class PersonMapper(Mapper):
@@ -18,16 +18,15 @@ class PersonMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from Person")
+        cursor.execute("SELECT * from person")
         tuples = cursor.fetchall()
 
-        for (id,creation_time, person_id, bezeichnung, kapazität_in_personentagen,) in tuples:
-            person= Person()
+        for (id, vorname, nachname, email, creation_time, benutzername) in tuples:
+            person = Person()
             person.set_id(id)
-            person.set_creation_time(creation_time)
             person.set_vorname(vorname)
             person.set_nachname(nachname)
-            person.set_email(email)
+            person.set_creation_time(creation_time)
             person.set_benutzername(benutzername)
             result.append(person)
 
@@ -37,7 +36,7 @@ class PersonMapper(Mapper):
         return result
 
     def find_by_key(self, key):
-        """Auslesen aller Chats anhand der ID,
+        """Auslesen aller Person aet anhand der ID,
         da diese vorgegeben ist, wird genau ein Objekt zurückgegeben.
         :param key Primärschlüsselattribut
         :return Person-Objekt, das dem übergebenen Schlüssel entspricht, None bei
@@ -49,13 +48,12 @@ class PersonMapper(Mapper):
         command = "SELECT * FROM person WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_time, person_id, bezeichnung, kapazität_in_personentagen,) in tuples:
+        for (id, vorname, nachname, email, creation_time, benutzername) in tuples:
             person = Person()
             person.set_id(id)
-            person.set_creation_time(creation_time)
             person.set_vorname(vorname)
             person.set_nachname(nachname)
-            person.set_email(email)
+            person.set_creation_time(creation_time)
             person.set_benutzername(benutzername)
 
         result = person
@@ -79,14 +77,15 @@ class PersonMapper(Mapper):
             if maxid[0] is not None:
                 """Wenn wir eine maximale ID festellen konnten, zählen wir diese
                 um 1 hoch und weisen diesen Wert als ID dem User-Objekt zu."""
-                chat.set_id(maxid[0] + 1)
+                person.set_id(maxid[0] + 1)
             else:
                 """Wenn wir keine maximale ID feststellen konnten, dann gehen wir
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 person.set_id(1)
 
-        command = "INSERT INTO person (id, creation_time, vorname, nachname, email, benutzername) VALUES (%s,%s,%s,%s,%s,%s)"
-        data = person.get_id(), person.get_creation_time(),  person.get_vorname(vorname), person.get_nachname(nachname), person.get_email(email) person.get_benutzername(benutzername)())
+        command = "INSERT INTO person (id, vorname, nachname, email, creation_time, benutzername) VALUES (%s,%s,%s,%s,%s,%s)"
+        data = (
+        person.get_id(), person.get_creation_time(), person.get_vorname(), person.get_nachname(), person.get_benutzername())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -96,12 +95,12 @@ class PersonMapper(Mapper):
 
     def update(self, person):
         """Wiederholtes Schreiben eines Objekts in die Datenbank.
-        :param Person das Objekt, das in die DB geschrieben werden soll
+        :param person das Objekt, das in die DB geschrieben werden soll
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE person SET bezeichnung=%s,kapazität_in_personentagen=%s,WHERE id=%s"
-        data = (chat.get_bezeichnung(), chat.get_kapazität_in_personentagen(),chat.get_id())
+        command = "UPDATE person SET vorname=%s, nachname=%s, email=%s, creation_time=%s, benutzername=%s, WHERE id=%s"
+        data = (person.get_vorname(), person.get_nachname(), person.get_email(), person.get_benutzername(), person.get_id())
 
         cursor.execute(command, data)
 
@@ -110,7 +109,7 @@ class PersonMapper(Mapper):
 
     def delete(self, person):
         """Löschen der Daten eines Projekt-Objekts aus der Datenbank.
-        :param Person das aus der DB zu löschende "Objekt"
+        :param person das aus der DB zu löschende "Objekt"
         """
         cursor = self._cnx.cursor()
 
@@ -122,22 +121,23 @@ class PersonMapper(Mapper):
 
         return person
 
-    def find_by_all_by_person_id(self, person_id):
-        result = []
 
+
+    def find_by_id(self, id):
+
+        result = []
         cursor = self._cnx.cursor()
-        command = " SELECT id, creation_time, bezeic, is_accepted,sender, message FROM chat WHERE learngroup_id ={} ORDER BY id".format(
-            person_id)
+        command = "SELECT id, creation_time, bezeichnung, kapazitaet_in_personentagen FROM person WHERE id={}".format(id)
+
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creation_time, person_id, bezeichnung, kapazität_in_personentagen) in tuples:
+        for (id, vorname, nachname, email, creation_time, benutzername) in tuples:
             person = Person()
             person.set_id(id)
-            person.set_creation_time(creation_time)
             person.set_vorname(vorname)
             person.set_nachname(nachname)
-            person.set_email(email)
+            person.set_creation_time(creation_time)
             person.set_benutzername(benutzername)
             result.append(person)
 
@@ -148,9 +148,9 @@ class PersonMapper(Mapper):
 
     # Zum Testen ausführen
     if (__name__ == "__main__"):
-        with PersontMapper() as mapper:
-            person = person()
-            person.set_name("Mathe Chat")
+        with PersonMapper() as mapper:
+            person = Person()
+            person.set_name("Person")
             person.set_id(2)
 
             mapper.insert(person)
