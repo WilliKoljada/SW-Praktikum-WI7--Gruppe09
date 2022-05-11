@@ -121,7 +121,7 @@ class AktivitaetMapper(Mapper):
 
 
 
-    def find_by_bezeichnung(self, bezeichnung):
+    def find_by_id(self, id):
 
         result = []
         cursor = self._cnx.cursor()

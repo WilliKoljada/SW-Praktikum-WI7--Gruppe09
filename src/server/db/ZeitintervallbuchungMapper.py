@@ -117,7 +117,7 @@ class ZeitintervallbuchungMapper(Mapper):
 
 
 
-    def find_by_id(self, id):
+    def find_by_bezeichnung(self, bezeichnung):
 
         result = []
         cursor = self._cnx.cursor()
