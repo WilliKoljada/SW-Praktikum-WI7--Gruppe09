@@ -1,7 +1,7 @@
-from server.bo.NamedBusinessObject import NamedBusinessObject as nbo
+from server.bo.BusinessObject import BusinessObject as bo
 
 
-class Aktivitaet(nbo):
+class Aktivitaet(bo):
 
     def __init__(self):
         super().__init__()
