@@ -143,7 +143,7 @@ class ProjektMapper(Mapper):
 
         return result
 
-    # Zum Testen ausführen.
+    # Zum Testen ausführen
     if (__name__ == "__main__"):
         with ProjektMapper() as mapper:
             projekt = Projekt()
