@@ -1,20 +1,12 @@
 from src.server.bo import BusinessObject as bo
 
 
-# User Klasse
-class Ereignis (bo.BusinessObject):
+
+class Ereignis (bo):
 
     def __init__(self):
         super().__init__()
-        self._ereignis_id = 0
         self._zeitpunkt_ereigniseintritt = ""
-
-
-    def get_ereignis_id(self):
-        return self._ereignis_id
-
-    def set_projekt_id(self, value):
-        self._ereignis_id = value
 
     def get_zeitpunkt_ereigniseintritt(self):
         return self._zeitpunkt_ereigniseintritt

@@ -1,8 +1,8 @@
 from src.server.bo import BusinessObject as bo
 
 
-# Ereignisbuchung Invitation Klasse
-class Ereignisbuchung (bo.BusinessObject):
+
+class Ereignisbuchung (bo):
 
     def __init__(self):
         super().__init__()
@@ -13,6 +13,6 @@ class Ereignisbuchung (bo.BusinessObject):
     def from_dict(dictionary=dict()):
         obj = Ereignisbuchung()
         obj.set_id(dictionary["id"])
-        obj.set_creation_date(dictionary["creation_date"])
+        obj.set_creation_time(dictionary["creation_time"])
 
         return obj

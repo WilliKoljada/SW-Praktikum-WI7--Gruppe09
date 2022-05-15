@@ -1,7 +1,7 @@
 from src.server.bo import BusinessObject as bo
 
 
-# Buchung Invitation Klasse
+
 class Buchung (bo.BusinessObject):
 
     def __init__(self):
