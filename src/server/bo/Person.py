@@ -1,8 +1,8 @@
 from src.server.bo import BusinessObject as bo
 
 
-# Person Invitation Klasse
-class Person (bo.BusinessObject):
+
+class Person (bo):
 
     def __init__(self):
         super().__init__() # creation_time und id wird nicht mehr im Bo reingeschrieben, da es vererbt wird.
@@ -49,7 +49,7 @@ class Person (bo.BusinessObject):
     def from_dict(dictionary=dict()):
         obj = Person()
         obj.set_id(dictionary["id"])
-        obj.set_creation_date(dictionary["creation_date"])
+        obj.set_creation_time(dictionary["creation_time"])
         obj.set_vorname(dictionary["vorname"])
         obj.set_nachname(dictionary["nachname"])
         obj.set_email(dictionary["email"])

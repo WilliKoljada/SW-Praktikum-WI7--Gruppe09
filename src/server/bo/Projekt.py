@@ -1,21 +1,13 @@
 from src.server.bo import BusinessObject as bo
 
 
-# User Klasse
-class Projekt (bo.BusinessObject):
+
+class Projekt (bo):
 
     def __init__(self):
         super().__init__()
-        self._projekt_id = ""
         self._bezeichnung = ""
         self._auftraggeber = ""
-
-
-    def get_projekt_id(self):
-        return self._projekt_id
-
-    def set_projekt_id(self, value):
-        self._projekt_id = value
 
     def get_bezeichnung(self):
         return self._bezeichnung
@@ -36,7 +28,7 @@ class Projekt (bo.BusinessObject):
     def from_dict(dictionary=dict()):
         obj = Projekt()
         obj.set_id(dictionary["id"])
-        obj.set_creation_date(Projekt.date_format(dictionary["creation_date"]))
+        obj.set_creation_time(Projekt.date_format(dictionary["creation_time"]))
         obj.set_projekt_id(dictionary["projekt_id"])
         obj.set_bezeichnung(dictionary["bezeichnung"])
         obj.set_auftraggeber(dictionary["auftraggeber"])
