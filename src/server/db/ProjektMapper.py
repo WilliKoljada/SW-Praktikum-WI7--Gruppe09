@@ -14,7 +14,7 @@ class ProjektMapper(Mapper):
 
     def find_all(self):
         """Auslesen aller Projekt.
-        :return Eine Sammlung mit Ereignis-Objekten, die sämtliche Ereignis repräsentieren.
+        :return Eine Sammlung mit Projekt-Objekten, die sämtliche Projekt repräsentieren.
         """
         result = []
         cursor = self._cnx.cursor()
