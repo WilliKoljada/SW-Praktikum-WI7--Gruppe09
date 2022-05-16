@@ -1,19 +1,12 @@
-from server.bo.NamedBusinessObject import NamedBusinessObject as nbo
+from src.server.bo.BusinessObject import BusinessObject as bo
 
 
-class Aktivitaet(nbo):
+class Aktivitaet(bo):
 
     def __init__(self):
         super().__init__()
-        self._aktivitaet_id = ""
         self._bezeichnung = ""
         self._kapazitaet_in_personentagen = ""
-
-    def set_aktivitaet_id(self, aktivitaet_id):
-        self._aktivitaet_id = aktivitaet_id
-
-    def get_aktivitaet_id(self):
-        return self.set_aktivitaet_id()
 
     def set_bezeichnung(self, bezeichnung):
         self._bezeichnung = bezeichnung
@@ -33,6 +26,7 @@ class Aktivitaet(nbo):
         """Umwandeln eines Python dict() in ein Rating()."""
         obj = Aktivitaet()
         obj.set_id(dictionary["id"])  # eigentlich Teil von BusinessObject !
+        obj.set_creation_time(dictionary["creation_time"])
         obj.set_bezeichnung(dictionary["bezeichnung"])
         obj.set_kapazitaet_in_personentagen(dictionary["kapazitaet_in_personentagen"])
 
