@@ -305,3 +305,154 @@ class ArbeitszeitkontoOperations(Resource):
         arbeit = adm.get_arbeitszeitkonto_by_id(id)
         return arbeit
 
+projekt = api.inherit('Projekt', bo, {
+    'auftraggeber': fields.Integer(attribute='_autraggeber', description='unique ID des Auftraggebers'),
+    'bezeichnung': fields.String(attribute='_bezeichnung', description='bezeichnung der Bezeichnung')
+})
+# Alle weiteren bo´s wie bei Projekt erstellen
+
+@zeiterfassungapp.route('/projekt')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+class ProjektListOperations(Resource):
+    @secured
+    @zeiterfassungapp.marshal_list_with(projekt)
+    def get(self):
+        """Auslesen aller Projekt-Objekte.
+        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
+        adm = Administration()
+        proj = adm.get_all_projekt()
+        return proj
+
+    @zeiterfassungapp.marshal_with(projekt, code=200)
+    @zeiterfassungapp.expect(projekt)  # Wir erwarten ein Projekt-Objekt von Client-Seite.
+    @secured
+    def post(self):
+        """Anlegen eines neuen Projekt-Objekts.
+        """
+        adm = Administration()
+
+        proposal = Projekt.from_dict(api.payload)
+
+        if proposal is not None:
+            proj = adm.create_projekt(proposal.get_auftraggeber(), proposal.get_bezeichnung())
+            return proj, 200
+        else:
+            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
+            return '', 500
+
+
+@zeiterfassungapp.route('/projekt/<int:id>')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.param('id', 'Die ID des Projekt-Objekts')
+class ProjektOperations(Resource):
+    @zeiterfassungapp.marshal_with(projekt)
+    @secured
+    def get(self, id):
+        """Auslesen einer bestimmten Projekt-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        proj = adm.get_projekt_by_id(id)
+        return proj
+
+    @secured
+    def delete(self, id):
+        """Löschen einer bestimmten Projekt-BO.
+        Löschende Objekt wird durch id bestimmt.
+        """
+        adm = Administration()
+        proj = adm.get_projekt_by_id(id)
+        adm.delete_projekt(proj)
+        return '', 200
+
+    @zeiterfassungapp.marshal_with(projekt)
+    @zeiterfassungapp.expect(projekt, validate=True)
+
+    def put(self, id):
+        """Update eines bestimmten Projekts.
+        """
+        adm = Administration()
+        p = Projekt.from_dict(api.payload)
+
+        if p is not None:
+            p.set_id(id)
+            adm.save_projekt(p)
+            return '', 200
+        else:
+            return '', 500
+
+
+projektarbeit = api.inherit('Projektarbeit', bo, {
+    'bezeichnung': fields.String(attribute='_bezeichnung', description='bezeichnung der Bezeichnung')
+})
+# Alle weiteren bo´s wie bei Projektarbeit erstellen
+
+@zeiterfassungapp.route('/projektarbeit')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+class ProjektarbeitListOperations(Resource):
+    @secured
+    @zeiterfassungapp.marshal_list_with(projektarbeit)
+    def get(self):
+        """Auslesen aller Projektarbeit-Objekte.
+        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
+        adm = Administration()
+        pa = adm.get_all_projektarbeit()
+        return pa
+
+    @zeiterfassungapp.marshal_with(projektarbeit, code=200)
+    @zeiterfassungapp.expect(projektarbeit)  # Wir erwarten ein Projektarbeit-Objekt von Client-Seite.
+    @secured
+    def post(self):
+        """Anlegen eines neuen Projektarbeit-Objekts.
+        """
+        adm = Administration()
+
+        proposal = Projektarbeit.from_dict(api.payload)
+
+        if proposal is not None:
+            pa = adm.create_projektarbeit(proposal.get_auftraggeber(), proposal.get_bezeichnung())
+            return pa, 200
+        else:
+            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
+            return '', 500
+
+
+@zeiterfassungapp.route('/projektarbeit/<int:id>')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.param('id', 'Die ID des Projektarbeit-Objekts')
+class ProjektarbeitOperations(Resource):
+    @zeiterfassungapp.marshal_with(projektarbeit)
+    @secured
+    def get(self, id):
+        """Auslesen einer bestimmten Projektarbeit-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        pa = adm.get_projektarbeit_by_id(id)
+        return pa
+
+    @secured
+    def delete(self, id):
+        """Löschen einer bestimmten Projektarbeit-BO.
+        Löschende Objekt wird durch id bestimmt.
+        """
+        adm = Administration()
+        pa = adm.get_projektarbeit_by_id(id)
+        adm.delete_projektarbeit(pa)
+        return '', 200
+
+    @zeiterfassungapp.marshal_with(projektarbeit)
+    @zeiterfassungapp.expect(projektarbeit, validate=True)
+
+    def put(self, id):
+        """Update einer bestimmten Projektarbeit.
+        """
+        adm = Administration()
+        p = Projektarbeit.from_dict(api.payload)
+
+        if p is not None:
+            p.set_id(id)
+            adm.save_projektarbeit(p)
+            return '', 200
+        else:
+            return '', 500
