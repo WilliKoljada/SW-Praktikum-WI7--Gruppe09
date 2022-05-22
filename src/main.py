@@ -123,4 +123,185 @@ class PersonOperations(Resource):
         pers = adm.get_person_by_email(email)
         return pers
 
+aktivitaet = api.inherit('Aktivitaet', bo, {
+    'id': fields.Integer(attribute='_id', description='unique ID'),
+    'creation_time': fields.String(attribute='_creation_time', description='Zeit der letzten Aenderung')
+    'bezeichnung': fields.String(attribute='_bezeichnung', description='unique Bezeichnung der Aktivitaet'),
+    'kapazitaet_in_personentagen': fields.String(attribute='_kapazitaet_in_personentagen', description='Kapazitaet in Personentagen')
+})
+# Alle weiteren bo´s wie bei Aktivitaet erstellen
+
+@zeiterfassungapp.route('/aktivitaet')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+class AktivitaetListOperations(Resource):
+    @secured
+    @zeiterfassungapp.marshal_list_with(aktivitaet)
+    def get(self):
+        """Auslesen aller Aktivitaet-Objekte.
+        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
+        adm = Administration()
+        akt = adm.get_all_aktivitaet()
+        return akt
+
+    @zeiterfassungapp.marshal_with(aktivitaet, code=200)
+    @zeiterfassungapp.expect(aktivitaet)  # Wir erwarten ein Aktivitaet-Objekt von Client-Seite.
+    @secured
+    def post(self):
+        """Anlegen eines neuen Aktivitaet-Objekts.
+        """
+        adm = Administration()
+
+        proposal = aktivitaet.from_dict(api.payload)
+
+        if proposal is not None:
+            akt = adm.create_aktivitaet(proposal.get_id(), proposal.get_creation_time(), proposal.get_bezeichnung(), proposal.get_kapazitaet_in_personentagen())
+            return akt, 200
+        else:
+            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
+            return '', 500
+
+
+@zeiterfassungapp.route('/aktivitaet/<int:id>')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.param('id', 'Die ID des Aktivitaet-Objekts')
+class AktivitaetOperations(Resource):
+    @zeiterfassungapp.marshal_with(aktivitaet)
+    @secured
+    def get(self, id):
+        """Auslesen einer bestimmten Aktivitaet-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        akt = adm.get_aktivitaet_by_id(id)
+        return akt
+
+    @secured
+    def delete(self, id):
+        """Löschen einer bestimmten Aktivitaet-BO.
+        Löschende Objekt wird durch id bestimmt.
+        """
+        adm = Administration()
+        akt = adm.get_aktivitaet_by_id(id)
+        adm.delete_aktivitaet(akt)
+        return '', 200
+
+    @zeiterfassungapp.marshal_with(aktivitaet)
+    @zeiterfassungapp.expect(aktivitaet, validate=True)
+
+    def put(self, id):
+        """Update einer bestimmten Aktivitaet.
+        """
+        adm = Administration()
+        p = aktivitaet.from_dict(api.payload)
+
+        if p is not None:
+            p.set_id(id)
+            adm.save_aktivitaet(p)
+            return '', 200
+        else:
+            return '', 500
+
+@zeiterfassungapp.route('/aktivitaet/<string:bezeichnung>')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.param('bezeichnung', 'Die Bezeichnung des Aktivitaet-Objekts')
+class AktivitaetOperations(Resource):
+    @zeiterfassungapp.marshal_with(aktivitaet)
+    @secured
+    def get(self, bezeichnung):
+        """Auslesen einer bestimmten Aktivitaet-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        akt = adm.get_aktivitaet_by_bezeichnung(bezeichnung)
+        return akt
+
+arbeitszeitkonto = api.inherit('Arbeitszeitkonto', bo, {
+    'id': fields.Integer(attribute='_id', description='unique ID'),
+    'creation_time': fields.String(attribute='_creation_time', description='Zeit der letzten Aenderung')
+})
+# Alle weiteren bo´s wie bei Arbeitszeitkonto erstellen
+
+@zeiterfassungapp.route('/arbeitszeitkonto')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+class ArbeitszeitkontoListOperations(Resource):
+    @secured
+    @zeiterfassungapp.marshal_list_with(arbeitszeitkonto)
+    def get(self):
+        """Auslesen aller Arbeitszeitkonto-Objekte.
+        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
+        adm = Administration()
+        arbeit = adm.get_all_arbeitszeitkonto()
+        return arbeit
+
+    @zeiterfassungapp.marshal_with(arbeitszeitkonto, code=200)
+    @zeiterfassungapp.expect(arbeitszeitkonto)  # Wir erwarten ein Arbeitszeitkonto-Objekt von Client-Seite.
+    @secured
+    def post(self):
+        """Anlegen eines neuen Arbeitszeitkonto-Objekts.
+        """
+        adm = Administration()
+
+        proposal = arbeitszeitkonto.from_dict(api.payload)
+
+        if proposal is not None:
+            arbeit = adm.create_arbeitszeitkonto(proposal.get_id(), proposal.get_creation_time())
+            return arbeit, 200
+        else:
+            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
+            return '', 500
+
+
+@zeiterfassungapp.route('/arbeitszeitkonto/<int:id>')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.param('id', 'Die ID des Arbeitszeitkonto-Objekts')
+class ArbeitszeitkontoOperations(Resource):
+    @zeiterfassungapp.marshal_with(arbeitszeitkonto)
+    @secured
+    def get(self, id):
+        """Auslesen einer bestimmten Arbeitszeitkonto-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        arbeit = adm.get_arbeitszeitkonto_by_id(id)
+        return arbeit
+
+    @secured
+    def delete(self, id):
+        """Löschen einer bestimmten Arbeitszeitkonto-BO.
+        Löschende Objekt wird durch id bestimmt.
+        """
+        adm = Administration()
+        arbeit = adm.get_arbeitszeitkonto_by_id(id)
+        adm.delete_arbeitszeitkonto(arbeit)
+        return '', 200
+
+    @zeiterfassungapp.marshal_with(arbeitszeitkonto)
+    @zeiterfassungapp.expect(arbeitszeitkonto, validate=True)
+
+    def put(self, id):
+        """Update einer bestimmten Arbeitszeitkonto.
+        """
+        adm = Administration()
+        p = arbeitszeitkonto.from_dict(api.payload)
+
+        if p is not None:
+            p.set_id(id)
+            adm.save_arbeitszeitkonto(p)
+            return '', 200
+        else:
+            return '', 500
+
+@zeiterfassungapp.route('/arbeitszeitkonto/<int:id>')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.param('id', 'Die Bezeichnung des Arbeitszeitkonto-Objekts')
+class ArbeitszeitkontoOperations(Resource):
+    @zeiterfassungapp.marshal_with(arbeitszeitkonto)
+    @secured
+    def get(self, id):
+        """Auslesen einer bestimmten Arbeitszeitkonto-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        arbeit = adm.get_arbeitszeitkonto_by_id(id)
+        return arbeit
 
