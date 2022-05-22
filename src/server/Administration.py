@@ -1,6 +1,8 @@
 from server.bo.Person import Person
 from server.bo.Aktivitaet import Aktivitaet
 from server.bo.Arbeitszeitkonto import Arbeitszeitkonto
+from server.bo.Projektarbeit import Projektarbeit
+from server.bo.Projekt import Projekt
 
 class Administration(object):
 
@@ -149,3 +151,89 @@ class Administration(object):
         """Die gegebenen Arbeitszeitkonten aus unserem System löschen."""
         with ArbeitszeitkontoMapper() as mapper:
             mapper.delete(arbeitszeitkonto)
+
+
+"""projektarbeit-spezifische Methoden"""
+
+
+    def create_projektarbeit(self, id, bezeichnung):
+        """Eine Projektarbeit anlegen"""
+        p = Projektarbeit()
+        p.set_id(1)
+        p.set_bezeichnung(bezeichnung)
+
+        with ProjektarbeitMapper() as mapper:
+            return mapper.insert(p)
+
+
+    def get_projektarbeit_by_id(self, id):
+        """Die Projektarbeit mit der gegebenen ID auslesen."""
+        with ProjektarbeitMapper() as mapper:
+            return mapper.find_by_id(id)
+
+
+    def get_projektarbeit_by_bezeichnung(self, bezeichnung):
+        """Alle Projektarbeiten mit gegebener Rolle auslesen."""
+        with ProjektarbeitMapper() as mapper:
+            return mapper.find_projektarbeit_by_bezeichnung(bezeichnung)
+
+
+    def get_all_projektarbeit(self):
+        """Alle Projektarbeiten auslesen."""
+        with ProjektarbeitMapper() as mapper:
+            return mapper.find_all()
+
+
+    def save_projektarbeit(self, projektarbeit):
+        """Die gegebene Projektarbeiten speichern."""
+        with ProjektarbeitMapper() as mapper:
+            return mapper.update(projektarbeit)
+
+
+    def delete_projektarbeit(self, projektarbeit):
+        """Die gegebenen Projektarbeiten aus unserem System löschen."""
+        with ProjektarbeitMapper() as mapper:
+            mapper.delete(projektarbeit)
+
+    """projekt-spezifische Methoden"""
+
+    def create_projekt(self, creation_time , id, auftraggeber, bezeichnung):
+        """Ein Projekt anlegen"""
+        p = Projekt()
+        p.set_id(1)
+        p.set_creation_time(creation_time)
+        p.set_auftraggeber(auftraggeber)
+        p.set_bezeichnung(bezeichnung)
+
+        with ProjektMapper() as mapper:
+            return mapper.insert(p)
+
+    def get_projekt_by_auftraggeber(self, auftraggeber):
+        """"Alle Projekte mit Namen name auslesen."""
+        with ProjektMapper() as mapper:
+            return mapper.find_by_auftraggeber(auftraggeber)
+
+    def get_projekt_by_id(self, id):
+        """Das Projekt mit der gegebenen ID auslesen."""
+        with ProjektMapper() as mapper:
+            return mapper.find_by_id(id)
+
+    def get_projekt_by_bezeichnung(self, bezeichnung):
+        """Alle Projekte mit gegebener Rolle auslesen."""
+        with ProjektMapper() as mapper:
+            return mapper.find_projekt_by_bezeichnung(bezeichnung)
+
+    def get_all_projekt(self):
+        """Alle Projekte auslesen."""
+        with ProjektMapper() as mapper:
+            return mapper.find_all()
+
+    def save_projekt(self, projekt):
+        """Die gegebene Projekte speichern."""
+        with ProjektMapper() as mapper:
+            return mapper.update(projekt)
+
+    def delete_projekt(self, projekt):
+        """Die gegebenen Projekte aus unserem System löschen."""
+        with ProjektMapper() as mapper:
+            mapper.delete(projekt)
