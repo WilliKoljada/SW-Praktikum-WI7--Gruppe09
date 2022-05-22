@@ -3,6 +3,8 @@ from server.bo.Aktivitaet import Aktivitaet
 from server.bo.Arbeitszeitkonto import Arbeitszeitkonto
 from server.bo.Projektarbeit import Projektarbeit
 from server.bo.Projekt import Projekt
+from server.bo.Zeitintervallbuchung import Zeitintervallbuchung
+from server.bo.Zeitintervall import Zeitintervall
 
 class Administration(object):
 
@@ -237,3 +239,84 @@ class Administration(object):
         """Die gegebenen Projekte aus unserem System löschen."""
         with ProjektMapper() as mapper:
             mapper.delete(projekt)
+
+
+    """zeitintervallbuchung-spezifische Methoden"""
+
+
+    def create_zeitintervallbuchung(self, creation_time):
+        """Eine Zeitintervallbuchung anlegen"""
+        p = Zeitintervallbuchung()
+        p.set_id(1)
+        p.set_creation_time(creation_time)
+
+        with ZeitintervallbuchungMapper() as mapper:
+            return mapper.insert(p)
+
+
+    def get_zeitintervallbuchung_by_id(self, id):
+        """Die Zeitintervallbuchung mit der gegebenen ID auslesen."""
+        with ZeitintervallbuchungMapper() as mapper:
+            return mapper.find_by_id(id)
+
+
+    def get_all_zeitintervallbuchung(self):
+        """Alle Zeitintervallbuchungen auslesen."""
+        with ZeitintervallbuchungMapper() as mapper:
+            return mapper.find_all()
+
+
+    def save_zeitintervallbuchung(self, zeitintervallbuchung):
+        """Die gegebene Zeitintervallbuchung speichern."""
+        with ZeitintervallbuchungMapper() as mapper:
+            return mapper.update(zeitintervallbuchung)
+
+
+    def delete_zeitintervallbuchung(self, zeitintervallbuchung):
+        """Die gegebenen Zeitintervallbuchung aus unserem System löschen."""
+        with ZeitintervallbuchungMapper() as mapper:
+            mapper.delete(zeitintervallbuchung)
+
+
+    """zeitintervall-spezifische Methoden"""
+
+
+    def create_zeitintervall(self, creation_time, projekt_runtime):
+        """Eine Zeitintervall anlegen"""
+        p = Zeitintervall()
+        p.set_id(1)
+        p.set_creation_time(creation_time)
+        p.set_projekt_runtime(projekt_runtime)
+
+        with ZeitintervallMapper() as mapper:
+            return mapper.insert(p)
+
+
+    def get_zeitintervall_by_id(self, id):
+        """Die Zeitintervall mit der gegebenen ID auslesen."""
+        with ZeitintervallMapper() as mapper:
+            return mapper.find_by_id(id)
+
+
+    def get_zeitintervall_by_projekt_runtime(self, projekt_runtime):
+        """Die Zeitintervall mit der gegebenen ID auslesen."""
+        with ZeitintervallMapper() as mapper:
+            return mapper.find_by_projekt_runtime(projekt_runtime)
+
+
+    def get_all_zeitintervall(self):
+        """Alle Zeitintervallen auslesen."""
+        with ZeitintervallMapper() as mapper:
+            return mapper.find_all()
+
+
+    def save_zeitintervall(self, zeitintervall):
+        """Die gegebene Zeitintervall speichern."""
+        with ZeitintervallMapper() as mapper:
+            return mapper.update(zeitintervall)
+
+
+    def delete_zeitintervall(self, zeitintervall):
+        """Die gegebenen Zeitintervall aus unserem System löschen."""
+        with ZeitintervallMapper() as mapper:
+            mapper.delete(zeitintervall)
