@@ -7,7 +7,8 @@ from flask_cors import CORS
 '''Wir greifen natürlich auf unsere Applikationslogik inkl. BusinessObject-Klassen zurück'''
 
 from server.bo.Projekt import Projekt
-
+from server.Administration import Administration
+from server.bo.Person import Person
 
 '''Außerdem nutzen wir einen selbstgeschriebenen Decorator, der die Authentifikation übernimmt'''
 from SecurityDecorator import secured
@@ -33,7 +34,7 @@ bo = api.model('BusinessObject', {
 })
 person = api.inherit('Person', bo, {
     'vorname': fields.Integer(attribute='_vorname', description='unique ID des Vornamens'),
-    'nachname': fields.String(attribute='_nachname', description='nachname des Nachnamens')
+    'nachname': fields.String(attribute='_nachname', description='nachname des Nachnamens'),
     'email': fields.String(attribute='_email', description='unique email des der Person'),
     'benutzername': fields.String(attribute='_benutzername', description='benutzername des Benutzernamens')
 })
@@ -125,7 +126,7 @@ class PersonOperations(Resource):
 
 aktivitaet = api.inherit('Aktivitaet', bo, {
     'id': fields.Integer(attribute='_id', description='unique ID'),
-    'creation_time': fields.String(attribute='_creation_time', description='Zeit der letzten Aenderung')
+    'creation_time': fields.String(attribute='_creation_time', description='Zeit der letzten Aenderung'),
     'bezeichnung': fields.String(attribute='_bezeichnung', description='unique Bezeichnung der Aktivitaet'),
     'kapazitaet_in_personentagen': fields.String(attribute='_kapazitaet_in_personentagen', description='Kapazitaet in Personentagen')
 })

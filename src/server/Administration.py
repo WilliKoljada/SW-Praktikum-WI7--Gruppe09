@@ -1,10 +1,21 @@
-from server.bo.Person import Person
-from server.bo.Aktivitaet import Aktivitaet
-from server.bo.Arbeitszeitkonto import Arbeitszeitkonto
-from server.bo.Projektarbeit import Projektarbeit
-from server.bo.Projekt import Projekt
-from server.bo.Zeitintervallbuchung import Zeitintervallbuchung
-from server.bo.Zeitintervall import Zeitintervall
+from .bo.Person import Person
+from .bo.Aktivität import Aktivität
+from .bo.Arbeitszeitkonto import Arbeitszeitkonto
+from .bo.Projektarbeit import Projektarbeit
+from .bo.Projekt import Projekt
+from .bo.Zeitintervallbuchung import Zeitintervallbuchung
+from .bo.Zeitintervall import Zeitintervall
+
+from .db.PersonMapper import PersonMapper
+from .db.ProjektMapper import ProjektMapper
+from .db.ProjektarbeitMapper import ProjektarbeitMapper
+from .db.AktivitätMapper import AktivitaetMapper
+from .db.ArbeitszeitkontoMapper import ArbeitszeitkontoMapper
+from .db.ZeitintervallMapper import ZeitintervallMapper
+from .db.ZeitintervallbuchungMapper import ZeitintervallbuchungMapper
+from db.BuchungMapper import BuchungMapper
+from db.EreignisMapper import EreignisMapper
+
 
 class Administration(object):
 
@@ -71,7 +82,7 @@ class Administration(object):
 
     def create_aktivitaet(self, id, creation_time, bezeichnung, kapazitaet_in_personentagen):
         """Eine Aktivitaet anlegen"""
-        p = Aktivitaet()
+        p = Aktivität()
         p.set_id(1)
         p.set_creation_time(creation_time)
         p.set_bezeichnung(bezeichnung)
@@ -155,7 +166,7 @@ class Administration(object):
             mapper.delete(arbeitszeitkonto)
 
 
-"""projektarbeit-spezifische Methoden"""
+    """projektarbeit-spezifische Methoden"""
 
 
     def create_projektarbeit(self, id, bezeichnung):

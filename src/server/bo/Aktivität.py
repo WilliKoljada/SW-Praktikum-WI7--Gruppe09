@@ -1,7 +1,7 @@
 from src.server.bo.BusinessObject import BusinessObject as bo
 
 
-class Aktivitaet(bo):
+class Aktivität(bo):
 
     def __init__(self):
         super().__init__()
@@ -24,7 +24,7 @@ class Aktivitaet(bo):
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in ein Rating()."""
-        obj = Aktivitaet()
+        obj = Aktivität()
         obj.set_id(dictionary["id"])  # eigentlich Teil von BusinessObject !
         obj.set_creation_time(dictionary["creation_time"])
         obj.set_bezeichnung(dictionary["bezeichnung"])
