@@ -1,5 +1,5 @@
-from server.bo.Zeitintervallbuchung import Zeitintervallbuchung
-from server.db.Mapper import Mapper
+from src.server.bo.Zeitintervallbuchung import Zeitintervallbuchung
+from src.server.db.Mapper import Mapper
 
 
 class ZeitintervallbuchungMapper(Mapper):

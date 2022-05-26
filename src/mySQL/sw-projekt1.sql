@@ -1,3 +1,6 @@
+CREATE DATABASE  IF NOT EXISTS `sw-projekt1` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `sw-projekt1`;
+
 -- MySQL dump 10.13  Distrib 8.0.24, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: sw-projekt

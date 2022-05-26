@@ -5,6 +5,7 @@ from .bo.Projektarbeit import Projektarbeit
 from .bo.Projekt import Projekt
 from .bo.Zeitintervallbuchung import Zeitintervallbuchung
 from .bo.Zeitintervall import Zeitintervall
+from .bo.Buchung import Buchung
 
 from .db.PersonMapper import PersonMapper
 from .db.ProjektMapper import ProjektMapper
@@ -13,8 +14,8 @@ from .db.AktivitätMapper import AktivitaetMapper
 from .db.ArbeitszeitkontoMapper import ArbeitszeitkontoMapper
 from .db.ZeitintervallMapper import ZeitintervallMapper
 from .db.ZeitintervallbuchungMapper import ZeitintervallbuchungMapper
-from db.BuchungMapper import BuchungMapper
 from db.EreignisMapper import EreignisMapper
+from db.BuchungMapper import BuchungMapper
 
 
 class Administration(object):
@@ -331,3 +332,13 @@ class Administration(object):
         """Die gegebenen Zeitintervall aus unserem System löschen."""
         with ZeitintervallMapper() as mapper:
             mapper.delete(zeitintervall)
+
+    """buchung-spezifische Methoden"""
+
+    def create_buchung (self, buchungs_id):
+        buchung = Buchung()
+        buchung.set_id(1)
+        buchung.set_buchungs_id(buchungs_id)
+
+        with BuchungMapper as mapper:
+            return mapper.insert(buchung)

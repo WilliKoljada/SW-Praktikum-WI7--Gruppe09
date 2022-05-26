@@ -1,5 +1,5 @@
-from server.bo.Buchung import Buchung
-from server.db.Mapper import Mapper
+from src.server.bo.Buchung import Buchung
+from src.server.db.Mapper import Mapper
 
 
 class BuchungMapper(Mapper):
@@ -21,10 +21,11 @@ class BuchungMapper(Mapper):
         cursor.execute("SELECT * from buchung")
         tuples = cursor.fetchall()
 
-        for (id,creation_time) in tuples:
-            buchung= buchung()
+        for (id,creation_time, buchungs_id) in tuples:
+            buchung = Buchung()
             buchung.set_id(id)
             buchung.set_creation_time(creation_time)
+            buchung.set_buchungs_id(buchungs_id)
             result.append(buchung)
 
         self._cnx.commit()
@@ -46,7 +47,7 @@ class BuchungMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
         for (id, creation_time) in tuples:
-            buchung = buchung()
+            buchung = Buchung()
             buchung.set_id(id)
             buchung.set_creation_time(creation_time)
 
@@ -139,7 +140,7 @@ class BuchungMapper(Mapper):
     # Zum Testen ausführen
     if (__name__ == "__main__"):
         with BuchungMapper() as mapper:
-            buchung = buchung()
+            buchung = Buchung()
             buchung.set_name("Mathe Chat")
             buchung.set_id(2)
 

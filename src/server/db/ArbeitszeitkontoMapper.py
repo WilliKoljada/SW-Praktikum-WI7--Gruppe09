@@ -1,5 +1,5 @@
-from server.bo.Arbeitszeitkonto import Arbeitszeitkonto
-from server.db.Mapper import Mapper
+from src.server.bo.Arbeitszeitkonto import Arbeitszeitkonto
+from src.server.db.Mapper import Mapper
 
 
 class ArbeitszeitkontoMapper(Mapper):

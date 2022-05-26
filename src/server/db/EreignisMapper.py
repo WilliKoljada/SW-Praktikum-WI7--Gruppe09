@@ -1,5 +1,5 @@
-from server.bo.Ereignis import Ereignis
-from server.db.Mapper import Mapper
+from src.server.bo.Ereignis import Ereignis
+from src.server.db.Mapper import Mapper
 
 
 class EreignisMapper(Mapper):

@@ -31,7 +31,7 @@ class Mapper (AbstractContextManager, ABC):
 
             self._cnx = connector.connect(user='root', password='',
                                   host='127.0.0.1',
-                                  database='sw-projekt')
+                                  database='sw-projekt1')
 
         return self
 
