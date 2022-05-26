@@ -6,6 +6,7 @@ from .bo.Projekt import Projekt
 from .bo.Zeitintervallbuchung import Zeitintervallbuchung
 from .bo.Zeitintervall import Zeitintervall
 from .bo.Buchung import Buchung
+from .bo.Ereignis import Ereignis
 
 from .db.PersonMapper import PersonMapper
 from .db.ProjektMapper import ProjektMapper
@@ -342,3 +343,41 @@ class Administration(object):
 
         with BuchungMapper as mapper:
             return mapper.insert(buchung)
+
+    def get_buchungs_id(self, number):
+        """Die Buchung mit der gegebenen ID auslesen."""
+        with BuchungMapper() as mapper:
+            return mapper.find_by_id(number)
+
+    def get_buchung_by_key (self, number):
+        with BuchungMapper() as mapper:
+            return mapper.find_by_key(number)
+
+    def get_by_bezeichung (self, bezeichnung):
+        with BuchungMapper() as mapper:
+            return mapper.find_by_bezeichnung(bezeichnung)
+
+    def save_buchung (self, number):
+        with BuchungMapper() as mapper:
+            return mapper.update(number)
+
+    def delete_buchung(self, buchung):
+        with BuchungMapper() as mapper:
+            return mapper.delete(buchung)
+
+    """ereignis-spezifische Methoden"""
+
+    def create_ereignis (self, zeitpunkt_ereigniseintritt):
+        ereignis = Ereignis()
+        ereignis.set_zeitpunkt_ereigniseintritt(zeitpunkt_ereigniseintritt)
+
+        with EreignisMapper() as mapper:
+            return mapper.insert(ereignis)
+
+    def save_ereignis (self, ereignis):
+        with EreignisMapper() as mapper:
+            return mapper.update(ereignis)
+
+    def delete_ereignis(self, ereignis):
+        with EreignisMapper() as mapper:
+            return mapper.delete(ereignis)
