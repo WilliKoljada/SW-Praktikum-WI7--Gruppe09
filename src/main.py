@@ -11,6 +11,7 @@ from server.Administration import Administration
 from server.bo.Person import Person
 from server.bo.Zeitintervall import Zeitintervall
 from server.bo.Zeitintervallbuchung import Zeitintervallbuchung
+from server.bo.Projektarbeit import Projektarbeit
 
 '''Außerdem nutzen wir einen selbstgeschriebenen Decorator, der die Authentifikation übernimmt'''
 from SecurityDecorator import secured
@@ -34,13 +35,66 @@ bo = api.model('BusinessObject', {
     'id': fields.Integer(attribute='_id', description='Der Unique Identifier eines Business Object'),
     'creation_time': fields.DateTime(attribute='_creation_time', description='Erstellungszeitpunkt des Objekts')
 })
+
+aktivitaet = api.inherit('Aktivitaet', bo, {
+    'id': fields.Integer(attribute='_id', description='unique ID'),
+    'creation_time': fields.String(attribute='_creation_time', description='Zeit der letzten Aenderung'),
+    'bezeichnung': fields.String(attribute='_bezeichnung', description='unique Bezeichnung der Aktivitaet'),
+    'kapazitaet_in_personentagen': fields.String(attribute='_kapazitaet_in_personentagen', description='Kapazitaet in Personentagen')
+})
+
+arbeitszeitkonto = api.inherit('Arbeitszeitkonto', bo, {
+    'id': fields.Integer(attribute='_id', description='unique ID'),
+    'creation_time': fields.String(attribute='_creation_time', description='Zeit der letzten Aenderung')
+})
+
+buchung = api.inherit('Buchung', bo, {
+    'buchungs_id': fields.Integer(attribute= 'buchungs_id', description='Buchungs-ID einer Buchung')
+})
+
 person = api.inherit('Person', bo, {
     'vorname': fields.Integer(attribute='_vorname', description='unique ID des Vornamens'),
     'nachname': fields.String(attribute='_nachname', description='nachname des Nachnamens'),
     'email': fields.String(attribute='_email', description='unique email des der Person'),
     'benutzername': fields.String(attribute='_benutzername', description='benutzername des Benutzernamens')
 })
-# Alle weiteren bo´s wie bei Person erstellen
+
+projekt = api.inherit('Projekt', bo, {
+    'auftraggeber': fields.Integer(attribute='_autraggeber', description='unique ID des Auftraggebers'),
+    'bezeichnung': fields.String(attribute='_bezeichnung', description='bezeichnung der Bezeichnung')
+})
+
+projektarbeit = api.inherit('Projektarbeit', bo, {
+    'bezeichnung': fields.String(attribute='_bezeichnung', description='bezeichnung der Bezeichnung')
+})
+
+zeitintervall = api.inherit('Zeitintervall', bo, {
+    'projektlaufzeit': fields.Integer(attribute='_projektlaufzeit', description='unique ID der Projektlaufzeit')
+})
+
+
+
+@banking.route('/Buchungen')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+class PersonListOperations(Resource):
+    @secured
+    @zeiterfassungapp.marshal_list_with(buchung)
+    def get(self):
+        """Auslesen aller Bchungs-Objekte.
+        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
+        adm = Administration()
+        trans = adm.get_buchungs_id(buchung)
+        return trans
+
+    @secured
+    def delete(self, id):
+        """Löschen einer bestimmten Person-BO.
+        Löschende Objekt wird durch id bestimmt.
+        """
+        adm = Administration()
+        pers = adm.get_buchung_by_key(id)
+        adm.delete_buchung(pers)
+        return '', 200
 
 @zeiterfassungapp.route('/persons')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
@@ -126,12 +180,7 @@ class PersonOperations(Resource):
         pers = adm.get_person_by_email(email)
         return pers
 
-aktivitaet = api.inherit('Aktivitaet', bo, {
-    'id': fields.Integer(attribute='_id', description='unique ID'),
-    'creation_time': fields.String(attribute='_creation_time', description='Zeit der letzten Aenderung'),
-    'bezeichnung': fields.String(attribute='_bezeichnung', description='unique Bezeichnung der Aktivitaet'),
-    'kapazitaet_in_personentagen': fields.String(attribute='_kapazitaet_in_personentagen', description='Kapazitaet in Personentagen')
-})
+
 # Alle weiteren bo´s wie bei Aktivitaet erstellen
 
 @zeiterfassungapp.route('/aktivitaet')
@@ -218,10 +267,7 @@ class AktivitaetOperations(Resource):
         akt = adm.get_aktivitaet_by_bezeichnung(bezeichnung)
         return akt
 
-arbeitszeitkonto = api.inherit('Arbeitszeitkonto', bo, {
-    'id': fields.Integer(attribute='_id', description='unique ID'),
-    'creation_time': fields.String(attribute='_creation_time', description='Zeit der letzten Aenderung')
-})
+
 # Alle weiteren bo´s wie bei Arbeitszeitkonto erstellen
 
 @zeiterfassungapp.route('/arbeitszeitkonto')
@@ -308,10 +354,21 @@ class ArbeitszeitkontoOperations(Resource):
         arbeit = adm.get_arbeitszeitkonto_by_id(id)
         return arbeit
 
-projekt = api.inherit('Projekt', bo, {
-    'auftraggeber': fields.Integer(attribute='_autraggeber', description='unique ID des Auftraggebers'),
-    'bezeichnung': fields.String(attribute='_bezeichnung', description='bezeichnung der Bezeichnung')
-})
+@zeiterfassungapp.route('/Ereignis/<int:id>')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.param('id', 'Die Bezeichnung des Arbeitszeitkonto-Objekts')
+class ArbeitszeitkontoOperations(Resource):
+    @zeiterfassungapp.marshal_with(arbeitszeitkonto)
+    @secured
+    def get(self, id):
+        """Auslesen einer bestimmten Arbeitszeitkonto-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        ereig = adm.get_all_ereignisse()
+        return ereig
+
+
 # Alle weiteren bo´s wie bei Projekt erstellen
 
 @zeiterfassungapp.route('/projekt')
@@ -385,9 +442,7 @@ class ProjektOperations(Resource):
             return '', 500
 
 
-projektarbeit = api.inherit('Projektarbeit', bo, {
-    'bezeichnung': fields.String(attribute='_bezeichnung', description='bezeichnung der Bezeichnung')
-})
+
 # Alle weiteren bo´s wie bei Projektarbeit erstellen
 
 @zeiterfassungapp.route('/projektarbeit')
@@ -460,9 +515,7 @@ class ProjektarbeitOperations(Resource):
         else:
             return '', 500
 
-zeitintervall = api.inherit('Zeitintervall', bo, {
-    'projektlaufzeit': fields.Integer(attribute='_projektlaufzeit', description='unique ID der Projektlaufzeit')
-})
+
 # Alle weiteren bo´s wie bei Zeitintervall erstellen
 
 @zeiterfassungapp.route('/zeitintervall')

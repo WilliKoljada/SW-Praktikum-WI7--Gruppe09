@@ -64,6 +64,39 @@ class PersonMapper(Mapper):
         cursor.close()
         return result
 
+    def find_by_google_user_id(self, google_user_id):
+        """Suchen eines Benutzers mit vorgegebener Google ID. Da diese eindeutig ist,
+        wird genau ein Objekt zurückgegeben.
+
+        :param google_user_id die Google ID des gesuchten Users.
+        :return User-Objekt, das die übergebene Google ID besitzt,
+            None bei nicht vorhandenem DB-Tupel.
+        """
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT id, name, email, google_user_id FROM users WHERE google_user_id='{}'".format(google_user_id)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        try:
+            (id, name, email, google_user_id) = tuples[0]
+            u = Person()
+            u.set_id(id)
+            u.set_name(name)
+            u.set_email(email)
+            u.set_user_id(google_user_id)
+            result = u
+        except IndexError:
+            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
+            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
+            result = None
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
     def insert(self, person):
         """Einfügen eines Person-Objekts in die Datenbank.
         Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.

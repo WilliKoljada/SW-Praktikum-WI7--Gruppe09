@@ -374,6 +374,10 @@ class Administration(object):
         with EreignisMapper() as mapper:
             return mapper.insert(ereignis)
 
+    def get_all_ereignisse (self):
+        with EreignisMapper() as mapper:
+            return mapper.find_all
+
     def save_ereignis (self, ereignis):
         with EreignisMapper() as mapper:
             return mapper.update(ereignis)
