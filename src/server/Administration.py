@@ -388,7 +388,7 @@ class Administration(object):
         with EreignisMapper() as mapper:
             return mapper.delete(ereignis)
 
- """zeitintervallbuchung-spezifische Methoden"""
+    """zeitintervallbuchung-spezifische Methoden"""
 
 
     def create_Ereignisbuchung(self, creation_time):
