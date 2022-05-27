@@ -7,11 +7,15 @@ from flask_cors import CORS
 '''Wir greifen natürlich auf unsere Applikationslogik inkl. BusinessObject-Klassen zurück'''
 
 from server.bo.Projekt import Projekt
+from server.bo.Aktivität import Aktivität
 from server.Administration import Administration
+from server.bo.Projekt import Projekt
+from server.bo.Projektarbeit import Projektarbeit
 from server.bo.Person import Person
 from server.bo.Zeitintervall import Zeitintervall
 from server.bo.Zeitintervallbuchung import Zeitintervallbuchung
 from server.bo.Projektarbeit import Projektarbeit
+
 
 '''Außerdem nutzen wir einen selbstgeschriebenen Decorator, der die Authentifikation übernimmt'''
 from SecurityDecorator import secured

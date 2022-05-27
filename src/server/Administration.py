@@ -1,5 +1,5 @@
 from .bo.Person import Person
-from .bo.Aktivität import Aktivität
+from .bo.Aktivitaet import Aktivitaet
 from .bo.Arbeitszeitkonto import Arbeitszeitkonto
 from .bo.Projektarbeit import Projektarbeit
 from .bo.Projekt import Projekt
@@ -84,7 +84,7 @@ class Administration(object):
 
     def create_aktivitaet(self, id, creation_time, bezeichnung, kapazitaet_in_personentagen):
         """Eine Aktivitaet anlegen"""
-        p = Aktivität()
+        p = Aktivitaet()
         p.set_id(1)
         p.set_creation_time(creation_time)
         p.set_bezeichnung(bezeichnung)
