@@ -48,8 +48,7 @@ aktivitaet = api.inherit('Aktivitaet', bo, {
 })
 
 arbeitszeitkonto = api.inherit('Arbeitszeitkonto', bo, {
-    'id': fields.Integer(attribute='_id', description='unique ID'),
-    'creation_time': fields.String(attribute='_creation_time', description='Zeit der letzten Aenderung')
+    'arbeitszeitkonto_id': fields.Integer(attribute='_id', description='unique ID'),
 })
 
 buchung = api.inherit('Buchung', bo, {
@@ -78,9 +77,15 @@ zeitintervall = api.inherit('Zeitintervall', bo, {
 
 ereignisbuchung = api.inherit('Ereignisbuchung', bo, {
     'ereignisbuchung_id': fields.Integer(attribute= 'ereignisbuchung_id', description='Ereignisbuchung-ID einer Ereignisbuchunguchung')
+})
 
+zeitintervallbuchung = api.inherit('Zeitintervallbuchung', bo, {
+    'zeitintervallbuchung_id': fields.Integer(attribute= 'zeitintervallbuchung_id', description='unique ID der Zeitintervallbuchung')
+})
 
-
+ereignis = api.inherit('Ereignis', bo, {
+    'zeitpunkt_ereigniseintritt': fields.Integer(attribute='_zeitpunkt_ereigniseintritt', description='unique ID des zeitpunkt_ereigniseintritt')
+})
 
 @zeiterfassungapp.route('/Buchungen')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')

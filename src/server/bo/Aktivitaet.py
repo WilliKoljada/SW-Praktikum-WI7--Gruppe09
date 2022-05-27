@@ -24,7 +24,7 @@ class Aktivitaet(bo):
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in ein Rating()."""
-        obj = Aktivität()
+        obj = Aktivitaet()
         obj.set_id(dictionary["id"])  # eigentlich Teil von BusinessObject !
         obj.set_creation_time(dictionary["creation_time"])
         obj.set_bezeichnung(dictionary["bezeichnung"])
