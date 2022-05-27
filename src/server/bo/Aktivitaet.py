@@ -1,7 +1,7 @@
 from src.server.bo.BusinessObject import BusinessObject as bo
 
 
-class Aktivität(bo):
+class Aktivitaet(bo):
 
     def __init__(self):
         super().__init__()

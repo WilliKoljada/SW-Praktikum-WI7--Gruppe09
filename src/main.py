@@ -6,15 +6,15 @@ from flask_restx import Api, Resource, fields
 from flask_cors import CORS
 '''Wir greifen natürlich auf unsere Applikationslogik inkl. BusinessObject-Klassen zurück'''
 
-from server.bo.Projekt import Projekt
-from server.bo.Aktivität import Aktivität
+from server.bo.Aktivitaet import Aktivitaet
 from server.Administration import Administration
 from server.bo.Projekt import Projekt
-from server.bo.Projektarbeit import Projektarbeit
 from server.bo.Person import Person
 from server.bo.Zeitintervall import Zeitintervall
 from server.bo.Zeitintervallbuchung import Zeitintervallbuchung
 from server.bo.Projektarbeit import Projektarbeit
+from server.bo.Ereignis import Ereignis
+from server.bo.Ereignisbuchung import Ereignisbuchung
 
 
 '''Außerdem nutzen wir einen selbstgeschriebenen Decorator, der die Authentifikation übernimmt'''
@@ -76,9 +76,13 @@ zeitintervall = api.inherit('Zeitintervall', bo, {
     'projektlaufzeit': fields.Integer(attribute='_projektlaufzeit', description='unique ID der Projektlaufzeit')
 })
 
+ereignisbuchung = api.inherit('Ereignisbuchung', bo, {
+    'ereignisbuchung_id': fields.Integer(attribute= 'ereignisbuchung_id', description='Ereignisbuchung-ID einer Ereignisbuchunguchung')
 
 
-@banking.route('/Buchungen')
+
+
+@zeiterfassungapp.route('/Buchungen')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class PersonListOperations(Resource):
     @secured
@@ -588,6 +592,154 @@ class ZeitintervallOperations(Resource):
         if zi is not None:
             zi.set_id(id)
             adm.save_zeitintervall(zi)
+            return '', 200
+        else:
+            return '', 500
+
+zeitintervallbuchung = api.inherit('Zeitintervallbuchung', bo, {
+})
+# Alle weiteren bo´s wie bei Zeitintervall erstellen
+
+@zeiterfassungapp.route('/zeitintervallbuchung')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+class ZeitintervallbuchungListOperations(Resource):
+    @secured
+    @zeiterfassungapp.marshal_list_with(zeitintervallbuchung)
+    def get(self):
+        """Auslesen aller Zeitintervallbuchung-Objekte.
+        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
+        adm = Administration()
+        zinb = adm.get_all_zeitintervallbuchung()
+        return zinb
+
+    @zeiterfassungapp.marshal_with(zeitintervallbuchung, code=200)
+    @zeiterfassungapp.expect(zeitintervallbuchung)  # Wir erwarten ein Zeitintervallbuchung-Objekt von Client-Seite.
+    @secured
+    def post(self):
+        """Anlegen eines neuen Zeitintervallbuchung-Objekts.
+        """
+        adm = Administration()
+
+        proposal = Zeitintervallbuchung.from_dict(api.payload)
+
+        if proposal is not None:
+            zinb = adm.create_zeitintervallbuchung()
+            return zinb, 200
+        else:
+            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
+            return '', 500
+
+
+@zeiterfassungapp.route('/zeitintervallbuchung/<int:id>')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.param('id', 'Die ID des Zeitintervallbuchung-Objekts')
+class ZeitintervallbuchungOperations(Resource):
+    @zeiterfassungapp.marshal_with(zeitintervallbuchung)
+    @secured
+    def get(self, id):
+        """Auslesen einer bestimmten Zeitintervallbuchung-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        zinb = adm.get_zeitintervallbuchung_by_id(id)
+        return zinb
+
+    @secured
+    def delete(self, id):
+        """Löschen einer bestimmten Zeitintervallbuchung-BO.
+        Löschende Objekt wird durch id bestimmt.
+        """
+        adm = Administration()
+        zinb = adm.get_zeitintervallbuchung_by_id(id)
+        adm.delete_zeitintervallbuchung(zinb)
+        return '', 200
+
+    @zeiterfassungapp.marshal_with(zeitintervallbuchung)
+    @zeiterfassungapp.expect(zeitintervallbuchung, validate=True)
+
+    def put(self, id):
+        """Update einer bestimmten Zeitintervallbuchung.
+        """
+        adm = Administration()
+        zinv = Zeitintervallbuchung.from_dict(api.payload)
+
+        if zinv is not None:
+            zinv.set_id(id)
+            adm.save_zeitintervallbuchung(zinv)
+            return '', 200
+        else:
+            return '', 500
+
+Ereignisbuchung = api.inherit('Ereignisbuchung', bo, {
+})
+# Alle weiteren bo´s wie bei Ereignisbuchung erstellen
+
+@zeiterfassungapp.route('/Ereignisbuchung')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+class EreignisbuchungListOperations(Resource):
+    @secured
+    @zeiterfassungapp.marshal_list_with(Ereignisbuchung)
+    def get(self):
+        """Auslesen aller Ereignisbuchung-Objekte.
+        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
+        adm = Administration()
+        zinb = adm.get_all_Ereignisbuchung()
+        return zinb
+
+    @zeiterfassungapp.marshal_with(Ereignisbuchung, code=200)
+    @zeiterfassungapp.expect(Ereignisbuchung)  # Wir erwarten ein Ereignisbuchung-Objekt von Client-Seite.
+    @secured
+    def post(self):
+        """Anlegen eines neuen Ereignisbuchung-Objekts.
+        """
+        adm = Administration()
+
+        proposal = Ereignisbuchung.from_dict(api.payload)
+
+        if proposal is not None:
+            zinb = adm.create_Ereignisbuchung()
+            return zinb, 200
+        else:
+            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
+            return '', 500
+
+
+@zeiterfassungapp.route('/Ereignisbuchung/<int:id>')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.param('id', 'Die ID des Ereignisbuchung-Objekts')
+class EreignisbuchungOperations(Resource):
+    @zeiterfassungapp.marshal_with(Ereignisbuchung)
+    @secured
+    def get(self, id):
+        """Auslesen einer bestimmten Ereignisbuchung-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        zinb = adm.get_Ereignisbuchung_by_id(id)
+        return zinb
+
+    @secured
+    def delete(self, id):
+        """Löschen einer bestimmten Ereignisbuchung-BO.
+        Löschende Objekt wird durch id bestimmt.
+        """
+        adm = Administration()
+        zinb = adm.get_Ereignisbuchung_by_id(id)
+        adm.delete_Ereignisbuchung(zinb)
+        return '', 200
+
+    @zeiterfassungapp.marshal_with(Ereignisbuchung)
+    @zeiterfassungapp.expect(Ereignisbuchung, validate=True)
+
+    def put(self, id):
+        """Update einer bestimmten Ereignisbuchung.
+        """
+        adm = Administration()
+        zinv = Ereignisbuchung.from_dict(api.payload)
+
+        if zinv is not None:
+            zinv.set_id(id)
+            adm.save_Ereignisbuchung(zinv)
             return '', 200
         else:
             return '', 500

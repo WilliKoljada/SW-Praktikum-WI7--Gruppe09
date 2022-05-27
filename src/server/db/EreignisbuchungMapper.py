@@ -1,8 +1,8 @@
-from src.server.bo.Buchung import Buchung
+from src.server.bo.Ereignisbuchung import Ereignisbuchung
 from src.server.db.Mapper import Mapper
 
 
-class BuchungMapper(Mapper):
+class EreignisbuchungMapper(Mapper):
     """Mapper-Klasse, die Konversation-Objekte auf eine relationale
     Datenbank abbildet. Hierzu wird eine Reihe von Methoden zur Verfügung
     gestellt, mit deren Hilfe z.B. Objekte gesucht, erzeugt, modifiziert und
@@ -13,19 +13,19 @@ class BuchungMapper(Mapper):
         super().__init__()
 
     def find_all(self):
-        """Auslesen aller Buchung.
-        :return Eine Sammlung mit Buchung-Objekten, die sämtliche Buchung repräsentieren.
+        """Auslesen aller Ereignisbuchung.
+        :return Eine Sammlung mit Buchung-Objekten, die sämtliche Ereignisbuchung repräsentieren.
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from buchung")
+        cursor.execute("SELECT * from Ereignisbuchung")
         tuples = cursor.fetchall()
 
         for (id,creation_time) in tuples:
-            buchung= buchung()
-            buchung.set_id(id)
-            buchung.set_creation_time(creation_time)
-            result.append(buchung)
+            ereignisbuchung= ereignisbuchung()
+            ereignisbuchung.set_id(id)
+            ereignisbuchung.set_creation_time(creation_time)
+            result.append(ereignisbuchung)
 
         self._cnx.commit()
         cursor.close()
@@ -42,21 +42,21 @@ class BuchungMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM buchung WHERE id={}".format(key)
+        command = "SELECT * FROM ereignisbuchung WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
         for (id, creation_time) in tuples:
-            buchung = buchung()
-            buchung.set_id(id)
-            buchung.set_creation_time(creation_time)
+            ereignisbuchung = ereignisbuchung()
+            ereignisbuchung.set_id(id)
+            ereignisbuchung.set_creation_time(creation_time)
 
-        result = buchung
+        result = ereignisbuchung
 
         self._cnx.commit()
         cursor.close()
         return result
 
-    def insert(self, buchung):
+    def insert(self, ereignisbuchung):
         """Einfügen eines Buchung-Objekts in die Datenbank.
         Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
         berichtigt.
@@ -64,7 +64,7 @@ class BuchungMapper(Mapper):
         :return das bereits übergebene Objekt, jedoch mit ggf. korrigierter ID.
         """
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM buchung ")
+        cursor.execute("SELECT MAX(id) AS maxid FROM ereignisbuchung ")
         tuples = cursor.fetchall()
 
         for (maxid) in tuples:
@@ -75,44 +75,44 @@ class BuchungMapper(Mapper):
             else:
                 """Wenn wir keine maximale ID feststellen konnten, dann gehen wir
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
-                buchung.set_id(1)
+                ereignisbuchung.set_id(1)
 
-        command = "INSERT INTO buchung (id, creation_time) VALUES (%s,%s,%s,%s,%s,%s)"
+        command = "INSERT INTO ereignisbuchung (id, creation_time) VALUES (%s,%s,%s,%s,%s,%s)"
         data = (
-        buchung.get_id(), buchung.get_creation_time())
+        ereignisbuchung.get_id(), ereignisbuchung.get_creation_time())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
-        return buchung
+        return ereignisbuchung
 
-    def update(self, buchung):
+    def update(self, ereignisbuchung):
         """Wiederholtes Schreiben eines Objekts in die Datenbank.
-        :param Buchung das Objekt, das in die DB geschrieben werden soll
+        :param Ereignisbuchung das Objekt, das in die DB geschrieben werden soll
         """
         cursor = self._cnx.cursor()
 
         command = "UPDATE buchung SET WHERE id=%s,creation_time=%s"
-        data = (buchung.get_id(), buchung.get_creation_time())
+        data = (ereignisbuchung.get_id(), ereignisbuchung.get_creation_time())
 
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, buchung):
+    def delete(self, ereignisbuchung):
         """Löschen der Daten eines Projekt-Objekts aus der Datenbank.
-        :param Buchung das aus der DB zu löschende "Objekt"
+        :param ereignisbuchung das aus der DB zu löschende "Objekt"
         """
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM buchung WHERE id={}".format(buchung.get_id())
+        command = "DELETE FROM buchung WHERE id={}".format(ereignisbuchung.get_id())
         cursor.execute(command)
 
         self._cnx.commit()
         cursor.close()
 
-        return buchung
+        return ereignisbuchung
 
 
 
@@ -120,16 +120,16 @@ class BuchungMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_time FROM Buchung WHERE bezeichnung={}".format(bezeichnung)
+        command = "SELECT id, creation_time FROM Ereignisbuchung WHERE bezeichnung={}".format(bezeichnung)
 
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         for (id, creation_time) in tuples:
-            buchung = Buchung()
-            buchung.set_id(id)
-            buchung.set_creation_time(creation_time)
-            result.append(buchung)
+            ereignisbuchung = ereignisbuchung()
+            ereignisbuchung.set_id(id)
+            ereignisbuchung.set_creation_time(creation_time)
+            result.append(ereignisbuchung)
 
         self._cnx.commit()
         cursor.close()
@@ -138,9 +138,9 @@ class BuchungMapper(Mapper):
 
     # Zum Testen ausführen
     if (__name__ == "__main__"):
-        with BuchungMapper() as mapper:
-            buchung = buchung()
-            buchung.set_name("Mathe Chat")
-            buchung.set_id(2)
+        with EreignisbuchungMapper() as mapper:
+            ereignisbuchung = Ereignisbuchung()
+            ereignisbuchung.set_name("Mathe Chat")
+            ereignisbuchung.set_id(2)
 
-            mapper.insert(buchung)
+            mapper.insert(ereignisbuchung)

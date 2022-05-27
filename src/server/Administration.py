@@ -7,17 +7,19 @@ from .bo.Zeitintervallbuchung import Zeitintervallbuchung
 from .bo.Zeitintervall import Zeitintervall
 from .bo.Buchung import Buchung
 from .bo.Ereignis import Ereignis
+from .bo.Ereignisbuchung import Ereignisbuchung
+
 
 from .db.PersonMapper import PersonMapper
 from .db.ProjektMapper import ProjektMapper
 from .db.ProjektarbeitMapper import ProjektarbeitMapper
-from .db.AktivitätMapper import AktivitaetMapper
+from .db.AktivitaetMapper import AktivitaetMapper
 from .db.ArbeitszeitkontoMapper import ArbeitszeitkontoMapper
 from .db.ZeitintervallMapper import ZeitintervallMapper
 from .db.ZeitintervallbuchungMapper import ZeitintervallbuchungMapper
 from db.EreignisMapper import EreignisMapper
 from db.BuchungMapper import BuchungMapper
-
+from db.EreignisbuchungMapper import EreignisbuchungMapper
 
 class Administration(object):
 
@@ -385,3 +387,39 @@ class Administration(object):
     def delete_ereignis(self, ereignis):
         with EreignisMapper() as mapper:
             return mapper.delete(ereignis)
+
+ """zeitintervallbuchung-spezifische Methoden"""
+
+
+    def create_Ereignisbuchung(self, creation_time):
+        """Eine Ereignisbuchung anlegen"""
+        p = Ereignisbuchung()
+        p.set_id(1)
+        p.set_creation_time(creation_time)
+
+        with EreignisbuchungMapper() as mapper:
+            return mapper.insert(p)
+
+
+    def get_ereignisbuchung_by_id(self, id):
+        """Die Ereignisbuchung mit der gegebenen ID auslesen."""
+        with EreignisbuchungMapper() as mapper:
+            return mapper.find_by_id(id)
+
+
+    def get_all_ereignisbuchung(self):
+        """Alle Ereignisbuchung auslesen."""
+        with EreignisbuchungMapper() as mapper:
+            return mapper.find_all()
+
+
+    def save_ereignisbuchung(self, ereignisbuchung):
+        """Die gegebene Ereignisbuchung speichern."""
+        with EreignisbuchungMapper() as mapper:
+            return mapper.update(ereignisbuchung)
+
+
+    def delete_ereignisbuchung(self, ereignisbuchung):
+        """Die gegebenen Ereignisbuchung aus unserem System löschen."""
+        with EreignisbuchungMapper() as mapper:
+            mapper.delete(ereignisbuchung)
