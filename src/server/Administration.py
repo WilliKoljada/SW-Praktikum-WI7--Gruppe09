@@ -66,6 +66,11 @@ class Administration(object):
         with PersonMapper() as mapper:
             return mapper.find_by_benutzername(benutzername)
 
+    def get_user_by_google_user_id(self, id):
+        """Den Benutzer mit der gegebenen Google ID auslesen."""
+        with PersonMapper() as mapper:
+            return mapper.find_by_google_user_id(id)
+
     def get_all_person(self):
         """Alle Personen auslesen."""
         with PersonMapper() as mapper:
@@ -341,7 +346,7 @@ class Administration(object):
     def create_buchung (self, buchungs_id):
         buchung = Buchung()
         buchung.set_id(1)
-        buchung.set_buchungs_id(buchungs_id)
+        buchung.set_ersteller(buchungs_id)
 
         with BuchungMapper as mapper:
             return mapper.insert(buchung)
@@ -395,7 +400,7 @@ class Administration(object):
         """Eine Ereignisbuchung anlegen"""
         p = Ereignisbuchung()
         p.set_id(1)
-        p.set_creation_time(creation_time)
+        p.set_creation_date(creation_time)
 
         with EreignisbuchungMapper() as mapper:
             return mapper.insert(p)

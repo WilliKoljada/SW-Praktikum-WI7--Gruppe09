@@ -44,13 +44,13 @@ LOCK TABLES `aktivitaet` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `arbeitskonto`
+-- Table structure for table `arbeitszeitkonto`
 --
 
-DROP TABLE IF EXISTS `arbeitskonto`;
+DROP TABLE IF EXISTS `arbeitszeitkonto`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `arbeitskonto` (
+CREATE TABLE `arbeitszeitkonto` (
   `id` int NOT NULL,
   `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `creation_date` datetime NOT NULL,
@@ -62,9 +62,9 @@ CREATE TABLE `arbeitskonto` (
 -- Dumping data for table `arbeitskonto`
 --
 
-LOCK TABLES `arbeitskonto` WRITE;
-/*!40000 ALTER TABLE `arbeitskonto` DISABLE KEYS */;
-/*!40000 ALTER TABLE `arbeitskonto` ENABLE KEYS */;
+LOCK TABLES `arbeitszeitkonto` WRITE;
+/*!40000 ALTER TABLE `arbeitszeitkonto` DISABLE KEYS */;
+/*!40000 ALTER TABLE `arbeitszeitkonto` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -76,7 +76,7 @@ DROP TABLE IF EXISTS `buchung`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `buchung` (
   `id` int NOT NULL,
-  `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `ersteller` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `creation_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
@@ -225,6 +225,7 @@ DROP TABLE IF EXISTS `zeitintervall`;
 CREATE TABLE `zeitintervall` (
   `id` int NOT NULL,
   `creation_date` datetime NOT NULL,
+  `zeitintervall` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

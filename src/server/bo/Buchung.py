@@ -6,13 +6,13 @@ class Buchung (bo.BusinessObject):
 
     def __init__(self):
         super().__init__()
-        self._buchungs_id = 0
+        self._ersteller = 0
 
-    def get_buchungs_id(self):
-        return self._buchungs_id
+    def get_ersteller(self):
+        return self._ersteller
 
-    def set_buchungs_id(self, value):
-        self._buchungs_id = value
+    def set_ersteller(self, value):
+        self._ersteller = value
 
 
     # Buchung aus dictionary erstellen

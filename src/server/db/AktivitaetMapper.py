@@ -24,7 +24,7 @@ class AktivitaetMapper(Mapper):
         for (id,creation_time,bezeichnung, kapazitaet_in_personentagen,) in tuples:
             aktivitaet= Aktivitaet()
             aktivitaet.set_id(id)
-            aktivitaet.set_creation_time(creation_time)
+            aktivitaet.set_creation_date(creation_time)
             aktivitaet.set_bezeichnung(bezeichnung)
             aktivitaet.set_kapazitaet_in_personentagen(kapazitaet_in_personentagen)
             result.append(aktivitaet)
@@ -50,7 +50,7 @@ class AktivitaetMapper(Mapper):
         for (id, creation_time, bezeichnung, kapazitaet_in_personentagen) in tuples:
             aktivitaet = Aktivitaet()
             aktivitaet.set_id(id)
-            aktivitaet.set_creation_time(creation_time)
+            aktivitaet.set_creation_date(creation_time)
             aktivitaet.set_bezeichnung(bezeichnung)
             aktivitaet.set_kapazitaet_in_personentagen(kapazitaet_in_personentagen)
 
@@ -81,9 +81,9 @@ class AktivitaetMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 aktivitaet.set_id(1)
 
-        command = "INSERT INTO aktivitaet (id, creation_time, bezeichnung, kapazitaet_in_personentagen,) VALUES (%s,%s,%s,%s,%s,%s)"
+        command = "INSERT INTO aktivitaet (id, Bezeichnung, Kapazität_in_Personentagen, creation_date) VALUES (%s,%s,%s,%s)"
         data = (
-        aktivitaet.get_id(), aktivitaet.get_creation_time(), aktivitaet.get_bezeichnung(), aktivitaet.get_kapazitaet_in_personentagen())
+        aktivitaet.get_id(), aktivitaet.get_creation_date(), aktivitaet.get_bezeichnung(), aktivitaet.get_kapazitaet_in_personentagen())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -98,7 +98,7 @@ class AktivitaetMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "UPDATE aktivitaet SET bezeichnung=%s,kapazitaet_in_personentagen=%s,WHERE id=%s"
-        data = (aktivitaet.get_bezeichnung(), aktivitaet.get_kapazitaet_in_personentagen(),aktivitaeti.get_id())
+        data = (aktivitaet.get_bezeichnung(), aktivitaet.get_kapazitaet_in_personentagen(), aktivitaet.get_id())
 
         cursor.execute(command, data)
 
@@ -125,7 +125,7 @@ class AktivitaetMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_time, bezeichnung, kapazitaet_in_personentagen FROM aktivitaet WHERE bezeichnung={}".format(bezeichnung)
+        command = "SELECT id, creation_date, bezeichnung, kapazitaet_in_personentagen FROM aktivitaet WHERE bezeichnung={}".format(id)
 
         cursor.execute(command)
         tuples = cursor.fetchall()
@@ -133,7 +133,7 @@ class AktivitaetMapper(Mapper):
         for (id, creation_time, bezeichnung, kapazitaet_in_personentagen) in tuples:
             aktivitaet = Aktivitaet()
             aktivitaet.set_id(id)
-            aktivitaet.set_creation_time(creation_time)
+            aktivitaet.set_creation_date(creation_time)
             aktivitaet.set_bezeichnung(bezeichnung)
             aktivitaet.set_kapazitaet_in_personentagen(kapazitaet_in_personentagen)
             result.append(aktivitaet)
@@ -147,7 +147,6 @@ class AktivitaetMapper(Mapper):
 if (__name__ == "__main__"):
     with AktivitaetMapper() as mapper:
             aktivitaet = Aktivitaet()
-            aktivitaet.set_name("Mathe Chat")
             aktivitaet.set_id(2)
 
             mapper.insert(aktivitaet)

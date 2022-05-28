@@ -24,7 +24,7 @@ class ProjektMapper(Mapper):
         for (id,creation_time, auftraggeber, bezeichnung) in tuples:
             projekt= Projekt()
             projekt.set_id(id)
-            projekt.set_creation_time(creation_time)
+            projekt.set_creation_date(creation_time)
             projekt.set_auftraggeber(auftraggeber)
             projekt.set_bezeichnung(bezeichnung)
             result.append(projekt)
@@ -50,7 +50,7 @@ class ProjektMapper(Mapper):
         for (id, creation_time, auftraggeber, bezeichnung) in tuples:
             projekt = Projekt()
             projekt.set_id(id)
-            projekt.set_creation_time(creation_time)
+            projekt.set_creation_date(creation_time)
             projekt.set_auftraggeber(auftraggeber)
             projekt.set_bezeichnung(bezeichnung)
 
@@ -81,9 +81,9 @@ class ProjektMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 projekt.set_id(1)
 
-        command = "INSERT INTO projekt (id, creation_time, auftraggeber, bezeichnung) VALUES (%s,%s,%s,%s,%s,%s)"
-        data = (
-        projekt.get_id(), projekt.get_creation_time(), projekt.get_auftraggeber(), projekt.get_bezeichnung())
+        command = "INSERT INTO projekt (id, Bezeichnung, Auftraggeber, creation_date) VALUES (%s,%s,%s,%s)"
+        data = (projekt.get_id(), projekt.get_bezeichnung(), projekt.get_auftraggeber(), projekt.get_creation_date())
+
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -133,7 +133,7 @@ class ProjektMapper(Mapper):
         for (id, creation_time, auftraggeber, bezeichnung) in tuples:
             projekt = Projekt()
             projekt.set_id(id)
-            projekt.set_creation_time(creation_time)
+            projekt.set_creation_date(creation_time)
             projekt.set_auftraggeber(auftraggeber)
             projekt.set_bezeichnung(bezeichnung)
             result.append(projekt)
@@ -147,7 +147,7 @@ class ProjektMapper(Mapper):
 if (__name__ == "__main__"):
     with ProjektMapper() as mapper:
             projekt = Projekt()
-            projekt.set_name("Mathe Chat")
-            projekt.set_id(2)
+            projekt.set_auftraggeber("Mathe Chat")
+            projekt.set_auftraggeber('yahan')
 
             mapper.insert(projekt)

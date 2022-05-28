@@ -24,8 +24,8 @@ class ZeitintervallMapper(Mapper):
         for (id,creation_time,project_runtime) in tuples:
             zeitintervall= Zeitintervall()
             zeitintervall.set_id(id)
-            zeitintervall.set_creation_time(creation_time)
-            zeitintervall.set_project_runtime(project_runtime)
+            zeitintervall.set_creation_date(creation_time)
+            zeitintervall.set_projektlaufzeit(project_runtime)
             result.append(zeitintervall)
 
         self._cnx.commit()
@@ -49,10 +49,10 @@ class ZeitintervallMapper(Mapper):
         for (id, creation_time, project_runtime) in tuples:
             zeitintervall = Zeitintervall()
             zeitintervall.set_id(id)
-            zeitintervall.set_creation_time(creation_time)
-            zeitintervall.set_project_runtime(project_runtime)
+            zeitintervall.set_creation_date(creation_time)
+            zeitintervall.set_projektlaufzeit(project_runtime)
 
-        result = zeitintervall
+            result = zeitintervall
 
         self._cnx.commit()
         cursor.close()
@@ -79,9 +79,9 @@ class ZeitintervallMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 zeitintervall.set_id(1)
 
-        command = "INSERT INTO zeitintervall(id, creation_time, project_runtime) VALUES (%s,%s,%s)"
-        data = (
-        zeitintervall.get_id(), zeitintervall.get_creation_time(), zeitintervall.get_project_runtime())
+        command = "INSERT INTO zeitintervall(id, creation_date, zeitintervall) VALUES (%s,%s,%s)"
+        data = (zeitintervall.get_id(), zeitintervall.get_creation_date(), zeitintervall.get_projektlaufzeit())
+
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -131,8 +131,8 @@ class ZeitintervallMapper(Mapper):
         for (id, creation_time, project_runtime) in tuples:
             zeitintervall = Zeitintervall()
             zeitintervall.set_id(id)
-            zeitintervall.set_creation_time(creation_time)
-            zeitintervall.set_project_runtime(project_runtime)
+            zeitintervall.set_creation_date(creation_time)
+            zeitintervall.set_creation_date(project_runtime)
             result.append(zeitintervall)
 
         self._cnx.commit()
@@ -144,7 +144,6 @@ class ZeitintervallMapper(Mapper):
 if (__name__ == "__main__"):
     with ZeitintervallMapper() as mapper:
             zeitintervall = Zeitintervall()
-            zeitintervall.set_name("Zeitintervall")
             zeitintervall.set_id(2)
 
             mapper.insert(zeitintervall)

@@ -24,7 +24,7 @@ class ZeitintervallbuchungMapper(Mapper):
         for (id,creation_time) in tuples:
             zeitintervallbuchung= Zeitintervallbuchung()
             zeitintervallbuchung.set_id(id)
-            zeitintervallbuchung.set_creation_time(creation_time)
+            zeitintervallbuchung.set_creation_date(creation_time)
             result.append(zeitintervallbuchung)
 
         self._cnx.commit()
@@ -48,9 +48,9 @@ class ZeitintervallbuchungMapper(Mapper):
         for (id, creation_time) in tuples:
             zeitintervallbuchung = Zeitintervallbuchung()
             zeitintervallbuchung.set_id(id)
-            zeitintervallbuchung.set_creation_time(creation_time)
+            zeitintervallbuchung.set_creation_date(creation_time)
 
-        result = zeitintervallbuchung
+            result = zeitintervallbuchung
 
         self._cnx.commit()
         cursor.close()
@@ -77,9 +77,9 @@ class ZeitintervallbuchungMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 zeitintervallbuchung.set_id(1)
 
-        command = "INSERT INTO zeitintervallbuchung (id, creation_time) VALUES (%s,%s)"
-        data = (
-        zeitintervallbuchung.get_id(), zeitintervallbuchung.get_creation_time())
+        command = "INSERT INTO zeitintervallbuchung (id, creation_date) VALUES (%s,%s)"
+        data = (zeitintervallbuchung.get_id(), zeitintervallbuchung.get_creation_date())
+
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -129,7 +129,7 @@ class ZeitintervallbuchungMapper(Mapper):
         for (id, creation_time) in tuples:
             zeitintervallbuchung = Zeitintervallbuchung()
             zeitintervallbuchung.set_id(id)
-            zeitintervallbuchung.set_creation_time(creation_time)
+            zeitintervallbuchung.set_creation_date(creation_time)
             result.append(zeitintervallbuchung)
 
         self._cnx.commit()
@@ -141,7 +141,7 @@ class ZeitintervallbuchungMapper(Mapper):
 if (__name__ == "__main__"):
     with ZeitintervallbuchungMapper() as mapper:
             zeitintervallbuchung = Zeitintervallbuchung()
-            zeitintervallbuchung.set_name("Zeitintervallbuchung")
+            zeitintervallbuchung.set_id("Zeitintervallbuchung")
             zeitintervallbuchung.set_id(2)
 
             mapper.insert(zeitintervallbuchung)

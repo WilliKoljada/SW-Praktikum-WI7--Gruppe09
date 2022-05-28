@@ -52,7 +52,7 @@ arbeitszeitkonto = api.inherit('Arbeitszeitkonto', bo, {
 })
 
 buchung = api.inherit('Buchung', bo, {
-    'buchungs_id': fields.Integer(attribute= 'buchungs_id', description='Buchungs-ID einer Buchung')
+    'Ersteller': fields.Integer(attribute= 'ersteller', description='Ersteller einer Buchung')
 })
 
 person = api.inherit('Person', bo, {
@@ -688,7 +688,7 @@ class EreignisbuchungListOperations(Resource):
         """Auslesen aller Ereignisbuchung-Objekte.
         Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
         adm = Administration()
-        zinb = adm.get_all_Ereignisbuchung()
+        zinb = adm.get_all_ereignisbuchung()
         return zinb
 
     @zeiterfassungapp.marshal_with(Ereignisbuchung, code=200)
@@ -720,7 +720,7 @@ class EreignisbuchungOperations(Resource):
         Objekt wird durch die id in bestimmt.
         """
         adm = Administration()
-        zinb = adm.get_Ereignisbuchung_by_id(id)
+        zinb = adm.get_ereignisbuchung_by_id(id)
         return zinb
 
     @secured
@@ -729,8 +729,8 @@ class EreignisbuchungOperations(Resource):
         Löschende Objekt wird durch id bestimmt.
         """
         adm = Administration()
-        zinb = adm.get_Ereignisbuchung_by_id(id)
-        adm.delete_Ereignisbuchung(zinb)
+        zinb = adm.get_ereignisbuchung_by_id(id)
+        adm.delete_ereignisbuchung(zinb)
         return '', 200
 
     @zeiterfassungapp.marshal_with(Ereignisbuchung)
@@ -744,7 +744,7 @@ class EreignisbuchungOperations(Resource):
 
         if zinv is not None:
             zinv.set_id(id)
-            adm.save_Ereignisbuchung(zinv)
+            adm.save_ereignisbuchung(zinv)
             return '', 200
         else:
             return '', 500

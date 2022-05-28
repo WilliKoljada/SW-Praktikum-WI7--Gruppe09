@@ -21,11 +21,11 @@ class BuchungMapper(Mapper):
         cursor.execute("SELECT * from buchung")
         tuples = cursor.fetchall()
 
-        for (id,creation_time, buchungs_id) in tuples:
+        for (id,creation_time, ersteller) in tuples:
             buchung = Buchung()
             buchung.set_id(id)
-            buchung.set_creation_time(creation_time)
-            buchung.set_buchungs_id(buchungs_id)
+            buchung.set_creation_date(creation_time)
+            buchung.set_ersteller(ersteller)
             result.append(buchung)
 
         self._cnx.commit()
@@ -49,7 +49,7 @@ class BuchungMapper(Mapper):
         for (id, creation_time) in tuples:
             buchung = Buchung()
             buchung.set_id(id)
-            buchung.set_creation_time(creation_time)
+            buchung.set_creation_date(creation_time)
 
         result = buchung
 
@@ -72,15 +72,15 @@ class BuchungMapper(Mapper):
             if maxid[0] is not None:
                 """Wenn wir eine maximale ID festellen konnten, zählen wir diese
                 um 1 hoch und weisen diesen Wert als ID dem User-Objekt zu."""
-                chat.set_id(maxid[0] + 1)
+                buchung.set_id(maxid[0] + 1)
             else:
                 """Wenn wir keine maximale ID feststellen konnten, dann gehen wir
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 buchung.set_id(1)
 
-        command = "INSERT INTO buchung (id, creation_time) VALUES (%s,%s,%s,%s,%s,%s)"
+        command = "INSERT INTO buchung (id, ersteller, creation_date) VALUES (%s,%s, %s)"
         data = (
-        buchung.get_id(), buchung.get_creation_time())
+        buchung.get_id(), buchung.get_ersteller(), buchung.get_creation_date())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -93,8 +93,8 @@ class BuchungMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE buchung SET WHERE id=%s,creation_time=%s"
-        data = (buchung.get_id(), buchung.get_creation_time())
+        command = "UPDATE buchung SET WHERE id=%s,creation_date=%s"
+        data = (buchung.get_id(), buchung.get_creation_date())
 
         cursor.execute(command, data)
 
@@ -121,7 +121,7 @@ class BuchungMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_time FROM Buchung WHERE bezeichnung={}".format(bezeichnung)
+        command = "SELECT id, creation_date FROM buchung WHERE bezeichnung={}".format(bezeichnung)
 
         cursor.execute(command)
         tuples = cursor.fetchall()
@@ -129,7 +129,7 @@ class BuchungMapper(Mapper):
         for (id, creation_time) in tuples:
             buchung = Buchung()
             buchung.set_id(id)
-            buchung.set_creation_time(creation_time)
+            buchung.get_creation_date(creation_time)
             result.append(buchung)
 
         self._cnx.commit()
@@ -141,7 +141,7 @@ class BuchungMapper(Mapper):
 if (__name__ == "__main__"):
     with BuchungMapper() as mapper:
             buchung = Buchung()
-            buchung.set_name("Mathe Chat")
+            buchung.set_ersteller("Mathe Chat")
             buchung.set_id(2)
 
             mapper.insert(buchung)

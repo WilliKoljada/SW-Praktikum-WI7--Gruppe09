@@ -2,13 +2,13 @@ from src.server.bo import BusinessObject as bo
 
 
 
-class Person (bo):
+class Person (bo.BusinessObject):
 
     def __init__(self):
         super().__init__() # creation_time und id wird nicht mehr im Bo reingeschrieben, da es vererbt wird.
         self._vorname = None
         self._nachname = None
-        self._email= 0
+        self._email = 0
         self._benutzername = False
 
     def get_vorname (self):
@@ -49,7 +49,7 @@ class Person (bo):
     def from_dict(dictionary=dict()):
         obj = Person()
         obj.set_id(dictionary["id"])
-        obj.set_creation_time(dictionary["creation_time"])
+        obj.set_creation_date(dictionary["creation_time"])
         obj.set_vorname(dictionary["vorname"])
         obj.set_nachname(dictionary["nachname"])
         obj.set_email(dictionary["email"])

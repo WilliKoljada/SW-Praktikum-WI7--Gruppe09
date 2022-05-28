@@ -2,7 +2,7 @@ from src.server.bo import BusinessObject as bo
 
 
 
-class Zeitintervall (bo):
+class Zeitintervall (bo.BusinessObject):
 
     def __init__(self):
         super().__init__()
@@ -19,5 +19,5 @@ class Zeitintervall (bo):
     def from_dict(dictionary=dict()):
          obj = Zeitintervall()
          obj.set_id(dictionary["id"])
-         obj.set_creation_time(dictionary["creation_time"])
+         obj.set_creation_date(dictionary["creation_time"])
          obj.set_projektlaufzeit(dictionary["projektlaufzeit"])

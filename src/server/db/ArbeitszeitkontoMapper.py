@@ -24,7 +24,7 @@ class ArbeitszeitkontoMapper(Mapper):
         for (id,creation_time) in tuples:
             arbeitszeitkonto= Arbeitszeitkonto()
             arbeitszeitkonto.set_id(id)
-            arbeitszeitkonto.set_creation_time(creation_time)
+            arbeitszeitkonto.get_creation_date(creation_time)
             result.append(arbeitszeitkonto)
 
         self._cnx.commit()
@@ -48,7 +48,7 @@ class ArbeitszeitkontoMapper(Mapper):
         for (id, creation_time) in tuples:
             arbeitszeitkonto = Arbeitszeitkonto()
             arbeitszeitkonto.set_id(id)
-            arbeitszeitkonto.set_creation_time(creation_time)
+            arbeitszeitkonto.set_creation_date(creation_time)
 
         result = arbeitszeitkonto
 
@@ -71,19 +71,20 @@ class ArbeitszeitkontoMapper(Mapper):
             if maxid[0] is not None:
                 """Wenn wir eine maximale ID festellen konnten, zählen wir diese
                 um 1 hoch und weisen diesen Wert als ID dem User-Objekt zu."""
-                chat.set_id(maxid[0] + 1)
+                arbeitszeitkonto.set_id(maxid[0] + 1)
             else:
                 """Wenn wir keine maximale ID feststellen konnten, dann gehen wir
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 arbeitszeitkonto.set_id(1)
 
-        command = "INSERT INTO arbeitszeitkonto (id, creation_time) VALUES (%s,%s,%s,%s,%s,%s)"
-        data = (
-        arbeitszeitkonto.get_id(), arbeitszeitkonto.get_creation_time())
+        command = "INSERT INTO arbeitszeitkonto (id, creation_date) VALUES (%s,%s)"
+        data = (arbeitszeitkonto.get_id(), arbeitszeitkonto.get_creation_date())
+
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
+
         return arbeitszeitkonto
 
     def update(self, arbeitszeitkonto):
@@ -92,8 +93,8 @@ class ArbeitszeitkontoMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE arbeitszeitkonto SET WHERE id=%s,creation_time=%s"
-        data = (arbeitszeitkonto.get_id(), arbeitszeitkonto.get_creation_time())
+        command = "UPDATE arbeitszeitkonto SET WHERE id=%s,creation_date=%s"
+        data = (arbeitszeitkonto.get_id(), arbeitszeitkonto.get_creation_date())
 
         cursor.execute(command, data)
 
@@ -120,7 +121,7 @@ class ArbeitszeitkontoMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_time FROM Arbeitszeitkonto WHERE bezeichnung={}".format(bezeichnung)
+        command = "SELECT id, creation_date FROM Arbeitszeitkonto WHERE bezeichnung={}".format(bezeichnung)
 
         cursor.execute(command)
         tuples = cursor.fetchall()
@@ -128,7 +129,7 @@ class ArbeitszeitkontoMapper(Mapper):
         for (id, creation_time) in tuples:
             arbeitszeitkonto = Arbeitszeitkonto()
             arbeitszeitkonto.set_id(id)
-            arbeitszeitkonto.set_creation_time(creation_time)
+            arbeitszeitkonto.set_creation_date(creation_time)
             result.append(arbeitszeitkonto)
 
         self._cnx.commit()
@@ -140,7 +141,6 @@ class ArbeitszeitkontoMapper(Mapper):
 if (__name__ == "__main__"):
     with ArbeitszeitkontoMapper() as mapper:
             arbeitszeitkonto = Arbeitszeitkonto()
-            arbeitszeitkonto.set_name("Mathe Chat")
             arbeitszeitkonto.set_id(2)
 
             mapper.insert(arbeitszeitkonto)

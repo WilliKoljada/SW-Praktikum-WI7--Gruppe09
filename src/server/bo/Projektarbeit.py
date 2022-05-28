@@ -2,7 +2,7 @@ from src.server.bo import BusinessObject as bo
 
 
 
-class Projektarbeit (bo):
+class Projektarbeit (bo.BusinessObject):
 
     def __init__(self):
         super().__init__()
@@ -19,5 +19,5 @@ class Projektarbeit (bo):
     def from_dict(dictionary=dict()):
         obj = Projektarbeit()
         obj.set_id(dictionary["id"])
-        obj.set_creation_time(Projektarbeit.date_format(dictionary["creation_time"]))
+        obj.set_creation_date(Projektarbeit.date_format(dictionary["creation_time"]))
         obj.set_bezeichnung(Projektarbeit.date_format(dictionary["bezeichnung"]))

@@ -18,7 +18,7 @@ class ProjektarbeitMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from Projektarbeit")
+        cursor.execute("SELECT * from projektarbeit")
         tuples = cursor.fetchall()
 
         for (id, bezeichnung) in tuples:
@@ -77,9 +77,9 @@ class ProjektarbeitMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 projektarbeit.set_id(1)
 
-        command = "INSERT INTO projektarbeit (id, bezeichnung) VALUES (%s,%s,%s,%s,%s,%s)"
+        command = "INSERT INTO projektarbeit (id, Bezeichnung, creation_date) VALUES (%s,%s,%s)"
         data = (
-        projektarbeit.get_id(), projektarbeit.get_bezeichnung())
+        projektarbeit.get_id(), projektarbeit.get_bezeichnung(), projektarbeit.get_creation_date())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -141,7 +141,7 @@ class ProjektarbeitMapper(Mapper):
 if (__name__ == "__main__"):
     with ProjektarbeitMapper() as mapper:
             projektarbeit = Projektarbeit()
-            projektarbeit.set_name("Mathe Chat")
+            projektarbeit.set_bezeichnung("Mathe Chat")
             projektarbeit.set_id(2)
 
             mapper.insert(projektarbeit)

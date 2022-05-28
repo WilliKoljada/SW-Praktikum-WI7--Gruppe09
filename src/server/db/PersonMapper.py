@@ -24,11 +24,11 @@ class PersonMapper(Mapper):
         for (id,creation_time, person_id, vorname, nachname, email,benutzername) in tuples:
             person= Person()
             person.set_id(id)
-            person.set_creation_time(creation_time)
+            person.set_creation_date(creation_time)
             person.set_vorname(vorname)
             person.set_nachname(nachname)
             person.set_email(email)
-            person.set_benutzername(benutzername)
+            person.set_creation_date(benutzername)
             result.append(person)
 
         self._cnx.commit()
@@ -52,13 +52,13 @@ class PersonMapper(Mapper):
         for (id, creation_time, person_id, vorname, nachname, email, benutzername) in tuples:
             person = Person()
             person.set_id(id)
-            person.set_creation_time(creation_time)
+            person.set_creation_date(creation_time)
             person.set_vorname(vorname)
             person.set_nachname(nachname)
             person.set_email(email)
-            person.set_benutzername(benutzername)
+            person.set_is_benutzername(benutzername)
 
-        result = person
+            result = person
 
         self._cnx.commit()
         cursor.close()
@@ -83,9 +83,9 @@ class PersonMapper(Mapper):
             (id, name, email, google_user_id) = tuples[0]
             u = Person()
             u.set_id(id)
-            u.set_name(name)
+            u.set_vorname(name)
             u.set_email(email)
-            u.set_user_id(google_user_id)
+            u.set_id(google_user_id)
             result = u
         except IndexError:
             """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
@@ -109,18 +109,20 @@ class PersonMapper(Mapper):
         tuples = cursor.fetchall()
 
         for (maxid) in tuples:
-            if maxid[0] is not None:
-                """Wenn wir eine maximale ID festellen konnten, zählen wir diese
-                um 1 hoch und weisen diesen Wert als ID dem User-Objekt zu."""
-                person.set_id(maxid[0] + 1)
-            else:
-                """Wenn wir keine maximale ID feststellen konnten, dann gehen wir
-                davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
+            if maxid[0] is None:
+                """Wenn wir KEINE maximale ID feststellen konnten, dann gehen wir
+                davon aus, dass die ChatInvitation-Tabelle leer ist und wir mit der ID 1 beginnen können."""
+
                 person.set_id(1)
 
-        command = "INSERT INTO person (id, creation_time, vorname, nachname, email, benutzername) VALUES (%s,%s,%s,%s,%s,%s)"
-        data = (
-        Person.get_id(), Person.get_creation_time(), Person.get_vorname(), Person.get_nachname(), Person.get_email(), Person.get_benutzername())
+            else:
+                """Wenn wir eine maximale ID festellen konnten, zählen wir diese
+                um 1 hoch und weisen diesen Wert als ID dem ChatInvitation-Objekt zu."""
+
+                person.set_id(maxid[0] + 1)
+
+        command = "INSERT INTO person (id, vorname, nachname, Email, Benutzername, creation_date, google_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        data = (person.get_id(), person.get_creation_date(), person.get_vorname(), person.get_nachname(), person.get_email(), person.get_benutzername())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -134,7 +136,7 @@ class PersonMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "UPDATE person SET WHERE id=%s,vorname=%s,nachname=%s, email=%s, benutzername=%s"
-        data = (person.get_id(), person.get_vorname(),person.get_nachname, person.get_email, person.get_benutzername())
+        data = (person.get_id(), person.get_vorname(),person.get_nachname(), person.get_email(), person.get_benutzername())
 
         cursor.execute(command, data)
         self._cnx.commit()
@@ -158,7 +160,7 @@ class PersonMapper(Mapper):
         result = []
 
         cursor = self._cnx.cursor()
-        command = " SELECT id, creation_time, bezeichnung, is_accepted,sender, message FROM chat WHERE learngroup_id ={} ORDER BY id".format(
+        command = " SELECT id, creation_date, bezeichnung, is_accepted,sender, message FROM chat WHERE learngroup_id ={} ORDER BY id".format(
             person_id)
         cursor.execute(command)
         tuples = cursor.fetchall()
@@ -166,11 +168,11 @@ class PersonMapper(Mapper):
         for (id, creation_time, person_id, vorname, nachname, email, benutzername) in tuples:
             person = Person()
             person.set_id(id)
-            person.set_creation_time(creation_time)
+            person.set_creation_date(creation_time)
             person.set_vorname(vorname)
             person.set_nachname(nachname)
             person.set_email(email)
-            person.set_benutzername(benutzername)
+            person.set_creation_date(benutzername)
             result.append(person)
 
         self._cnx.commit()
@@ -182,7 +184,9 @@ class PersonMapper(Mapper):
 if (__name__ == "__main__"):
     with PersonMapper() as mapper:
             person = Person()
-            person.set_name("Mathe Chat")
-            person.set_id(2)
+            person.set_vorname('')
+            person.set_nachname('')
+            person.set_is_benutzername('')
+
 
             mapper.insert(person)

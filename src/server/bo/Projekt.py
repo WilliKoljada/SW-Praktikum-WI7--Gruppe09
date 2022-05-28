@@ -2,7 +2,7 @@ from src.server.bo import BusinessObject as bo
 
 
 
-class Projekt (bo):
+class Projekt (bo.BusinessObject):
 
     def __init__(self):
         super().__init__()
@@ -28,8 +28,8 @@ class Projekt (bo):
     def from_dict(dictionary=dict()):
         obj = Projekt()
         obj.set_id(dictionary["id"])
-        obj.set_creation_time(Projekt.date_format(dictionary["creation_time"]))
-        obj.set_projekt_id(dictionary["projekt_id"])
+        obj.set_creation_date(Projekt.date_format(dictionary["creation_time"]))
+        obj.set_id(dictionary["projekt_id"])
         obj.set_bezeichnung(dictionary["bezeichnung"])
         obj.set_auftraggeber(dictionary["auftraggeber"])
 

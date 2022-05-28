@@ -2,7 +2,7 @@ from src.server.bo import BusinessObject as bo
 
 
 
-class Ereignis (bo):
+class Ereignis (bo.BusinessObject):
 
     def __init__(self):
         super().__init__()

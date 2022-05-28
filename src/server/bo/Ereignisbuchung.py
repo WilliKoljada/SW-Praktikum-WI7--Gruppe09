@@ -2,7 +2,7 @@ from src.server.bo import BusinessObject as bo
 
 
 
-class Ereignisbuchung (bo):
+class Ereignisbuchung (bo.BusinessObject):
 
     def __init__(self):
         super().__init__()
@@ -13,6 +13,6 @@ class Ereignisbuchung (bo):
     def from_dict(dictionary=dict()):
         obj = Ereignisbuchung()
         obj.set_id(dictionary["id"])
-        obj.set_creation_time(dictionary["creation_time"])
+        obj.set_creation_date(dictionary["creation_time"])
 
         return obj

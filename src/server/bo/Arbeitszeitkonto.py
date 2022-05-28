@@ -1,4 +1,4 @@
-from src.server.BusinessObject import BusinessObject as bo
+from src.server.bo.BusinessObject import BusinessObject as bo
 
 
 class Arbeitszeitkonto(bo):
@@ -12,7 +12,7 @@ class Arbeitszeitkonto(bo):
         """Umwandeln eines Python dict() in ein Suggestion()."""
         obj = Arbeitszeitkonto()
         obj.set_id(dictionary["id"])  # eigentlich Teil von BusinessObject !
-        obj.set_creation_time(dictionary["creation_time"])
+        obj.set_creation_date(dictionary["creation_time"])
 
 
 
