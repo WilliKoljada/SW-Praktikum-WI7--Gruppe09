@@ -144,8 +144,8 @@ class ProjektMapper(Mapper):
         return result
 
     # Zum Testen ausführen
-    if (__name__ == "__main__"):
-        with ProjektMapper() as mapper:
+if (__name__ == "__main__"):
+    with ProjektMapper() as mapper:
             projekt = Projekt()
             projekt.set_name("Mathe Chat")
             projekt.set_id(2)

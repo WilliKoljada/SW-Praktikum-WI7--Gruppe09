@@ -138,8 +138,8 @@ class BuchungMapper(Mapper):
         return result
 
     # Zum Testen ausführen
-    if (__name__ == "__main__"):
-        with BuchungMapper() as mapper:
+if (__name__ == "__main__"):
+    with BuchungMapper() as mapper:
             buchung = Buchung()
             buchung.set_name("Mathe Chat")
             buchung.set_id(2)

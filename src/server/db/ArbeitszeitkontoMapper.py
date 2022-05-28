@@ -137,9 +137,9 @@ class ArbeitszeitkontoMapper(Mapper):
         return result
 
     # Zum Testen ausführen
-    if (__name__ == "__main__"):
-        with ArbeitszeitkontoMapper() as mapper:
-            arbeitszeitkonto = arbeitszeitkonto()
+if (__name__ == "__main__"):
+    with ArbeitszeitkontoMapper() as mapper:
+            arbeitszeitkonto = Arbeitszeitkonto()
             arbeitszeitkonto.set_name("Mathe Chat")
             arbeitszeitkonto.set_id(2)
 

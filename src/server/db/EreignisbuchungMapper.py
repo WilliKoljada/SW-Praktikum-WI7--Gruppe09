@@ -22,7 +22,7 @@ class EreignisbuchungMapper(Mapper):
         tuples = cursor.fetchall()
 
         for (id,creation_time) in tuples:
-            ereignisbuchung= ereignisbuchung()
+            ereignisbuchung = ereignisbuchung()
             ereignisbuchung.set_id(id)
             ereignisbuchung.set_creation_time(creation_time)
             result.append(ereignisbuchung)

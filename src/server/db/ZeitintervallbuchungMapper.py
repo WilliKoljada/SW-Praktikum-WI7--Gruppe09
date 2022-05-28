@@ -138,8 +138,8 @@ class ZeitintervallbuchungMapper(Mapper):
         return result
 
     # Zum Testen ausführen
-    if (__name__ == "__main__"):
-        with ZeitintervallbuchungMapper() as mapper:
+if (__name__ == "__main__"):
+    with ZeitintervallbuchungMapper() as mapper:
             zeitintervallbuchung = Zeitintervallbuchung()
             zeitintervallbuchung.set_name("Zeitintervallbuchung")
             zeitintervallbuchung.set_id(2)

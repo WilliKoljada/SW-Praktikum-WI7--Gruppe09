@@ -141,9 +141,9 @@ class EreignisMapper(Mapper):
         return result
 
     # Zum Testen ausführen
-    if (__name__ == "__main__"):
-        with EreignisMapper() as mapper:
-            ereignis = ereignis()
+if (__name__ == "__main__"):
+    with EreignisMapper() as mapper:
+            ereignis = Ereignis()
             ereignis.set_name("Mathe Chat")
             ereignis.set_id(2)
 

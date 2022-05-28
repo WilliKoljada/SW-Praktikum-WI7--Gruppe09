@@ -141,8 +141,8 @@ class ZeitintervallMapper(Mapper):
         return result
 
     # Zum Testen ausführen
-    if (__name__ == "__main__"):
-        with ZeitintervallMapper() as mapper:
+if (__name__ == "__main__"):
+    with ZeitintervallMapper() as mapper:
             zeitintervall = Zeitintervall()
             zeitintervall.set_name("Zeitintervall")
             zeitintervall.set_id(2)

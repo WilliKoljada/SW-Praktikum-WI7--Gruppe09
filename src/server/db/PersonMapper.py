@@ -112,7 +112,7 @@ class PersonMapper(Mapper):
             if maxid[0] is not None:
                 """Wenn wir eine maximale ID festellen konnten, zählen wir diese
                 um 1 hoch und weisen diesen Wert als ID dem User-Objekt zu."""
-                chat.set_id(maxid[0] + 1)
+                person.set_id(maxid[0] + 1)
             else:
                 """Wenn wir keine maximale ID feststellen konnten, dann gehen wir
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
@@ -120,7 +120,7 @@ class PersonMapper(Mapper):
 
         command = "INSERT INTO person (id, creation_time, vorname, nachname, email, benutzername) VALUES (%s,%s,%s,%s,%s,%s)"
         data = (
-        person.get_id(), person.get_creation_time(), person.get_vorname(), person.get_nachname(), person.get_email() person.get_benutzername())
+        Person.get_id(), Person.get_creation_time(), Person.get_vorname(), Person.get_nachname(), Person.get_email(), Person.get_benutzername())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -179,9 +179,9 @@ class PersonMapper(Mapper):
         return result
 
     # Zum Testen ausführen
-    if (__name__ == "__main__"):
-        with PersonMapper() as mapper:
-            person = person()
+if (__name__ == "__main__"):
+    with PersonMapper() as mapper:
+            person = Person()
             person.set_name("Mathe Chat")
             person.set_id(2)
 

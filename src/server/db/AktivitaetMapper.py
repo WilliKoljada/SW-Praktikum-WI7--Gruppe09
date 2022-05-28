@@ -144,8 +144,8 @@ class AktivitaetMapper(Mapper):
         return result
 
     # Zum Testen ausführen
-    if (__name__ == "__main__"):
-        with AktivitaetMapper() as mapper:
+if (__name__ == "__main__"):
+    with AktivitaetMapper() as mapper:
             aktivitaet = Aktivitaet()
             aktivitaet.set_name("Mathe Chat")
             aktivitaet.set_id(2)
