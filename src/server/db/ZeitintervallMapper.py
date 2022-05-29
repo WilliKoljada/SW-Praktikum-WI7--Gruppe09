@@ -21,10 +21,10 @@ class ZeitintervallMapper(Mapper):
         cursor.execute("SELECT * from zeitintervall")
         tuples = cursor.fetchall()
 
-        for (id,creation_time,project_runtime) in tuples:
+        for (id,creation_date,project_runtime) in tuples:
             zeitintervall= Zeitintervall()
             zeitintervall.set_id(id)
-            zeitintervall.set_creation_date(creation_time)
+            zeitintervall.set_creation_date(creation_date)
             zeitintervall.set_projektlaufzeit(project_runtime)
             result.append(zeitintervall)
 
@@ -46,10 +46,10 @@ class ZeitintervallMapper(Mapper):
         command = "SELECT * FROM zeitintervall WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_time, project_runtime) in tuples:
+        for (id, creation_date, project_runtime) in tuples:
             zeitintervall = Zeitintervall()
             zeitintervall.set_id(id)
-            zeitintervall.set_creation_date(creation_time)
+            zeitintervall.set_creation_date(creation_date)
             zeitintervall.set_projektlaufzeit(project_runtime)
 
             result = zeitintervall
@@ -95,8 +95,8 @@ class ZeitintervallMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE zeitintervall SET creation_time=%s, project_runtime=%s, WHERE id=%s"
-        data = (zeitintervall.get_id(), zeitintervall.get_creation_time(), zeitintervall.get_run_runtime())
+        command = "UPDATE zeitintervall SET creation_date=%s, project_runtime=%s, WHERE id=%s"
+        data = (zeitintervall.get_id(), zeitintervall.get_creation_date(), zeitintervall.get_run_runtime())
 
         cursor.execute(command, data)
 
@@ -123,15 +123,15 @@ class ZeitintervallMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_time FROM zeitintervall WHERE id={}".format(id)
+        command = "SELECT id, creation_date FROM zeitintervall WHERE id={}".format(id)
 
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creation_time, project_runtime) in tuples:
+        for (id, creation_date, project_runtime) in tuples:
             zeitintervall = Zeitintervall()
             zeitintervall.set_id(id)
-            zeitintervall.set_creation_date(creation_time)
+            zeitintervall.set_creation_date(creation_date)
             zeitintervall.set_creation_date(project_runtime)
             result.append(zeitintervall)
 

@@ -21,10 +21,10 @@ class ZeitintervallbuchungMapper(Mapper):
         cursor.execute("SELECT * from zeitintervallbuchung")
         tuples = cursor.fetchall()
 
-        for (id,creation_time) in tuples:
+        for (id,creation_date) in tuples:
             zeitintervallbuchung= Zeitintervallbuchung()
             zeitintervallbuchung.set_id(id)
-            zeitintervallbuchung.set_creation_date(creation_time)
+            zeitintervallbuchung.set_creation_date(creation_date)
             result.append(zeitintervallbuchung)
 
         self._cnx.commit()
@@ -45,10 +45,10 @@ class ZeitintervallbuchungMapper(Mapper):
         command = "SELECT * FROM zeitintervallbuchung WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_time) in tuples:
+        for (id, creation_date) in tuples:
             zeitintervallbuchung = Zeitintervallbuchung()
             zeitintervallbuchung.set_id(id)
-            zeitintervallbuchung.set_creation_date(creation_time)
+            zeitintervallbuchung.set_creation_date(creation_date)
 
             result = zeitintervallbuchung
 
@@ -94,7 +94,7 @@ class ZeitintervallbuchungMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "UPDATE zeitintervallbuchung SET creation_time=%s,WHERE id=%s"
-        data = (zeitintervallbuchung.get_id(), zeitintervallbuchung.get_creation_time())
+        data = (zeitintervallbuchung.get_id(), zeitintervallbuchung.get_creation_date())
 
         cursor.execute(command, data)
 
@@ -121,15 +121,15 @@ class ZeitintervallbuchungMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_time FROM zeitintervallbuchung WHERE bezeichnung={}".format(id)
+        command = "SELECT id, creation_date FROM zeitintervallbuchung WHERE bezeichnung={}".format(id)
 
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creation_time) in tuples:
+        for (id, creation_date) in tuples:
             zeitintervallbuchung = Zeitintervallbuchung()
             zeitintervallbuchung.set_id(id)
-            zeitintervallbuchung.set_creation_date(creation_time)
+            zeitintervallbuchung.set_creation_date(creation_date)
             result.append(zeitintervallbuchung)
 
         self._cnx.commit()

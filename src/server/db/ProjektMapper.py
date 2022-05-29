@@ -21,10 +21,10 @@ class ProjektMapper(Mapper):
         cursor.execute("SELECT * from Projekt")
         tuples = cursor.fetchall()
 
-        for (id,creation_time, auftraggeber, bezeichnung) in tuples:
+        for (id,creation_date, auftraggeber, bezeichnung) in tuples:
             projekt= Projekt()
             projekt.set_id(id)
-            projekt.set_creation_date(creation_time)
+            projekt.set_creation_date(creation_date)
             projekt.set_auftraggeber(auftraggeber)
             projekt.set_bezeichnung(bezeichnung)
             result.append(projekt)
@@ -47,10 +47,10 @@ class ProjektMapper(Mapper):
         command = "SELECT * FROM projekt WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_time, auftraggeber, bezeichnung) in tuples:
+        for (id, creation_date, auftraggeber, bezeichnung) in tuples:
             projekt = Projekt()
             projekt.set_id(id)
-            projekt.set_creation_date(creation_time)
+            projekt.set_creation_date(creation_date)
             projekt.set_auftraggeber(auftraggeber)
             projekt.set_bezeichnung(bezeichnung)
 
@@ -125,15 +125,15 @@ class ProjektMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_time, auftraggeber, bezeichnung FROM projekt WHERE bezeichnung={}".format(bezeichnung)
+        command = "SELECT id, creation_date, auftraggeber, bezeichnung FROM projekt WHERE bezeichnung={}".format(bezeichnung)
 
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creation_time, auftraggeber, bezeichnung) in tuples:
+        for (id, creation_date, auftraggeber, bezeichnung) in tuples:
             projekt = Projekt()
             projekt.set_id(id)
-            projekt.set_creation_date(creation_time)
+            projekt.set_creation_date(creation_date)
             projekt.set_auftraggeber(auftraggeber)
             projekt.set_bezeichnung(bezeichnung)
             result.append(projekt)
@@ -147,7 +147,7 @@ class ProjektMapper(Mapper):
 if (__name__ == "__main__"):
     with ProjektMapper() as mapper:
             projekt = Projekt()
-            projekt.set_auftraggeber("Mathe Chat")
-            projekt.set_auftraggeber('yahan')
+            projekt.set_bezeichnung("madrid")
+            projekt.set_auftraggeber('Real')
 
             mapper.insert(projekt)

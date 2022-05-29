@@ -24,7 +24,7 @@ class ArbeitszeitkontoMapper(Mapper):
         for (id,creation_time) in tuples:
             arbeitszeitkonto= Arbeitszeitkonto()
             arbeitszeitkonto.set_id(id)
-            arbeitszeitkonto.get_creation_date(creation_time)
+            arbeitszeitkonto.get_creation_date(creation_date)
             result.append(arbeitszeitkonto)
 
         self._cnx.commit()
@@ -45,10 +45,10 @@ class ArbeitszeitkontoMapper(Mapper):
         command = "SELECT * FROM arbeitszeitkonto WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_time) in tuples:
+        for (id, creation_date) in tuples:
             arbeitszeitkonto = Arbeitszeitkonto()
             arbeitszeitkonto.set_id(id)
-            arbeitszeitkonto.set_creation_date(creation_time)
+            arbeitszeitkonto.set_creation_date(creation_date)
 
         result = arbeitszeitkonto
 
@@ -126,10 +126,10 @@ class ArbeitszeitkontoMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creation_time) in tuples:
+        for (id, creation_date) in tuples:
             arbeitszeitkonto = Arbeitszeitkonto()
             arbeitszeitkonto.set_id(id)
-            arbeitszeitkonto.set_creation_date(creation_time)
+            arbeitszeitkonto.set_creation_date(creation_date)
             result.append(arbeitszeitkonto)
 
         self._cnx.commit()

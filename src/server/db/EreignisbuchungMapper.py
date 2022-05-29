@@ -21,10 +21,10 @@ class EreignisbuchungMapper(Mapper):
         cursor.execute("SELECT * from Ereignisbuchung")
         tuples = cursor.fetchall()
 
-        for (id,creation_time) in tuples:
-            ereignisbuchung = ereignisbuchung()
+        for (id,creation_date) in tuples:
+            ereignisbuchung = Ereignisbuchung()
             ereignisbuchung.set_id(id)
-            ereignisbuchung.set_creation_time(creation_time)
+            ereignisbuchung.set_creation_date(creation_date)
             result.append(ereignisbuchung)
 
         self._cnx.commit()
@@ -45,10 +45,10 @@ class EreignisbuchungMapper(Mapper):
         command = "SELECT * FROM ereignisbuchung WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_time) in tuples:
-            ereignisbuchung = ereignisbuchung()
+        for (id, creation_date) in tuples:
+            ereignisbuchung = Ereignisbuchung()
             ereignisbuchung.set_id(id)
-            ereignisbuchung.set_creation_time(creation_time)
+            ereignisbuchung.set_creation_date(creation_date)
 
         result = ereignisbuchung
 
@@ -71,15 +71,15 @@ class EreignisbuchungMapper(Mapper):
             if maxid[0] is not None:
                 """Wenn wir eine maximale ID festellen konnten, zählen wir diese
                 um 1 hoch und weisen diesen Wert als ID dem User-Objekt zu."""
-                chat.set_id(maxid[0] + 1)
+                ereignisbuchung.set_id(maxid[0] + 1)
             else:
                 """Wenn wir keine maximale ID feststellen konnten, dann gehen wir
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 ereignisbuchung.set_id(1)
 
-        command = "INSERT INTO ereignisbuchung (id, creation_time) VALUES (%s,%s,%s,%s,%s,%s)"
+        command = "INSERT INTO ereignisbuchung (id, creation_date) VALUES (%s,%s)"
         data = (
-        ereignisbuchung.get_id(), ereignisbuchung.get_creation_time())
+        ereignisbuchung.get_id(), ereignisbuchung.get_creation_date())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -125,10 +125,10 @@ class EreignisbuchungMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creation_time) in tuples:
-            ereignisbuchung = ereignisbuchung()
+        for (id, creation_date) in tuples:
+            ereignisbuchung = Ereignisbuchung()
             ereignisbuchung.set_id(id)
-            ereignisbuchung.set_creation_time(creation_time)
+            ereignisbuchung.set_creation_date(creation_date)
             result.append(ereignisbuchung)
 
         self._cnx.commit()
@@ -137,10 +137,10 @@ class EreignisbuchungMapper(Mapper):
         return result
 
     # Zum Testen ausführen
-    if (__name__ == "__main__"):
-        with EreignisbuchungMapper() as mapper:
-            ereignisbuchung = Ereignisbuchung()
-            ereignisbuchung.set_name("Mathe Chat")
-            ereignisbuchung.set_id(2)
+if (__name__ == "__main__"):
+    with EreignisbuchungMapper() as mapper:
+        ereignisbuchung = Ereignisbuchung()
+        ereignisbuchung.set_id("Mathe Chat")
+        ereignisbuchung.set_id(2)
 
-            mapper.insert(ereignisbuchung)
+        mapper.insert(ereignisbuchung)

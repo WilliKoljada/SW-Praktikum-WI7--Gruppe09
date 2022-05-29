@@ -24,7 +24,7 @@ class EreignisMapper(Mapper):
         for (id,creation_time, zeitpunkt_ereigniseintritt) in tuples:
             ereignis= Ereignis()
             ereignis.set_id(id)
-            ereignis.set_creation_date(creation_time)
+            ereignis.set_creation_time(creation_time)
             ereignis.set_zeitpunkt_ereigniseintritt(zeitpunkt_ereigniseintritt)
             result.append(ereignis)
 
@@ -49,7 +49,7 @@ class EreignisMapper(Mapper):
         for (id, creation_time, zeitpunkt_ereigniseintritt) in tuples:
             ereignis = Ereignis()
             ereignis.set_id(id)
-            ereignis.set_creation_date(creation_time)
+            ereignis.set_creation_time(creation_time)
             ereignis.set_zeitpunkt_ereigniseintritt(zeitpunkt_ereigniseintritt)
 
         result = ereignis
@@ -131,7 +131,7 @@ class EreignisMapper(Mapper):
         for (id, creation_time, zeitpunkt_ereigniseintritt) in tuples:
             ereignis = Ereignis()
             ereignis.set_id(id)
-            ereignis.set_creation_date(creation_time)
+            ereignis.set_creation_time(creation_time)
             ereignis.set_zeitpunkt_ereigniseintritt(zeitpunkt_ereigniseintritt)
             result.append(ereignis)
 

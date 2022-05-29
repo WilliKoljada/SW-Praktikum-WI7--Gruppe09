@@ -6,7 +6,7 @@ class Buchung (bo.BusinessObject):
 
     def __init__(self):
         super().__init__()
-        self._ersteller = 0
+        self._ersteller = ""
 
     def get_ersteller(self):
         return self._ersteller
@@ -21,6 +21,6 @@ class Buchung (bo.BusinessObject):
         obj = Buchung()
         obj.set_id(dictionary["id"])
         obj.set_creation_date(dictionary["creation_date"])
-        obj.set_id(dictionary["buchungs_id"])
+        obj.set_id(dictionary["ersteller"])
 
         return obj

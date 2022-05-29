@@ -21,10 +21,10 @@ class PersonMapper(Mapper):
         cursor.execute("SELECT * from Person")
         tuples = cursor.fetchall()
 
-        for (id,creation_time, person_id, vorname, nachname, email,benutzername) in tuples:
+        for (id,creation_date, person_id, vorname, nachname, email,benutzername) in tuples:
             person= Person()
             person.set_id(id)
-            person.set_creation_date(creation_time)
+            person.set_creation_date(creation_date)
             person.set_vorname(vorname)
             person.set_nachname(nachname)
             person.set_email(email)
@@ -49,10 +49,10 @@ class PersonMapper(Mapper):
         command = "SELECT * FROM person WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_time, person_id, vorname, nachname, email, benutzername) in tuples:
+        for (id, creation_date, person_id, vorname, nachname, email, benutzername) in tuples:
             person = Person()
             person.set_id(id)
-            person.set_creation_date(creation_time)
+            person.set_creation_date(creation_date)
             person.set_vorname(vorname)
             person.set_nachname(nachname)
             person.set_email(email)
@@ -165,10 +165,10 @@ class PersonMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creation_time, person_id, vorname, nachname, email, benutzername) in tuples:
+        for (id, creation_date, person_id, vorname, nachname, email, benutzername) in tuples:
             person = Person()
             person.set_id(id)
-            person.set_creation_date(creation_time)
+            person.set_creation_date(creation_date)
             person.set_vorname(vorname)
             person.set_nachname(nachname)
             person.set_email(email)

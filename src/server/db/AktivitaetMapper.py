@@ -21,10 +21,10 @@ class AktivitaetMapper(Mapper):
         cursor.execute("SELECT * from aktivitaet")
         tuples = cursor.fetchall()
 
-        for (id,creation_time,bezeichnung, kapazitaet_in_personentagen,) in tuples:
+        for (id,creation_date,bezeichnung, kapazitaet_in_personentagen,) in tuples:
             aktivitaet= Aktivitaet()
             aktivitaet.set_id(id)
-            aktivitaet.set_creation_date(creation_time)
+            aktivitaet.set_creation_date(creation_date)
             aktivitaet.set_bezeichnung(bezeichnung)
             aktivitaet.set_kapazitaet_in_personentagen(kapazitaet_in_personentagen)
             result.append(aktivitaet)
@@ -47,10 +47,10 @@ class AktivitaetMapper(Mapper):
         command = "SELECT * FROM aktivitaet WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_time, bezeichnung, kapazitaet_in_personentagen) in tuples:
+        for (id, creation_date, bezeichnung, kapazitaet_in_personentagen) in tuples:
             aktivitaet = Aktivitaet()
             aktivitaet.set_id(id)
-            aktivitaet.set_creation_date(creation_time)
+            aktivitaet.set_creation_date(creation_date)
             aktivitaet.set_bezeichnung(bezeichnung)
             aktivitaet.set_kapazitaet_in_personentagen(kapazitaet_in_personentagen)
 
@@ -130,10 +130,10 @@ class AktivitaetMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creation_time, bezeichnung, kapazitaet_in_personentagen) in tuples:
+        for (id, creation_date, bezeichnung, kapazitaet_in_personentagen) in tuples:
             aktivitaet = Aktivitaet()
             aktivitaet.set_id(id)
-            aktivitaet.set_creation_date(creation_time)
+            aktivitaet.set_creation_date(creation_date)
             aktivitaet.set_bezeichnung(bezeichnung)
             aktivitaet.set_kapazitaet_in_personentagen(kapazitaet_in_personentagen)
             result.append(aktivitaet)

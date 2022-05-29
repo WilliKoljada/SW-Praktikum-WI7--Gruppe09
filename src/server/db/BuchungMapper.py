@@ -21,10 +21,10 @@ class BuchungMapper(Mapper):
         cursor.execute("SELECT * from buchung")
         tuples = cursor.fetchall()
 
-        for (id,creation_time, ersteller) in tuples:
+        for (id,creation_date, ersteller) in tuples:
             buchung = Buchung()
             buchung.set_id(id)
-            buchung.set_creation_date(creation_time)
+            buchung.set_creation_date(creation_date)
             buchung.set_ersteller(ersteller)
             result.append(buchung)
 
@@ -46,10 +46,10 @@ class BuchungMapper(Mapper):
         command = "SELECT * FROM buchung WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_time) in tuples:
+        for (id, creation_date) in tuples:
             buchung = Buchung()
             buchung.set_id(id)
-            buchung.set_creation_date(creation_time)
+            buchung.set_creation_date(creation_date)
 
         result = buchung
 
@@ -126,10 +126,10 @@ class BuchungMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creation_time) in tuples:
+        for (id, creation_date) in tuples:
             buchung = Buchung()
             buchung.set_id(id)
-            buchung.get_creation_date(creation_time)
+            buchung.get_creation_date(creation_date)
             result.append(buchung)
 
         self._cnx.commit()
