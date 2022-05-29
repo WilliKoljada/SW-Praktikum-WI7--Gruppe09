@@ -7,14 +7,15 @@ from flask_cors import CORS
 '''Wir greifen natürlich auf unsere Applikationslogik inkl. BusinessObject-Klassen zurück'''
 
 from server.bo.Aktivitaet import Aktivitaet
+from server.bo.Arbeitszeitkonto import Arbeitszeitkonto
 from server.Administration import Administration
 from server.bo.Projekt import Projekt
 from server.bo.Person import Person
 from server.bo.Zeitintervall import Zeitintervall
 from server.bo.Zeitintervallbuchung import Zeitintervallbuchung
 from server.bo.Projektarbeit import Projektarbeit
-from server.bo.Ereignis import Ereignis
 from server.bo.Ereignisbuchung import Ereignisbuchung
+from server.bo.Ereignis import Ereignis
 
 
 '''Außerdem nutzen wir einen selbstgeschriebenen Decorator, der die Authentifikation übernimmt'''
@@ -37,12 +38,12 @@ BusinessObject dient als Basisklasse."""
 
 bo = api.model('BusinessObject', {
     'id': fields.Integer(attribute='_id', description='Der Unique Identifier eines Business Object'),
-    'creation_time': fields.DateTime(attribute='_creation_time', description='Erstellungszeitpunkt des Objekts')
+    'creation_date': fields.DateTime(attribute='_creation_date', description='Erstellungszeitpunkt des Objekts')
 })
 
 aktivitaet = api.inherit('Aktivitaet', bo, {
     'id': fields.Integer(attribute='_id', description='unique ID'),
-    'creation_time': fields.String(attribute='_creation_time', description='Zeit der letzten Aenderung'),
+    'creation_date': fields.String(attribute='_creation_date', description='Zeit der letzten Aenderung'),
     'bezeichnung': fields.String(attribute='_bezeichnung', description='unique Bezeichnung der Aktivitaet'),
     'kapazitaet_in_personentagen': fields.String(attribute='_kapazitaet_in_personentagen', description='Kapazitaet in Personentagen')
 })
@@ -200,7 +201,7 @@ class PersonOperations(Resource):
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class AktivitaetListOperations(Resource):
     @secured
-    @zeiterfassungapp.marshal_list_with(aktivitaet)
+    @zeiterfassungapp.marshal_list_with(Aktivitaet)
     def get(self):
         """Auslesen aller Aktivitaet-Objekte.
         Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
@@ -219,7 +220,7 @@ class AktivitaetListOperations(Resource):
         proposal = aktivitaet.from_dict(api.payload)
 
         if proposal is not None:
-            akt = adm.create_aktivitaet(proposal.get_id(), proposal.get_creation_time(), proposal.get_bezeichnung(), proposal.get_kapazitaet_in_personentagen())
+            akt = adm.create_aktivitaet(proposal.get_id(), proposal.get_creation_date(), proposal.get_bezeichnung(), proposal.get_kapazitaet_in_personentagen())
             return akt, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
@@ -287,7 +288,7 @@ class AktivitaetOperations(Resource):
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class ArbeitszeitkontoListOperations(Resource):
     @secured
-    @zeiterfassungapp.marshal_list_with(arbeitszeitkonto)
+    @zeiterfassungapp.marshal_list_with(Arbeitszeitkonto)
     def get(self):
         """Auslesen aller Arbeitszeitkonto-Objekte.
         Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
@@ -306,7 +307,7 @@ class ArbeitszeitkontoListOperations(Resource):
         proposal = arbeitszeitkonto.from_dict(api.payload)
 
         if proposal is not None:
-            arbeit = adm.create_arbeitszeitkonto(proposal.get_id(), proposal.get_creation_time())
+            arbeit = adm.create_arbeitszeitkonto(proposal.get_id(), proposal.get_creation_date())
             return arbeit, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
@@ -371,7 +372,7 @@ class ArbeitszeitkontoOperations(Resource):
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 @zeiterfassungapp.param('id', 'Die Bezeichnung des Arbeitszeitkonto-Objekts')
 class ArbeitszeitkontoOperations(Resource):
-    @zeiterfassungapp.marshal_with(arbeitszeitkonto)
+    @zeiterfassungapp.marshal_with(Ereignis)
     @secured
     def get(self, id):
         """Auslesen einer bestimmten Arbeitszeitkonto-BO.
