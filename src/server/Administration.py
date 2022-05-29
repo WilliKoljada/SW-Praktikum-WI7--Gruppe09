@@ -17,9 +17,9 @@ from .db.AktivitaetMapper import AktivitaetMapper
 from .db.ArbeitszeitkontoMapper import ArbeitszeitkontoMapper
 from .db.ZeitintervallMapper import ZeitintervallMapper
 from .db.ZeitintervallbuchungMapper import ZeitintervallbuchungMapper
-from db.EreignisMapper import EreignisMapper
-from db.BuchungMapper import BuchungMapper
-from db.EreignisbuchungMapper import EreignisbuchungMapper
+from .db.EreignisMapper import EreignisMapper
+from .db.BuchungMapper import BuchungMapper
+from .db.EreignisbuchungMapper import EreignisbuchungMapper
 
 class Administration(object):
 
