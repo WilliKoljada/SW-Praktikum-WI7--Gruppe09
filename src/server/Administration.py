@@ -28,43 +28,31 @@ class Administration(object):
 
     """person-spezifische Methoden"""
 
-    def create_person(self, creation_time , vorname, nachname, email, benutzername):
+    def create_person(self, google_id, vorname, nachname, email, benutzername):
         """Eine Person anlegen"""
         p = Person()
         p.set_id(1)
-        p.set_creation_time(creation_time)
+        p.set_google_user_id(google_id)
         p.set_vorname(vorname)
         p.set_nachname(nachname)
         p.set_email(email)
-        p.set_benutzername(benutzername)
+        p.set_is_benutzername(benutzername)
 
         with PersonMapper() as mapper:
             return mapper.insert(p)
 
-    def get_person_by_vorname(self, vorname):
-        """"Alle Personen mit Namen name auslesen."""
-        with PersonMapper() as mapper:
-            return mapper.find_by_vorname(vorname)
 
     def get_person_by_id(self, id):
         """Die Person mit der gegebenen ID auslesen."""
         with PersonMapper() as mapper:
-            return mapper.find_by_id(id)
+            return mapper.find_by_key(id)
 
-    def get_person_by_nachname(self, nachname):
-        """Alle Personen mit gegebener Rolle auslesen."""
-        with PersonMapper() as mapper:
-            return mapper.find_person_by_nachname(nachname)
 
     def get_person_by_email(self, email):
         """Die Person mit der gegebenen email auslesen."""
         with PersonMapper() as mapper:
             return mapper.find_by_email(email)
 
-    def get_person_by_benutzername(self, benutzername):
-        """Die Person mit der gegebenen Google ID auslesen."""
-        with PersonMapper() as mapper:
-            return mapper.find_by_benutzername(benutzername)
 
     def get_user_by_google_user_id(self, id):
         """Den Benutzer mit der gegebenen Google ID auslesen."""
@@ -89,11 +77,10 @@ class Administration(object):
 
     """aktivitaet-spezifische Methoden"""
 
-    def create_aktivitaet(self, id, creation_time, bezeichnung, kapazitaet_in_personentagen):
+    def create_aktivitaet(self, bezeichnung, kapazitaet_in_personentagen):
         """Eine Aktivitaet anlegen"""
         p = Aktivitaet()
         p.set_id(1)
-        p.set_creation_time(creation_time)
         p.set_bezeichnung(bezeichnung)
         p.set_kapazitaet_in_personentagen(kapazitaet_in_personentagen)
 
@@ -103,22 +90,12 @@ class Administration(object):
     def get_aktivitaet_by_id(self, id):
         """"Alle Aktivitaeten mit der gegebenen ID auslesen."""
         with AktivitaetMapper() as mapper:
-            return mapper.find_by_id(id)
+            return mapper.find_by_key(id)
 
-    def get_aktivitaet_by_creation_time(self, creation_time):
-        """Die Aktivitaeten mit der gegebenen Zeit der Aenderung auslesen."""
-        with AktivitaetMapper() as mapper:
-            return mapper.find_by_creation_time(creation_time)
-
-    def get_aktivitaet_by_bezeichnung(self, bezeichnung):
-        """Alle Aktivitaeten mit gegebener Bezeichnung auslesen."""
-        with AktivitaetMapper() as mapper:
-            return mapper.find_aktivitaet_by_bezeichnung(bezeichnung)
-
-    def get_aktivitaet_by_kapazitaet_in_personentagen(self, kapazitaet_in_personentagen):
+    def get_aktivitaet_by_kapazitaet_in_personentagen(self, ka_perso):
         """Die Aktivitaet mit der gegebenen Kapazitaet auslesen."""
         with AktivitaetMapper() as mapper:
-            return mapper.find_by_kapazitaet_in_personentagen(kapazitaet_in_personentagen)
+            return mapper.find_by_kapazitaet_in_personentagen(ka_perso)
 
     def get_all_aktivitaet(self):
         """Alle Aktivitaet auslesen."""
@@ -138,25 +115,20 @@ class Administration(object):
 
     """arbeitszeitkonto-spezifische Methoden"""
 
-    def create_arbeitszeitkonto(self, id, creation_time):
+    def create_arbeitszeitkonto(self, pensum):
         """Ein Arbeitszeitkonto anlegen"""
-        p = Arbeitszeitkonto()
-        p.set_id(1)
-        p.set_creation_time(creation_time)
+        arbeits_knt = Arbeitszeitkonto()
+        arbeits_knt.set_id(1)
+        arbeits_knt.set_arbeitspensum(pensum)
 
 
         with Arbeitszeitkonto() as mapper:
-            return mapper.insert(p)
+            return mapper.insert(pensum)
 
     def get_arbeitszeitkonto_by_id(self, id):
         """"Alle Arbeitszeitkonten mit der gegebenen ID auslesen."""
         with ArbeitszeitkontoMapper() as mapper:
-            return mapper.find_by_id(id)
-
-    def get_arbeitszeitkonto_by_creation_time(self, creation_time):
-        """Die Arbeitszeitkonten mit der gegebenen Zeit der Aenderung auslesen."""
-        with ArbeitszeitkontoMapper() as mapper:
-            return mapper.find_by_creation_time(creation_time)
+            return mapper.find_by_key(id)
 
 
     def get_all_arbeitszeitkonto(self):
@@ -178,7 +150,7 @@ class Administration(object):
     """projektarbeit-spezifische Methoden"""
 
 
-    def create_projektarbeit(self, id, bezeichnung):
+    def create_projektarbeit(self, bezeichnung):
         """Eine Projektarbeit anlegen"""
         p = Projektarbeit()
         p.set_id(1)
@@ -191,13 +163,13 @@ class Administration(object):
     def get_projektarbeit_by_id(self, id):
         """Die Projektarbeit mit der gegebenen ID auslesen."""
         with ProjektarbeitMapper() as mapper:
-            return mapper.find_by_id(id)
+            return mapper.find_by_key(id)
 
 
     def get_projektarbeit_by_bezeichnung(self, bezeichnung):
         """Alle Projektarbeiten mit gegebener Rolle auslesen."""
         with ProjektarbeitMapper() as mapper:
-            return mapper.find_projektarbeit_by_bezeichnung(bezeichnung)
+            return mapper.find_by_bezeichnung(bezeichnung)
 
 
     def get_all_projektarbeit(self):
@@ -219,31 +191,25 @@ class Administration(object):
 
     """projekt-spezifische Methoden"""
 
-    def create_projekt(self, creation_time , id, auftraggeber, bezeichnung):
+    def create_projekt(self, auftraggeber, bezeichnung):
         """Ein Projekt anlegen"""
         p = Projekt()
         p.set_id(1)
-        p.set_creation_time(creation_time)
         p.set_auftraggeber(auftraggeber)
         p.set_bezeichnung(bezeichnung)
 
         with ProjektMapper() as mapper:
             return mapper.insert(p)
 
-    def get_projekt_by_auftraggeber(self, auftraggeber):
-        """"Alle Projekte mit Namen name auslesen."""
-        with ProjektMapper() as mapper:
-            return mapper.find_by_auftraggeber(auftraggeber)
-
     def get_projekt_by_id(self, id):
         """Das Projekt mit der gegebenen ID auslesen."""
         with ProjektMapper() as mapper:
-            return mapper.find_by_id(id)
+            return mapper.find_by_key(id)
 
     def get_projekt_by_bezeichnung(self, bezeichnung):
         """Alle Projekte mit gegebener Rolle auslesen."""
         with ProjektMapper() as mapper:
-            return mapper.find_projekt_by_bezeichnung(bezeichnung)
+            return mapper.find_by_bezeichnung(bezeichnung)
 
     def get_all_projekt(self):
         """Alle Projekte auslesen."""
@@ -268,7 +234,7 @@ class Administration(object):
         """Eine Zeitintervallbuchung anlegen"""
         p = Zeitintervallbuchung()
         p.set_id(1)
-        p.set_creation_time(creation_time)
+        p.set_creation_date(creation_time)
 
         with ZeitintervallbuchungMapper() as mapper:
             return mapper.insert(p)
@@ -277,7 +243,7 @@ class Administration(object):
     def get_zeitintervallbuchung_by_id(self, id):
         """Die Zeitintervallbuchung mit der gegebenen ID auslesen."""
         with ZeitintervallbuchungMapper() as mapper:
-            return mapper.find_by_id(id)
+            return mapper.find_by_key(id)
 
 
     def get_all_zeitintervallbuchung(self):
@@ -301,12 +267,11 @@ class Administration(object):
     """zeitintervall-spezifische Methoden"""
 
 
-    def create_zeitintervall(self, creation_time, projekt_runtime):
+    def create_zeitintervall(self, projekt_runtime):
         """Eine Zeitintervall anlegen"""
         p = Zeitintervall()
         p.set_id(1)
-        p.set_creation_time(creation_time)
-        p.set_projekt_runtime(projekt_runtime)
+        p.set_projektlaufzeit(projekt_runtime)
 
         with ZeitintervallMapper() as mapper:
             return mapper.insert(p)
@@ -315,14 +280,13 @@ class Administration(object):
     def get_zeitintervall_by_id(self, id):
         """Die Zeitintervall mit der gegebenen ID auslesen."""
         with ZeitintervallMapper() as mapper:
-            return mapper.find_by_id(id)
+            return mapper.find_by_key(id)
 
 
-    def get_zeitintervall_by_projekt_runtime(self, projekt_runtime):
-        """Die Zeitintervall mit der gegebenen ID auslesen."""
+    """def get_zeitintervall_by_projekt_runtime(self, projekt_runtime):
+        Die Zeitintervall mit der gegebenen ID auslesen.
         with ZeitintervallMapper() as mapper:
-            return mapper.find_by_projekt_runtime(projekt_runtime)
-
+            return mapper.find_by_projekt_runtime(projekt_runtime)"""
 
     def get_all_zeitintervall(self):
         """Alle Zeitintervallen auslesen."""
@@ -343,30 +307,28 @@ class Administration(object):
 
     """buchung-spezifische Methoden"""
 
-    def create_buchung (self, buchungs_id):
+    def create_buchung (self, ersteller):
         buchung = Buchung()
         buchung.set_id(1)
-        buchung.set_ersteller(buchungs_id)
+        buchung.set_ersteller(ersteller)
 
         with BuchungMapper as mapper:
             return mapper.insert(buchung)
 
-    def get_buchungs_id(self, number):
+    def get_alle_buchungen(self):
         """Die Buchung mit der gegebenen ID auslesen."""
         with BuchungMapper() as mapper:
-            return mapper.find_by_id(number)
+            return mapper.find_all()
 
     def get_buchung_by_key (self, number):
         with BuchungMapper() as mapper:
             return mapper.find_by_key(number)
 
-    def get_by_bezeichung (self, bezeichnung):
-        with BuchungMapper() as mapper:
-            return mapper.find_by_bezeichnung(bezeichnung)
 
     def save_buchung (self, number):
         with BuchungMapper() as mapper:
             return mapper.update(number)
+
 
     def delete_buchung(self, buchung):
         with BuchungMapper() as mapper:
@@ -374,16 +336,20 @@ class Administration(object):
 
     """ereignis-spezifische Methoden"""
 
-    def create_ereignis (self, zeitpunkt_ereigniseintritt):
+    def create_ereignis (self, zeitpunkt_ereig):
         ereignis = Ereignis()
-        ereignis.set_zeitpunkt_ereigniseintritt(zeitpunkt_ereigniseintritt)
+        ereignis.set_zeitpunkt_ereigniseintritt(zeitpunkt_ereig)
 
         with EreignisMapper() as mapper:
             return mapper.insert(ereignis)
 
     def get_all_ereignisse (self):
         with EreignisMapper() as mapper:
-            return mapper.find_all
+            return mapper.find_all()
+
+    def get_ereignis_by_id(self, id):
+        with EreignisMapper() as mapper:
+            return mapper.find_by_key(id)
 
     def save_ereignis (self, ereignis):
         with EreignisMapper() as mapper:
@@ -396,11 +362,11 @@ class Administration(object):
     """zeitintervallbuchung-spezifische Methoden"""
 
 
-    def create_Ereignisbuchung(self, creation_time):
+    def create_Ereignisbuchung(self, ereig):
         """Eine Ereignisbuchung anlegen"""
         p = Ereignisbuchung()
         p.set_id(1)
-        p.set_creation_date(creation_time)
+        p.set_id(ereig)
 
         with EreignisbuchungMapper() as mapper:
             return mapper.insert(p)
@@ -409,7 +375,7 @@ class Administration(object):
     def get_ereignisbuchung_by_id(self, id):
         """Die Ereignisbuchung mit der gegebenen ID auslesen."""
         with EreignisbuchungMapper() as mapper:
-            return mapper.find_by_id(id)
+            return mapper.find_by_key(id)
 
 
     def get_all_ereignisbuchung(self):

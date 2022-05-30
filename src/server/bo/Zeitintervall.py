@@ -6,7 +6,7 @@ class Zeitintervall (bo.BusinessObject):
 
     def __init__(self):
         super().__init__()
-        self._projektlaufzeit = ""
+        self._projektlaufzeit = 0
 
 
     def get_projektlaufzeit(self):

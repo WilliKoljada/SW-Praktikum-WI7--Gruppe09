@@ -18,7 +18,7 @@ class EreignisbuchungMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from Ereignisbuchung")
+        cursor.execute("SELECT * from ereignisbuchung")
         tuples = cursor.fetchall()
 
         for (id,creation_date) in tuples:
@@ -50,7 +50,7 @@ class EreignisbuchungMapper(Mapper):
             ereignisbuchung.set_id(id)
             ereignisbuchung.set_creation_date(creation_date)
 
-        result = ereignisbuchung
+            result = ereignisbuchung
 
         self._cnx.commit()
         cursor.close()
@@ -78,8 +78,7 @@ class EreignisbuchungMapper(Mapper):
                 ereignisbuchung.set_id(1)
 
         command = "INSERT INTO ereignisbuchung (id, creation_date) VALUES (%s,%s)"
-        data = (
-        ereignisbuchung.get_id(), ereignisbuchung.get_creation_date())
+        data = (ereignisbuchung.get_id(), ereignisbuchung.get_creation_date())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -92,8 +91,8 @@ class EreignisbuchungMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE buchung SET WHERE id=%s,creation_time=%s"
-        data = (ereignisbuchung.get_id(), ereignisbuchung.get_creation_time())
+        command = "UPDATE buchung SET WHERE id=%s,creation_date=%s"
+        data = (ereignisbuchung.get_id(), ereignisbuchung.get_creation_date())
 
         cursor.execute(command, data)
 
@@ -106,35 +105,13 @@ class EreignisbuchungMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM buchung WHERE id={}".format(ereignisbuchung.get_id())
+        command = "DELETE FROM ereignisbuchung WHERE id={}".format(ereignisbuchung.get_id())
         cursor.execute(command)
 
         self._cnx.commit()
         cursor.close()
 
         return ereignisbuchung
-
-
-
-    def find_by_bezeichnung(self, bezeichnung):
-
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT id, creation_time FROM Ereignisbuchung WHERE bezeichnung={}".format(bezeichnung)
-
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, creation_date) in tuples:
-            ereignisbuchung = Ereignisbuchung()
-            ereignisbuchung.set_id(id)
-            ereignisbuchung.set_creation_date(creation_date)
-            result.append(ereignisbuchung)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
 
     # Zum Testen ausführen
 if (__name__ == "__main__"):

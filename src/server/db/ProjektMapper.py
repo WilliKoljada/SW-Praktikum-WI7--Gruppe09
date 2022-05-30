@@ -18,7 +18,7 @@ class ProjektMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from Projekt")
+        cursor.execute("SELECT * from projekt")
         tuples = cursor.fetchall()
 
         for (id,creation_date, auftraggeber, bezeichnung) in tuples:
@@ -60,6 +60,29 @@ class ProjektMapper(Mapper):
         cursor.close()
         return result
 
+    def find_by_bezeichnung(self, bezeichnung):
+
+        result = []
+        cursor = self._cnx.cursor()
+        command = "SELECT id, creation_date, Auftraggeber, Bezeichnung FROM projekt WHERE Bezeichnung={}".format(
+            bezeichnung)
+
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for (id, Bezeichnung, Auftraggeber, creation_date) in tuples:
+            projekt = Projekt()
+            projekt.set_id(id)
+            projekt.set_bezeichnung(Bezeichnung)
+            projekt.set_auftraggeber(Auftraggeber)
+            projekt.set_creation_date(creation_date)
+            result.append(projekt)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
     def insert(self, projekt):
         """Einfügen eines Projekt-Objekts in die Datenbank.
         Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
@@ -97,8 +120,8 @@ class ProjektMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE projekt SET auftraggeber=%s, bezeichnung=%s WHERE id=%s"
-        data = (projekt.get_auftraggeber(), projekt.get_bezeichnung(), projekt.get_id())
+        command = "UPDATE projekt SET Auftraggeber=%s, Bezeichnung=%s, creation_date=%s, WHERE id=%s"
+        data = (projekt.get_auftraggeber(), projekt.get_bezeichnung(), projekt.get_creation_date(), projekt.get_id())
 
         cursor.execute(command, data)
 
@@ -119,29 +142,6 @@ class ProjektMapper(Mapper):
 
         return projekt
 
-
-
-    def find_by_bezeichnung(self, bezeichnung):
-
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date, auftraggeber, bezeichnung FROM projekt WHERE bezeichnung={}".format(bezeichnung)
-
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, creation_date, auftraggeber, bezeichnung) in tuples:
-            projekt = Projekt()
-            projekt.set_id(id)
-            projekt.set_creation_date(creation_date)
-            projekt.set_auftraggeber(auftraggeber)
-            projekt.set_bezeichnung(bezeichnung)
-            result.append(projekt)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
 
     # Zum Testen ausführen
 if (__name__ == "__main__"):

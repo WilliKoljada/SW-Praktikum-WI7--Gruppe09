@@ -16,6 +16,7 @@ from server.bo.Zeitintervallbuchung import Zeitintervallbuchung
 from server.bo.Projektarbeit import Projektarbeit
 from server.bo.Ereignisbuchung import Ereignisbuchung
 from server.bo.Ereignis import Ereignis
+from server.bo.Buchung import Buchung
 
 
 '''Außerdem nutzen wir einen selbstgeschriebenen Decorator, der die Authentifikation übernimmt'''
@@ -25,13 +26,13 @@ from SecurityDecorator import secured
 app = Flask(__name__)
 
 """Flask-Erweiterung für Cross-Origin Resource Sharing"""
-CORS(app, resources=r'/app/*',supports_credentials=True)
+CORS(app, resources=r'/Zeiterfassungapp/*')
 
 api = Api(app, version='1.0', title='Zeiterfassungapp api', #Name?
           description='Eine rudimentäre Demo-Api für Listenerstellung.')
 
 """Namespaces"""
-zeiterfassungapp= api.namespace('app', description="Funktionen der App") #Name der App?
+zeiterfassungapp = api.namespace('Zeiterfassungapp', description="Funktionen der App") #Name der App?
 
 """Nachfolgend werden analog zu unseren BusinessObject-Klassen transferierbare Strukturen angelegt.
 BusinessObject dient als Basisklasse."""
@@ -88,120 +89,11 @@ ereignis = api.inherit('Ereignis', bo, {
     'zeitpunkt_ereigniseintritt': fields.Integer(attribute='_zeitpunkt_ereigniseintritt', description='unique ID des zeitpunkt_ereigniseintritt')
 })
 
-@zeiterfassungapp.route('/Buchungen')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-class PersonListOperations(Resource):
-    @secured
-    @zeiterfassungapp.marshal_list_with(buchung)
-    def get(self):
-        """Auslesen aller Bchungs-Objekte.
-        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
-        adm = Administration()
-        trans = adm.get_buchungs_id(buchung)
-        return trans
-
-    @secured
-    def delete(self, id):
-        """Löschen einer bestimmten Person-BO.
-        Löschende Objekt wird durch id bestimmt.
-        """
-        adm = Administration()
-        pers = adm.get_buchung_by_key(id)
-        adm.delete_buchung(pers)
-        return '', 200
-
-@zeiterfassungapp.route('/persons')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-class PersonListOperations(Resource):
-    @secured
-    @zeiterfassungapp.marshal_list_with(person)
-    def get(self):
-        """Auslesen aller Person-Objekte.
-        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
-        adm = Administration()
-        pers = adm.get_all_person()
-        return pers
-
-    @zeiterfassungapp.marshal_with(person, code=200)
-    @zeiterfassungapp.expect(person)  # Wir erwarten ein Person-Objekt von Client-Seite.
-    @secured
-    def post(self):
-        """Anlegen eines neuen Person-Objekts.
-        """
-        adm = Administration()
-
-        proposal = Person.from_dict(api.payload)
-
-        if proposal is not None:
-            pers = adm.create_person(proposal.get_vorname(), proposal.get_nachname(), proposal.get_email(), proposal.get_benutzername())
-            return pers, 200
-        else:
-            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
-            return '', 500
-
-
-@zeiterfassungapp.route('/person/<int:id>')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('id', 'Die ID des Person-Objekts')
-class PersonOperations(Resource):
-    @zeiterfassungapp.marshal_with(person)
-    @secured
-    def get(self, id):
-        """Auslesen einer bestimmten Person-BO.
-        Objekt wird durch die id in bestimmt.
-        """
-        adm = Administration()
-        pers = adm.get_person_by_id(id)
-        return pers
-
-    @secured
-    def delete(self, id):
-        """Löschen einer bestimmten Person-BO.
-        Löschende Objekt wird durch id bestimmt.
-        """
-        adm = Administration()
-        pers = adm.get_person_by_id(id)
-        adm.delete_person(pers)
-        return '', 200
-
-    @zeiterfassungapp.marshal_with(person)
-    @zeiterfassungapp.expect(person, validate=True)
-
-    def put(self, id):
-        """Update einer bestimmten Person.
-        """
-        adm = Administration()
-        p = Person.from_dict(api.payload)
-
-        if p is not None:
-            p.set_id(id)
-            adm.save_person(p)
-            return '', 200
-        else:
-            return '', 500
-
-@zeiterfassungapp.route('/person/<string:email>')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('email', 'Die Mail des Person-Objekts')
-class PersonOperations(Resource):
-    @zeiterfassungapp.marshal_with(person)
-    @secured
-    def get(self, email):
-        """Auslesen einer bestimmten Person-BO.
-        Objekt wird durch die id in bestimmt.
-        """
-        adm = Administration()
-        pers = adm.get_person_by_email(email)
-        return pers
-
-
-# Alle weiteren bo´s wie bei Aktivitaet erstellen
-
 @zeiterfassungapp.route('/aktivitaet')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class AktivitaetListOperations(Resource):
+    @zeiterfassungapp.marshal_list_with(aktivitaet)
     @secured
-    @zeiterfassungapp.marshal_list_with(Aktivitaet)
     def get(self):
         """Auslesen aller Aktivitaet-Objekte.
         Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
@@ -266,29 +158,96 @@ class AktivitaetOperations(Resource):
             return '', 200
         else:
             return '', 500
-
-@zeiterfassungapp.route('/aktivitaet/<string:bezeichnung>')
+@zeiterfassungapp.route('/persons')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('bezeichnung', 'Die Bezeichnung des Aktivitaet-Objekts')
-class AktivitaetOperations(Resource):
-    @zeiterfassungapp.marshal_with(aktivitaet)
+class PersonListOperations(Resource):
+    @zeiterfassungapp.marshal_list_with(person)
     @secured
-    def get(self, bezeichnung):
-        """Auslesen einer bestimmten Aktivitaet-BO.
+    def get(self):
+        """Auslesen aller Person-Objekte.
+        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
+        adm = Administration()
+        pers = adm.get_all_person()
+        return pers
+
+    @zeiterfassungapp.marshal_with(person, code=200)
+    @zeiterfassungapp.expect(person)  # Wir erwarten ein Person-Objekt von Client-Seite.
+    @secured
+    def post(self):
+        """Anlegen eines neuen Person-Objekts.
+        """
+        adm = Administration()
+
+        proposal = Person.from_dict(api.payload)
+
+        if proposal is not None:
+            pers = adm.create_person(proposal.get_vorname(), proposal.get_nachname(), proposal.get_email(), proposal.get_benutzername())
+            return pers, 200
+        else:
+            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
+            return '', 500
+
+
+@zeiterfassungapp.route('/person/<int:id>')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.param('id', 'Die ID des Person-Objekts')
+class PersonOperations(Resource):
+    @zeiterfassungapp.marshal_with(person)
+    @secured
+    def get(self, id):
+        """Auslesen einer bestimmten Person-BO.
         Objekt wird durch die id in bestimmt.
         """
         adm = Administration()
-        akt = adm.get_aktivitaet_by_bezeichnung(bezeichnung)
-        return akt
+        pers = adm.get_person_by_id(id)
+        return pers
 
+    @secured
+    def delete(self, id):
+        """Löschen einer bestimmten Person-BO.
+        Löschende Objekt wird durch id bestimmt.
+        """
+        adm = Administration()
+        pers = adm.get_person_by_id(id)
+        adm.delete_person(pers)
+        return '', 200
 
-# Alle weiteren bo´s wie bei Arbeitszeitkonto erstellen
+    @zeiterfassungapp.marshal_with(person)
+    @zeiterfassungapp.expect(person, validate=True)
+    @secured
+    def put(self, id):
+        """Update einer bestimmten Person.
+        """
+        adm = Administration()
+        p = Person.from_dict(api.payload)
+
+        if p is not None:
+            p.set_id(id)
+            adm.save_person(p)
+            return '', 200
+        else:
+            return '', 500
+
+@zeiterfassungapp.route('/person/<string:email>')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.param('email', 'Die Mail des Person-Objekts')
+class PersonOperations(Resource):
+    @zeiterfassungapp.marshal_with(person)
+    @secured
+
+    def get(self, email):
+        """Auslesen einer bestimmten Person-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        pers = adm.get_person_by_email(email)
+        return pers
 
 @zeiterfassungapp.route('/arbeitszeitkonto')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class ArbeitszeitkontoListOperations(Resource):
     @secured
-    @zeiterfassungapp.marshal_list_with(Arbeitszeitkonto)
+    @zeiterfassungapp.marshal_list_with(arbeitszeitkonto)
     def get(self):
         """Auslesen aller Arbeitszeitkonto-Objekte.
         Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
@@ -382,8 +341,6 @@ class ArbeitszeitkontoOperations(Resource):
         ereig = adm.get_all_ereignisse()
         return ereig
 
-
-# Alle weiteren bo´s wie bei Projekt erstellen
 
 @zeiterfassungapp.route('/projekt')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
@@ -602,8 +559,6 @@ class ZeitintervallOperations(Resource):
         else:
             return '', 500
 
-zeitintervallbuchung = api.inherit('Zeitintervallbuchung', bo, {
-})
 # Alle weiteren bo´s wie bei Zeitintervall erstellen
 
 @zeiterfassungapp.route('/zeitintervallbuchung')
@@ -676,8 +631,6 @@ class ZeitintervallbuchungOperations(Resource):
         else:
             return '', 500
 
-Ereignisbuchung = api.inherit('Ereignisbuchung', bo, {
-})
 # Alle weiteren bo´s wie bei Ereignisbuchung erstellen
 
 @zeiterfassungapp.route('/Ereignisbuchung')
@@ -750,76 +703,4 @@ class EreignisbuchungOperations(Resource):
         else:
             return '', 500
 
-zeitintervallbuchung = api.inherit('Zeitintervallbuchung', bo, {
-})
-# Alle weiteren bo´s wie bei Zeitintervall erstellen
 
-@zeiterfassungapp.route('/zeitintervallbuchung')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-class ZeitintervallbuchungListOperations(Resource):
-    @secured
-    @zeiterfassungapp.marshal_list_with(zeitintervallbuchung)
-    def get(self):
-        """Auslesen aller Zeitintervallbuchung-Objekte.
-        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
-        adm = Administration()
-        zinb = adm.get_all_zeitintervallbuchung()
-        return zinb
-
-    @zeiterfassungapp.marshal_with(zeitintervallbuchung, code=200)
-    @zeiterfassungapp.expect(zeitintervallbuchung)  # Wir erwarten ein Zeitintervallbuchung-Objekt von Client-Seite.
-    @secured
-    def post(self):
-        """Anlegen eines neuen Zeitintervallbuchung-Objekts.
-        """
-        adm = Administration()
-
-        proposal = Zeitintervallbuchung.from_dict(api.payload)
-
-        if proposal is not None:
-            zinb = adm.create_zeitintervallbuchung()
-            return zinb, 200
-        else:
-            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
-            return '', 500
-
-
-@zeiterfassungapp.route('/zeitintervallbuchung/<int:id>')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('id', 'Die ID des Zeitintervallbuchung-Objekts')
-class ZeitintervallbuchungOperations(Resource):
-    @zeiterfassungapp.marshal_with(zeitintervallbuchung)
-    @secured
-    def get(self, id):
-        """Auslesen einer bestimmten Zeitintervallbuchung-BO.
-        Objekt wird durch die id in bestimmt.
-        """
-        adm = Administration()
-        zinb = adm.get_zeitintervallbuchung_by_id(id)
-        return zinb
-
-    @secured
-    def delete(self, id):
-        """Löschen einer bestimmten Zeitintervallbuchung-BO.
-        Löschende Objekt wird durch id bestimmt.
-        """
-        adm = Administration()
-        zinb = adm.get_zeitintervallbuchung_by_id(id)
-        adm.delete_zeitintervallbuchung(zinb)
-        return '', 200
-
-    @zeiterfassungapp.marshal_with(zeitintervallbuchung)
-    @zeiterfassungapp.expect(zeitintervallbuchung, validate=True)
-
-    def put(self, id):
-        """Update einer bestimmten Zeitintervallbuchung.
-        """
-        adm = Administration()
-        zinv = Zeitintervallbuchung.from_dict(api.payload)
-
-        if zinv is not None:
-            zinv.set_id(id)
-            adm.save_zeitintervallbuchung(zinv)
-            return '', 200
-        else:
-            return '', 500

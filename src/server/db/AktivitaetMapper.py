@@ -21,12 +21,12 @@ class AktivitaetMapper(Mapper):
         cursor.execute("SELECT * from aktivitaet")
         tuples = cursor.fetchall()
 
-        for (id,creation_date,bezeichnung, kapazitaet_in_personentagen,) in tuples:
-            aktivitaet= Aktivitaet()
+        for (id, Bezeichnung, Kapazitaet_in_Personentagen, creation_date) in tuples:
+            aktivitaet = Aktivitaet()
             aktivitaet.set_id(id)
+            aktivitaet.set_bezeichnung(Bezeichnung)
+            aktivitaet.set_kapazitaet_in_personentagen(Kapazitaet_in_Personentagen)
             aktivitaet.set_creation_date(creation_date)
-            aktivitaet.set_bezeichnung(bezeichnung)
-            aktivitaet.set_kapazitaet_in_personentagen(kapazitaet_in_personentagen)
             result.append(aktivitaet)
 
         self._cnx.commit()
@@ -35,29 +35,36 @@ class AktivitaetMapper(Mapper):
         return result
 
     def find_by_key(self, key):
-        """Auslesen aller Aktivitaet anhand der ID,
-        da diese vorgegeben ist, wird genau ein Objekt zurückgegeben.
-        :param key Primärschlüsselattribut
-        :return Aktivitaet-Objekt, das dem übergebenen Schlüssel entspricht, None bei
-        nicht vorhandenem DB-Tupel
+        """Suchen eines Kunden mit vorgegebener Kundennummer. Da diese eindeutig ist,
+        wird genau ein Objekt zurückgegeben.
+
+        :param key Primärschlüsselattribut (->DB)
+        :return Customer-Objekt, das dem übergebenen Schlüssel entspricht, None bei
+            nicht vorhandenem DB-Tupel.
         """
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM aktivitaet WHERE id={}".format(key)
+        command = "SELECT id, Bezeichnung, Kapazität_in_Personentagen, creation_date WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_date, bezeichnung, kapazitaet_in_personentagen) in tuples:
+
+        try:
+            (id, Bezeichnung, Kapazität_in_Personentagen, creation_date) = tuples[0]
             aktivitaet = Aktivitaet()
             aktivitaet.set_id(id)
+            aktivitaet.set_bezeichnung(Bezeichnung)
+            aktivitaet.set_kapazitaet_in_personentagen(Kapazität_in_Personentagen)
             aktivitaet.set_creation_date(creation_date)
-            aktivitaet.set_bezeichnung(bezeichnung)
-            aktivitaet.set_kapazitaet_in_personentagen(kapazitaet_in_personentagen)
-
-        result = aktivitaet
+            result = aktivitaet
+        except IndexError:
+            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
+            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
+            result = None
 
         self._cnx.commit()
         cursor.close()
+
         return result
 
     def insert(self, aktivitaet):
@@ -68,7 +75,7 @@ class AktivitaetMapper(Mapper):
         :return das bereits übergebene Objekt, jedoch mit ggf. korrigierter ID.
         """
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM aktivitaet ")
+        cursor.execute("SELECT MAX(id) AS maxid FROM aktivitaet")
         tuples = cursor.fetchall()
 
         for (maxid) in tuples:
@@ -82,8 +89,8 @@ class AktivitaetMapper(Mapper):
                 aktivitaet.set_id(1)
 
         command = "INSERT INTO aktivitaet (id, Bezeichnung, Kapazität_in_Personentagen, creation_date) VALUES (%s,%s,%s,%s)"
-        data = (
-        aktivitaet.get_id(), aktivitaet.get_creation_date(), aktivitaet.get_bezeichnung(), aktivitaet.get_kapazitaet_in_personentagen())
+        data = (aktivitaet.get_id(), aktivitaet.get_bezeichnung(), aktivitaet.get_kapazitaet_in_personentagen(),
+                aktivitaet.get_creation_date())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -97,8 +104,9 @@ class AktivitaetMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE aktivitaet SET bezeichnung=%s,kapazitaet_in_personentagen=%s,WHERE id=%s"
-        data = (aktivitaet.get_bezeichnung(), aktivitaet.get_kapazitaet_in_personentagen(), aktivitaet.get_id())
+        command = "UPDATE aktivitaet SET Bezeichnung=%s,Kapazität_in_Personentagen=%s,.creation_date=%s WHERE id=%s"
+        data = (aktivitaet.get_bezeichnung(), aktivitaet.get_kapazitaet_in_personentagen()
+            , aktivitaet.get_creation_date(), aktivitaet.get_id())
 
         cursor.execute(command, data)
 
@@ -121,32 +129,11 @@ class AktivitaetMapper(Mapper):
 
 
 
-    def find_by_id(self, id):
-
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date, bezeichnung, kapazitaet_in_personentagen FROM aktivitaet WHERE bezeichnung={}".format(id)
-
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, creation_date, bezeichnung, kapazitaet_in_personentagen) in tuples:
-            aktivitaet = Aktivitaet()
-            aktivitaet.set_id(id)
-            aktivitaet.set_creation_date(creation_date)
-            aktivitaet.set_bezeichnung(bezeichnung)
-            aktivitaet.set_kapazitaet_in_personentagen(kapazitaet_in_personentagen)
-            result.append(aktivitaet)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
     # Zum Testen ausführen
 if (__name__ == "__main__"):
     with AktivitaetMapper() as mapper:
             aktivitaet = Aktivitaet()
+            aktivitaet.set_bezeichnung('sff')
             aktivitaet.set_id(2)
 
             mapper.insert(aktivitaet)

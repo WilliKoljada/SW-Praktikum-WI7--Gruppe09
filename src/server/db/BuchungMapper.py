@@ -51,7 +51,7 @@ class BuchungMapper(Mapper):
             buchung.set_id(id)
             buchung.set_creation_date(creation_date)
 
-        result = buchung
+            result = buchung
 
         self._cnx.commit()
         cursor.close()
@@ -93,8 +93,8 @@ class BuchungMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE buchung SET WHERE id=%s,creation_date=%s"
-        data = (buchung.get_id(), buchung.get_creation_date())
+        command = "UPDATE buchung SET WHERE id=%s, ersteller=%s, creation_date=%s"
+        data = (buchung.get_id(), buchung.get_ersteller(), buchung.get_creation_date())
 
         cursor.execute(command, data)
 
@@ -115,27 +115,6 @@ class BuchungMapper(Mapper):
 
         return buchung
 
-
-
-    def find_by_bezeichnung(self, bezeichnung):
-
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date FROM buchung WHERE bezeichnung={}".format(bezeichnung)
-
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, creation_date) in tuples:
-            buchung = Buchung()
-            buchung.set_id(id)
-            buchung.get_creation_date(creation_date)
-            result.append(buchung)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
 
     # Zum Testen ausführen
 if (__name__ == "__main__"):

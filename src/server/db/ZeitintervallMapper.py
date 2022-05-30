@@ -95,8 +95,8 @@ class ZeitintervallMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE zeitintervall SET creation_date=%s, project_runtime=%s, WHERE id=%s"
-        data = (zeitintervall.get_id(), zeitintervall.get_creation_date(), zeitintervall.get_run_runtime())
+        command = "UPDATE zeitintervall SET creation_date=%s, zeitintervall=%s, WHERE id=%s"
+        data = (zeitintervall.get_id(), zeitintervall.get_creation_date(), zeitintervall.get_projektlaufzeit())
 
         cursor.execute(command, data)
 
@@ -117,28 +117,6 @@ class ZeitintervallMapper(Mapper):
 
         return zeitintervall
 
-
-
-    def find_by_id(self, id):
-
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date FROM zeitintervall WHERE id={}".format(id)
-
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, creation_date, project_runtime) in tuples:
-            zeitintervall = Zeitintervall()
-            zeitintervall.set_id(id)
-            zeitintervall.set_creation_date(creation_date)
-            zeitintervall.set_creation_date(project_runtime)
-            result.append(zeitintervall)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
 
     # Zum Testen ausführen
 if (__name__ == "__main__"):

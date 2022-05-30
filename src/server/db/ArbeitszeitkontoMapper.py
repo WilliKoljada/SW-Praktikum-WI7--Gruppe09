@@ -21,10 +21,11 @@ class ArbeitszeitkontoMapper(Mapper):
         cursor.execute("SELECT * from arbeitszeitkonto")
         tuples = cursor.fetchall()
 
-        for (id,creation_time) in tuples:
+        for (id, arbeitspensum, creation_time) in tuples:
             arbeitszeitkonto= Arbeitszeitkonto()
             arbeitszeitkonto.set_id(id)
-            arbeitszeitkonto.get_creation_date(creation_date)
+            arbeitszeitkonto.get_creation_date(creation_time)
+            arbeitszeitkonto.set_arbeitspensum(arbeitspensum)
             result.append(arbeitszeitkonto)
 
         self._cnx.commit()
@@ -93,8 +94,8 @@ class ArbeitszeitkontoMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE arbeitszeitkonto SET WHERE id=%s,creation_date=%s"
-        data = (arbeitszeitkonto.get_id(), arbeitszeitkonto.get_creation_date())
+        command = "UPDATE arbeitszeitkonto SET WHERE id=%s, arbeitspensum=%s creation_date=%s"
+        data = (arbeitszeitkonto.get_id(), arbeitszeitkonto.set_arbeitspensum(), arbeitszeitkonto.get_creation_date())
 
         cursor.execute(command, data)
 
@@ -115,27 +116,6 @@ class ArbeitszeitkontoMapper(Mapper):
 
         return arbeitszeitkonto
 
-
-
-    def find_by_bezeichnung(self, bezeichnung):
-
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date FROM Arbeitszeitkonto WHERE bezeichnung={}".format(bezeichnung)
-
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, creation_date) in tuples:
-            arbeitszeitkonto = Arbeitszeitkonto()
-            arbeitszeitkonto.set_id(id)
-            arbeitszeitkonto.set_creation_date(creation_date)
-            result.append(arbeitszeitkonto)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
 
     # Zum Testen ausführen
 if (__name__ == "__main__"):

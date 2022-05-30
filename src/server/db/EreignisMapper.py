@@ -24,7 +24,7 @@ class EreignisMapper(Mapper):
         for (id,creation_time, zeitpunkt_ereigniseintritt) in tuples:
             ereignis= Ereignis()
             ereignis.set_id(id)
-            ereignis.set_creation_time(creation_time)
+            ereignis.set_creation_date(creation_time)
             ereignis.set_zeitpunkt_ereigniseintritt(zeitpunkt_ereigniseintritt)
             result.append(ereignis)
 
@@ -49,10 +49,10 @@ class EreignisMapper(Mapper):
         for (id, creation_time, zeitpunkt_ereigniseintritt) in tuples:
             ereignis = Ereignis()
             ereignis.set_id(id)
-            ereignis.set_creation_time(creation_time)
+            ereignis.set_creation_date(creation_time)
             ereignis.set_zeitpunkt_ereigniseintritt(zeitpunkt_ereigniseintritt)
 
-        result = ereignis
+            result = ereignis
 
         self._cnx.commit()
         cursor.close()
@@ -117,28 +117,6 @@ class EreignisMapper(Mapper):
 
         return ereignis
 
-
-
-    def find_by_bezeichnung(self, bezeichnung):
-
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date, zeitpunkt_ereigniseintritt FROM ereignis WHERE bezeichnung={}".format(bezeichnung)
-
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, creation_time, zeitpunkt_ereigniseintritt) in tuples:
-            ereignis = Ereignis()
-            ereignis.set_id(id)
-            ereignis.set_creation_time(creation_time)
-            ereignis.set_zeitpunkt_ereigniseintritt(zeitpunkt_ereigniseintritt)
-            result.append(ereignis)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
 
     # Zum Testen ausführen
 if (__name__ == "__main__"):

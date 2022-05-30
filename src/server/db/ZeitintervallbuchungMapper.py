@@ -93,7 +93,7 @@ class ZeitintervallbuchungMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE zeitintervallbuchung SET creation_time=%s,WHERE id=%s"
+        command = "UPDATE zeitintervallbuchung SET creation_date=%s,WHERE id=%s"
         data = (zeitintervallbuchung.get_id(), zeitintervallbuchung.get_creation_date())
 
         cursor.execute(command, data)
@@ -114,28 +114,6 @@ class ZeitintervallbuchungMapper(Mapper):
         cursor.close()
 
         return zeitintervallbuchung
-
-
-
-    def find_by_bezeichnung(self, bezeichnung):
-
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date FROM zeitintervallbuchung WHERE bezeichnung={}".format(id)
-
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, creation_date) in tuples:
-            zeitintervallbuchung = Zeitintervallbuchung()
-            zeitintervallbuchung.set_id(id)
-            zeitintervallbuchung.set_creation_date(creation_date)
-            result.append(zeitintervallbuchung)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
 
     # Zum Testen ausführen
 if (__name__ == "__main__"):

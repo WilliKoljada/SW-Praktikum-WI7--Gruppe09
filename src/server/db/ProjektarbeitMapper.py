@@ -50,7 +50,7 @@ class ProjektarbeitMapper(Mapper):
             projektarbeit.set_id(id)
             projektarbeit.set_bezeichnung(bezeichnung)
 
-        result = projektarbeit
+            result = projektarbeit
 
         self._cnx.commit()
         cursor.close()
@@ -93,7 +93,7 @@ class ProjektarbeitMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE projektarbeit SET bezeichnung=%s WHERE id=%s"
+        command = "UPDATE projektarbeit SET Bezeichnung=%s WHERE id=%s"
         data = (projektarbeit.get_bezeichnung(), projektarbeit.get_id())
 
         cursor.execute(command, data)
@@ -121,7 +121,7 @@ class ProjektarbeitMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, bezeichnung FROM projektarbeit WHERE bezeichnung={}".format(bezeichnung)
+        command = "SELECT id, Bezeichnung FROM projektarbeit WHERE Bezeichnung={}".format(bezeichnung)
 
         cursor.execute(command)
         tuples = cursor.fetchall()

@@ -52,7 +52,7 @@ DROP TABLE IF EXISTS `arbeitszeitkonto`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `arbeitszeitkonto` (
   `id` int NOT NULL,
-  `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `arbeitspensum` decimal(4,2) DEFAULT NULL,
   `creation_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;

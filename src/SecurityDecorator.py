@@ -44,22 +44,22 @@ def secured(function):
                     email = claims.get("email")
                     name = claims.get("name")
 
-                    person = adm.get_user_by_google_user_id(google_user_id)
-                    if person is not None:
+                    user = adm.get_user_by_google_user_id(google_user_id)
+                    if user is not None:
                         """Fall: Der Benutzer ist unserem System bereits bekannt.
                         Wir gehen davon aus, dass die google_user_id sich nicht ändert.
                         Wohl aber können sich der zugehörige Klarname (name) und die
                         E-Mail-Adresse ändern. Daher werden diese beiden Daten sicherheitshalber
                         in unserem System geupdated."""
-                        person.set_name(name)
-                        person.set_email(email)
-                        adm.save_person(person)
+                        user.set_name(name)
+                        user.set_email(email)
+                        adm.save_person(user)
                     else:
                         """Fall: Der Benutzer war bislang noch nicht eingelogged. 
                         Wir legen daher ein neues User-Objekt an, um dieses ggf. später
                         nutzen zu können.
                         """
-                        person = adm.create_person(name, email, google_user_id)
+                        user = adm.create_person(google_user_id, name, "", email,"")
 
                     print(request.method, request.path, "angefragt durch:", name, email)
 

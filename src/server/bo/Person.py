@@ -6,10 +6,11 @@ class Person (bo.BusinessObject):
 
     def __init__(self):
         super().__init__() # creation_date und id wird nicht mehr im Bo reingeschrieben, da es vererbt wird.
-        self._vorname = None
-        self._nachname = None
-        self._email = 0
-        self._benutzername = False
+        self._vorname = ''
+        self._nachname = ''
+        self._email = ''
+        self._benutzername = ''
+        self._google_user_id = 0
 
     def get_vorname (self):
         "Auslesen des vornamens"
@@ -41,7 +42,13 @@ class Person (bo.BusinessObject):
 
     def set_is_benutzername(self, benutzername):
         "Akzeptieren der benutzername"
-        self._is_benutzername = benutzername
+        self._benutzername = benutzername
+
+    def get_google_user_id (self):
+        return self._google_user_id
+
+    def set_google_user_id (self, google_user_id):
+        self._google_user_id = google_user_id
 
 
     # Person aus dictionary erstellen
@@ -54,4 +61,6 @@ class Person (bo.BusinessObject):
         obj.set_nachname(dictionary["nachname"])
         obj.set_email(dictionary["email"])
         obj.set_is_benutzername(dictionary["benutzername"])
+        obj.set_google_user_id()
+
         return obj
