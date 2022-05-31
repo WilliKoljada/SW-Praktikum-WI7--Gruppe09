@@ -1,7 +1,7 @@
-from src.server.bo.BusinessObject import BusinessObject as bo
+from src.server.bo import BusinessObject as bo
 
 
-class Aktivitaet(bo):
+class Aktivitaet(bo.BusinessObject):
 
     def __init__(self):
         super().__init__()

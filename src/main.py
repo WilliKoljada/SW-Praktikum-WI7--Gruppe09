@@ -16,8 +16,6 @@ from server.bo.Zeitintervallbuchung import Zeitintervallbuchung
 from server.bo.Projektarbeit import Projektarbeit
 from server.bo.Ereignisbuchung import Ereignisbuchung
 from server.bo.Ereignis import Ereignis
-from server.bo.Buchung import Buchung
-
 
 '''Außerdem nutzen wir einen selbstgeschriebenen Decorator, der die Authentifikation übernimmt'''
 from SecurityDecorator import secured
@@ -26,13 +24,13 @@ from SecurityDecorator import secured
 app = Flask(__name__)
 
 """Flask-Erweiterung für Cross-Origin Resource Sharing"""
-CORS(app, resources=r'/Zeiterfassungapp/*')
+CORS(app, resources=r'/zeiterfassungapp/*')
 
-api = Api(app, version='1.0', title='Zeiterfassungapp api', #Name?
+api = Api(app, version='1.0', title='Zeiterfassungapp api',
           description='Eine rudimentäre Demo-Api für Listenerstellung.')
 
 """Namespaces"""
-zeiterfassungapp = api.namespace('Zeiterfassungapp', description="Funktionen der App") #Name der App?
+zeiterfassungapp = api.namespace('zeiterfassungapp', description="Funktionen der App") #Name der App?
 
 """Nachfolgend werden analog zu unseren BusinessObject-Klassen transferierbare Strukturen angelegt.
 BusinessObject dient als Basisklasse."""
@@ -44,17 +42,16 @@ bo = api.model('BusinessObject', {
 
 aktivitaet = api.inherit('Aktivitaet', bo, {
     'id': fields.Integer(attribute='_id', description='unique ID'),
-    'creation_date': fields.String(attribute='_creation_date', description='Zeit der letzten Aenderung'),
     'bezeichnung': fields.String(attribute='_bezeichnung', description='unique Bezeichnung der Aktivitaet'),
     'kapazitaet_in_personentagen': fields.String(attribute='_kapazitaet_in_personentagen', description='Kapazitaet in Personentagen')
 })
 
 arbeitszeitkonto = api.inherit('Arbeitszeitkonto', bo, {
-    'arbeitszeitkonto_id': fields.Integer(attribute='_id', description='unique ID'),
+    'Arbeitspensum': fields.Integer(attribute='_arbeitspensum', description='Das Arbeitspensum'),
 })
 
 buchung = api.inherit('Buchung', bo, {
-    'Ersteller': fields.Integer(attribute= 'ersteller', description='Ersteller einer Buchung')
+    'Ersteller': fields.Integer(attribute='_ersteller', description='Ersteller einer Buchung')
 })
 
 person = api.inherit('Person', bo, {
@@ -65,16 +62,16 @@ person = api.inherit('Person', bo, {
 })
 
 projekt = api.inherit('Projekt', bo, {
-    'auftraggeber': fields.Integer(attribute='_autraggeber', description='unique ID des Auftraggebers'),
-    'bezeichnung': fields.String(attribute='_bezeichnung', description='bezeichnung der Bezeichnung')
+    'auftraggeber': fields.Integer(attribute='_auftraggeber', description='unique ID des Auftraggebers'),
+    'bezeichnung': fields.String(attribute='_bezeichnung', description=' Bezeichnung des Projekts ')
 })
 
 projektarbeit = api.inherit('Projektarbeit', bo, {
-    'bezeichnung': fields.String(attribute='_bezeichnung', description='bezeichnung der Bezeichnung')
+    'bezeichnung': fields.String(attribute='_bezeichnung', description='Bezeichnung der Projektarbeit')
 })
 
 zeitintervall = api.inherit('Zeitintervall', bo, {
-    'projektlaufzeit': fields.Integer(attribute='_projektlaufzeit', description='unique ID der Projektlaufzeit')
+    'projektlaufzeit': fields.Integer(attribute='_projektlaufzeit', description='Projektlaufzeit')
 })
 
 ereignisbuchung = api.inherit('Ereignisbuchung', bo, {
@@ -86,14 +83,15 @@ zeitintervallbuchung = api.inherit('Zeitintervallbuchung', bo, {
 })
 
 ereignis = api.inherit('Ereignis', bo, {
-    'zeitpunkt_ereigniseintritt': fields.Integer(attribute='_zeitpunkt_ereigniseintritt', description='unique ID des zeitpunkt_ereigniseintritt')
+    'zeitpunkt_ereigniseintritt': fields.Integer(attribute= '_zeitpunkt_ereigniseintritt', description='Zeitpunkt vom Ereignis')
 })
+# Alle weiteren bo´s wie bei Aktivitaet erstellen
 
 @zeiterfassungapp.route('/aktivitaet')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class AktivitaetListOperations(Resource):
-    @zeiterfassungapp.marshal_list_with(aktivitaet)
     @secured
+    @zeiterfassungapp.marshal_list_with(aktivitaet)
     def get(self):
         """Auslesen aller Aktivitaet-Objekte.
         Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
@@ -109,10 +107,10 @@ class AktivitaetListOperations(Resource):
         """
         adm = Administration()
 
-        proposal = aktivitaet.from_dict(api.payload)
+        proposal = Aktivitaet.from_dict(api.payload)
 
         if proposal is not None:
-            akt = adm.create_aktivitaet(proposal.get_id(), proposal.get_creation_date(), proposal.get_bezeichnung(), proposal.get_kapazitaet_in_personentagen())
+            akt = adm.create_aktivitaet(proposal.get_bezeichnung, proposal.get_kapazitaet_in_personentagen())
             return akt, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
@@ -158,11 +156,74 @@ class AktivitaetOperations(Resource):
             return '', 200
         else:
             return '', 500
-@zeiterfassungapp.route('/persons')
+
+@zeiterfassungapp.route('/buchung')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+class BuchungOperations(Resource):
+    @secured
+    @zeiterfassungapp.marshal_list_with(buchung)
+    def get(self):
+        """Auslesen aller Bchungs-Objekte.
+        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
+        adm = Administration()
+        trans = adm.get_alle_buchungen()
+        return trans
+
+    @secured
+    def delete(self, id):
+        """Löschen einer bestimmten Person-BO.
+        Löschende Objekt wird durch id bestimmt.
+        """
+        adm = Administration()
+        pers = adm.get_buchung_by_key(id)
+        adm.delete_buchung(pers)
+        return '', 200
+
+@zeiterfassungapp.route('/buchung/<int:id>')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.param('id', 'Die ID des Aktivitaet-Objekts')
+class BuchungOperations(Resource):
+    @zeiterfassungapp.marshal_with(buchung)
+    @secured
+    def get(self, id):
+        """Auslesen einer bestimmten Aktivitaet-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        akt = adm.get_buchung_by_key(id)
+        return akt
+
+    @secured
+    def delete(self, id):
+        """Löschen einer bestimmten Aktivitaet-BO.
+        Löschende Objekt wird durch id bestimmt.
+        """
+        adm = Administration()
+        akt = adm.get_buchung_by_key(id)
+        adm.delete_buchung(akt)
+        return '', 200
+
+    @zeiterfassungapp.marshal_with(buchung)
+    @zeiterfassungapp.expect(buchung, validate=True)
+
+    def put(self, id):
+        """Update einer bestimmten Person.
+        """
+        adm = Administration()
+        p = buchung.from_dict(api.payload)
+
+        if p is not None:
+            p.set_id(id)
+            adm.save_buchung(p)
+            return '', 200
+        else:
+            return '', 500
+
+@zeiterfassungapp.route('/person')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class PersonListOperations(Resource):
-    @zeiterfassungapp.marshal_list_with(person)
     @secured
+    @zeiterfassungapp.marshal_list_with(person)
     def get(self):
         """Auslesen aller Person-Objekte.
         Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
@@ -181,7 +242,8 @@ class PersonListOperations(Resource):
         proposal = Person.from_dict(api.payload)
 
         if proposal is not None:
-            pers = adm.create_person(proposal.get_vorname(), proposal.get_nachname(), proposal.get_email(), proposal.get_benutzername())
+            pers = adm.create_person(proposal.get_google_user_id(), proposal.get_vorname(), proposal.get_nachname(),
+                                     proposal.get_email(), proposal.get_benutzername())
             return pers, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
@@ -214,7 +276,7 @@ class PersonOperations(Resource):
 
     @zeiterfassungapp.marshal_with(person)
     @zeiterfassungapp.expect(person, validate=True)
-    @secured
+
     def put(self, id):
         """Update einer bestimmten Person.
         """
@@ -234,7 +296,6 @@ class PersonOperations(Resource):
 class PersonOperations(Resource):
     @zeiterfassungapp.marshal_with(person)
     @secured
-
     def get(self, email):
         """Auslesen einer bestimmten Person-BO.
         Objekt wird durch die id in bestimmt.
@@ -242,6 +303,12 @@ class PersonOperations(Resource):
         adm = Administration()
         pers = adm.get_person_by_email(email)
         return pers
+
+
+
+
+
+# Alle weiteren bo´s wie bei Arbeitszeitkonto erstellen
 
 @zeiterfassungapp.route('/arbeitszeitkonto')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
@@ -263,10 +330,10 @@ class ArbeitszeitkontoListOperations(Resource):
         """
         adm = Administration()
 
-        proposal = arbeitszeitkonto.from_dict(api.payload)
+        proposal = Arbeitszeitkonto.from_dict(api.payload)
 
         if proposal is not None:
-            arbeit = adm.create_arbeitszeitkonto(proposal.get_id(), proposal.get_creation_date())
+            arbeit = adm.create_arbeitszeitkonto(proposal.get_arbeitspensum())
             return arbeit, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
@@ -304,7 +371,7 @@ class ArbeitszeitkontoOperations(Resource):
         """Update einer bestimmten Arbeitszeitkonto.
         """
         adm = Administration()
-        p = arbeitszeitkonto.from_dict(api.payload)
+        p = Arbeitszeitkonto.from_dict(api.payload)
 
         if p is not None:
             p.set_id(id)
@@ -327,20 +394,75 @@ class ArbeitszeitkontoOperations(Resource):
         arbeit = adm.get_arbeitszeitkonto_by_id(id)
         return arbeit
 
+@zeiterfassungapp.route('/ereignis')
+@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+class ProjektListOperations(Resource):
+    @secured
+    @zeiterfassungapp.marshal_list_with(ereignis)
+    def get(self):
+        """Auslesen aller Projekt-Objekte.
+        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
+        adm = Administration()
+        proj = adm.get_all_ereignisse()
+        return proj
+
+    @zeiterfassungapp.marshal_with(ereignis, code=200)
+    @zeiterfassungapp.expect(ereignis)  # Wir erwarten ein Projekt-Objekt von Client-Seite.
+    @secured
+    def post(self):
+        """Anlegen eines neuen Projekt-Objekts.
+        """
+        adm = Administration()
+
+        proposal = Ereignis.from_dict(api.payload)
+
+        if proposal is not None:
+            ereig = adm.create_ereignis(proposal.get_zeitpunkt_ereigniseintritt())
+            return ereig, 200
+        else:
+            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
+            return '', 500
+
 @zeiterfassungapp.route('/Ereignis/<int:id>')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('id', 'Die Bezeichnung des Arbeitszeitkonto-Objekts')
-class ArbeitszeitkontoOperations(Resource):
+@zeiterfassungapp.param('id', 'Die ID des Ereignis-Objekts')
+class EreigniskontoOperations(Resource):
     @zeiterfassungapp.marshal_with(Ereignis)
     @secured
     def get(self, id):
-        """Auslesen einer bestimmten Arbeitszeitkonto-BO.
+        """Auslesen einer bestimmten Ereignis-BO.
         Objekt wird durch die id in bestimmt.
         """
         adm = Administration()
-        ereig = adm.get_all_ereignisse()
+        ereig = adm.get_ereignis_by_id(id)
         return ereig
 
+    @secured
+    def delete(self, id):
+        """Löschen einer bestimmten Projekt-BO.
+        Löschende Objekt wird durch id bestimmt.
+        """
+        adm = Administration()
+        ereig = adm.get_ereignis_by_id(id)
+        adm.delete_ereignis(ereig)
+        return '', 200
+
+    @zeiterfassungapp.marshal_with(ereignis)
+    @zeiterfassungapp.expect(ereignis, validate=True)
+    def put(self, id):
+        """Update eines bestimmten Projekts.
+        """
+        adm = Administration()
+        p = Ereignis.from_dict(api.payload)
+
+        if p is not None:
+            p.set_id(id)
+            adm.save_ereignis(p)
+            return '', 200
+        else:
+            return '', 500
+
+# Alle weiteren bo´s wie bei Projekt erstellen
 
 @zeiterfassungapp.route('/projekt')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
@@ -439,7 +561,7 @@ class ProjektarbeitListOperations(Resource):
         proposal = Projektarbeit.from_dict(api.payload)
 
         if proposal is not None:
-            pa = adm.create_projektarbeit(proposal.get_auftraggeber(), proposal.get_bezeichnung())
+            pa = adm.create_projektarbeit(proposal.get_bezeichnung())
             return pa, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
@@ -558,6 +680,7 @@ class ZeitintervallOperations(Resource):
             return '', 200
         else:
             return '', 500
+
 
 # Alle weiteren bo´s wie bei Zeitintervall erstellen
 
@@ -703,4 +826,18 @@ class EreignisbuchungOperations(Resource):
         else:
             return '', 500
 
+# Alle weiteren bo´s wie bei Zeitintervall erstellen
 
+
+    """
+    Nachdem wir nun sämtliche Resourcen definiert haben, die wir via REST bereitstellen möchten,
+    müssen nun die App auch tatsächlich zu starten.
+
+    Diese Zeile ist leider nicht Teil der Flask-Doku! In jener Doku wird von einem Start via Kommandozeile ausgegangen.
+    Dies ist jedoch für uns in der Entwicklungsumgebung wenig komfortabel. Deshlab kommt es also schließlich zu den 
+    folgenden Zeilen. 
+
+    **ACHTUNG:** Diese Zeile wird nur in der lokalen Entwicklungsumgebung ausgeführt und hat in der Cloud keine Wirkung!
+    """
+    if __name__ == '__main__':
+        app.run(debug=True)

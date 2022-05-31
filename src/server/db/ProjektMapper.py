@@ -1,4 +1,4 @@
-from src.server.bo.Projekt import Projekt
+from server.bo.Projekt import Projekt
 from src.server.db.Mapper import Mapper
 
 
@@ -54,7 +54,7 @@ class ProjektMapper(Mapper):
             projekt.set_auftraggeber(auftraggeber)
             projekt.set_bezeichnung(bezeichnung)
 
-        result = projekt
+            result = projekt
 
         self._cnx.commit()
         cursor.close()
