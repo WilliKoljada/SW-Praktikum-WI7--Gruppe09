@@ -46,7 +46,7 @@ class PersonMapper(Mapper):
         """
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, vorname, nachname, Email, Benutzername, creation_date, google_id FROM person WHERE google_id={}".\
+        command = "SELECT id, vorname, nachname, Email, Benutzername, creation_date, google_id FROM person WHERE id={}".\
             format(id)
         cursor.execute(command)
         tuples = cursor.fetchall()
@@ -83,8 +83,8 @@ class PersonMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, vorname, nachname, Email, Benutzername, creation_date, google_id FROM person WHERE google_id=\
-        '{}'".format(google_user_id)
+        command = "SELECT id, vorname, nachname, Email, Benutzername, creation_date, google_id FROM person WHERE id=\
+        '{}".format(google_user_id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -134,16 +134,17 @@ class PersonMapper(Mapper):
             person.set_creation_date(creation_date)
             person.set_google_user_id(google_id)
 
+            result = person
 
         except IndexError:
             """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
             keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
-            person = None
+            result = None
 
         self._cnx.commit()
         cursor.close()
 
-        return person
+        return result
 
     def insert(self, person):
         """Einfügen eines Person-Objekts in die Datenbank.
@@ -183,14 +184,20 @@ class PersonMapper(Mapper):
         """Wiederholtes Schreiben eines Objekts in die Datenbank.
         :param Person das Objekt, das in die DB geschrieben werden soll
         """
+
         cursor = self._cnx.cursor()
+        command = "UPDATE person SET vorname = ('{}'), nachname = ('{}'), Email = ('{}')," \
+                      " Benutzername = ('{}'), creation_date = ('{}'), google_id = ('{}') WHERE id = ('{}')" \
+                .format(person.get_vorname(),
+                        person.get_nachname(),
+                        person.get_email(),
+                        person.get_benutzername(),
+                        person.get_creation_date(),
+                        person.get_google_user_id(),
+                        person.get_id()
+                        )
+        cursor.execute(command)
 
-        command = "UPDATE person SET vorname=%s, nachname=%s, Email=%s, Benutzername=%s, creation_date=%s, google_id= %s, WHERE id=%s"
-        data = (person.get_vorname(), person.get_nachname(), person.get_email(),person.get_id(),
-                person.get_benutzername(),
-                person.get_creation_date(), person.get_google_user_id())
-
-        cursor.execute(command, data)
         self._cnx.commit()
         cursor.close()
 

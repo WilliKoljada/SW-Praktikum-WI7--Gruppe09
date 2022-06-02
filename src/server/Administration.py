@@ -31,12 +31,12 @@ class Administration(object):
     def create_person(self, google_id, vorname, nachname, email, benutzername):
         """Eine Person anlegen"""
         p = Person()
-        p.set_id(1)
         p.set_google_user_id(google_id)
         p.set_vorname(vorname)
         p.set_nachname(nachname)
         p.set_email(email)
         p.set_is_benutzername(benutzername)
+        p.set_id(1)
 
         with PersonMapper() as mapper:
             return mapper.insert(p)
@@ -64,10 +64,10 @@ class Administration(object):
         with PersonMapper() as mapper:
             return mapper.find_all()
 
-    def save_person(self, person):
+    def save_person(self, Person):
         """Die gegebene Person speichern."""
         with PersonMapper() as mapper:
-            return mapper.update(person)
+            return mapper.update(Person)
 
     def delete_person(self, person):
         """Die gegebenen Person aus unserem System löschen."""
@@ -118,12 +118,12 @@ class Administration(object):
     def create_arbeitszeitkonto(self, pensum):
         """Ein Arbeitszeitkonto anlegen"""
         arbeits_knt = Arbeitszeitkonto()
-        arbeits_knt.set_id(1)
         arbeits_knt.set_arbeitspensum(pensum)
+        arbeits_knt.set_id(1)
 
 
-        with Arbeitszeitkonto() as mapper:
-            return mapper.insert(pensum)
+        with ArbeitszeitkontoMapper() as mapper:
+            return mapper.insert(arbeits_knt)
 
     def get_arbeitszeitkonto_by_id(self, id):
         """"Alle Arbeitszeitkonten mit der gegebenen ID auslesen."""
@@ -230,11 +230,10 @@ class Administration(object):
     """zeitintervallbuchung-spezifische Methoden"""
 
 
-    def create_zeitintervallbuchung(self, creation_time):
+    def create_zeitintervallbuchung(self):
         """Eine Zeitintervallbuchung anlegen"""
         p = Zeitintervallbuchung()
         p.set_id(1)
-        p.set_creation_date(creation_time)
 
         with ZeitintervallbuchungMapper() as mapper:
             return mapper.insert(p)

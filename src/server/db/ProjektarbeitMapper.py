@@ -21,10 +21,12 @@ class ProjektarbeitMapper(Mapper):
         cursor.execute("SELECT * from projektarbeit")
         tuples = cursor.fetchall()
 
-        for (id, bezeichnung) in tuples:
+        for (id, Bezeichnung, creation_date) in tuples:
             projektarbeit= Projektarbeit()
             projektarbeit.set_id(id)
-            projektarbeit.set_bezeichnung(bezeichnung)
+            projektarbeit.set_bezeichnung(Bezeichnung)
+            projektarbeit.set_creation_date(creation_date)
+
             result.append(projektarbeit)
 
         self._cnx.commit()
@@ -45,10 +47,11 @@ class ProjektarbeitMapper(Mapper):
         command = "SELECT * FROM projektarbeit WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, bezeichnung) in tuples:
+        for (id, Bezeichnung, creation_date) in tuples:
             projektarbeit = Projektarbeit()
             projektarbeit.set_id(id)
-            projektarbeit.set_bezeichnung(bezeichnung)
+            projektarbeit.set_bezeichnung(Bezeichnung)
+            projektarbeit.set_creation_date(creation_date)
 
             result = projektarbeit
 
@@ -93,7 +96,7 @@ class ProjektarbeitMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE projektarbeit SET Bezeichnung=%s WHERE id=%s"
+        command = "UPDATE projektarbeit SET Bezeichnung=%s, creation_date=%s WHERE id=%s"
         data = (projektarbeit.get_bezeichnung(), projektarbeit.get_id())
 
         cursor.execute(command, data)
@@ -117,11 +120,11 @@ class ProjektarbeitMapper(Mapper):
 
 
 
-    def find_by_bezeichnung(self, bezeichnung):
+    """def find_by_bezeichnung(self, bezeichnung):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, Bezeichnung FROM projektarbeit WHERE Bezeichnung={}".format(bezeichnung)
+        command = "SELECT * FROM projektarbeit WHERE Bezeichnung={}".format(bezeichnung)
 
         cursor.execute(command)
         tuples = cursor.fetchall()
@@ -135,7 +138,7 @@ class ProjektarbeitMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-        return result
+        return result"""
 
     # Zum Testen ausführen
 if (__name__ == "__main__"):

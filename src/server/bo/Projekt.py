@@ -28,8 +28,7 @@ class Projekt (bo.BusinessObject):
     def from_dict(dictionary=dict()):
         obj = Projekt()
         obj.set_id(dictionary["id"])
-        obj.set_creation_date(Projekt.date_format(dictionary["creation_date"]))
-        obj.set_id(dictionary["projekt_id"])
+        obj.set_creation_date((dictionary["creation_date"]))
         obj.set_bezeichnung(dictionary["bezeichnung"])
         obj.set_auftraggeber(dictionary["auftraggeber"])
 

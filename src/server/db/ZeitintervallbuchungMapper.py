@@ -93,7 +93,7 @@ class ZeitintervallbuchungMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE zeitintervallbuchung SET creation_date=%s,WHERE id=%s"
+        command = "UPDATE zeitintervallbuchung + SET creation_date=%s,WHERE id=%s"
         data = (zeitintervallbuchung.get_id(), zeitintervallbuchung.get_creation_date())
 
         cursor.execute(command, data)

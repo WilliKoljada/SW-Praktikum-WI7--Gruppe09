@@ -12,12 +12,12 @@ class Projektarbeit (bo.BusinessObject):
     def get_bezeichnung(self):
         return self._bezeichnung
 
-    def set_bezeichnung(self, value):
-        self._bezeichnung = value
+    def set_bezeichnung(self, bezeichnung):
+        self._bezeichnung = bezeichnung
 
     @staticmethod
     def from_dict(dictionary=dict()):
         obj = Projektarbeit()
         obj.set_id(dictionary["id"])
-        obj.set_creation_date(Projektarbeit.date_format(dictionary["creation_date"]))
-        obj.set_bezeichnung(Projektarbeit.date_format(dictionary["bezeichnung"]))
+        obj.set_creation_date(dictionary["creation_date"])
+        obj.set_bezeichnung(dictionary["bezeichnung"])

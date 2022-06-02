@@ -26,36 +26,36 @@ app = Flask(__name__)
 """Flask-Erweiterung für Cross-Origin Resource Sharing"""
 CORS(app, resources=r'/zeiterfassungapp/*')
 
-api = Api(app, version='1.0', title='Zeiterfassungapp api',
+api = Api(app, version='1.0', title='Zeiterfassungapp API',
           description='Eine rudimentäre Demo-Api für Listenerstellung.')
 
 """Namespaces"""
-zeiterfassungapp = api.namespace('zeiterfassungapp', description="Funktionen der App") #Name der App?
+zeiterfassungapp = api.namespace('Zeiterfassungapp', description="Funktionen der App") #Name der App?
 
 """Nachfolgend werden analog zu unseren BusinessObject-Klassen transferierbare Strukturen angelegt.
 BusinessObject dient als Basisklasse."""
 
 bo = api.model('BusinessObject', {
     'id': fields.Integer(attribute='_id', description='Der Unique Identifier eines Business Object'),
-    'creation_date': fields.DateTime(attribute='_creation_date', description='Erstellungszeitpunkt des Objekts')
+    'creation_date': fields.Integer(attribute='_ersteller', description='Ersteller einer Buchung')
 })
 
 aktivitaet = api.inherit('Aktivitaet', bo, {
-    'id': fields.Integer(attribute='_id', description='unique ID'),
     'bezeichnung': fields.String(attribute='_bezeichnung', description='unique Bezeichnung der Aktivitaet'),
     'kapazitaet_in_personentagen': fields.String(attribute='_kapazitaet_in_personentagen', description='Kapazitaet in Personentagen')
 })
 
 arbeitszeitkonto = api.inherit('Arbeitszeitkonto', bo, {
-    'Arbeitspensum': fields.Integer(attribute='_arbeitspensum', description='Das Arbeitspensum'),
+    'arbeitspensum': fields.Integer(attribute='_arbeitspensum', description='Das Arbeitspensum'),
 })
 
 buchung = api.inherit('Buchung', bo, {
     'Ersteller': fields.Integer(attribute='_ersteller', description='Ersteller einer Buchung')
+
 })
 
 person = api.inherit('Person', bo, {
-    'vorname': fields.Integer(attribute='_vorname', description='unique ID des Vornamens'),
+    'vorname': fields.String(attribute='_vorname', description='unique ID des Vornamens'),
     'nachname': fields.String(attribute='_nachname', description='nachname des Nachnamens'),
     'email': fields.String(attribute='_email', description='unique email des der Person'),
     'benutzername': fields.String(attribute='_benutzername', description='benutzername des Benutzernamens')
@@ -79,7 +79,7 @@ ereignisbuchung = api.inherit('Ereignisbuchung', bo, {
 })
 
 zeitintervallbuchung = api.inherit('Zeitintervallbuchung', bo, {
-    'zeitintervallbuchung_id': fields.Integer(attribute= 'zeitintervallbuchung_id', description='unique ID der Zeitintervallbuchung')
+    '': fields.Integer(attribute= '', description='   ')
 })
 
 ereignis = api.inherit('Ereignis', bo, {
@@ -90,7 +90,7 @@ ereignis = api.inherit('Ereignis', bo, {
 @zeiterfassungapp.route('/aktivitaet')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class AktivitaetListOperations(Resource):
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(aktivitaet)
     def get(self):
         """Auslesen aller Aktivitaet-Objekte.
@@ -101,7 +101,7 @@ class AktivitaetListOperations(Resource):
 
     @zeiterfassungapp.marshal_with(aktivitaet, code=200)
     @zeiterfassungapp.expect(aktivitaet)  # Wir erwarten ein Aktivitaet-Objekt von Client-Seite.
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def post(self):
         """Anlegen eines neuen Aktivitaet-Objekts.
         """
@@ -110,7 +110,7 @@ class AktivitaetListOperations(Resource):
         proposal = Aktivitaet.from_dict(api.payload)
 
         if proposal is not None:
-            akt = adm.create_aktivitaet(proposal.get_bezeichnung, proposal.get_kapazitaet_in_personentagen())
+            akt = adm.create_aktivitaet(proposal.get_bezeichnung(), proposal.get_kapazitaet_in_personentagen())
             return akt, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
@@ -122,7 +122,7 @@ class AktivitaetListOperations(Resource):
 @zeiterfassungapp.param('id', 'Die ID des Aktivitaet-Objekts')
 class AktivitaetOperations(Resource):
     @zeiterfassungapp.marshal_with(aktivitaet)
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def get(self, id):
         """Auslesen einer bestimmten Aktivitaet-BO.
         Objekt wird durch die id in bestimmt.
@@ -131,7 +131,7 @@ class AktivitaetOperations(Resource):
         akt = adm.get_aktivitaet_by_id(id)
         return akt
 
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def delete(self, id):
         """Löschen einer bestimmten Aktivitaet-BO.
         Löschende Objekt wird durch id bestimmt.
@@ -160,7 +160,7 @@ class AktivitaetOperations(Resource):
 @zeiterfassungapp.route('/buchung')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class BuchungOperations(Resource):
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(buchung)
     def get(self):
         """Auslesen aller Bchungs-Objekte.
@@ -169,7 +169,7 @@ class BuchungOperations(Resource):
         trans = adm.get_alle_buchungen()
         return trans
 
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def delete(self, id):
         """Löschen einer bestimmten Person-BO.
         Löschende Objekt wird durch id bestimmt.
@@ -184,7 +184,7 @@ class BuchungOperations(Resource):
 @zeiterfassungapp.param('id', 'Die ID des Aktivitaet-Objekts')
 class BuchungOperations(Resource):
     @zeiterfassungapp.marshal_with(buchung)
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def get(self, id):
         """Auslesen einer bestimmten Aktivitaet-BO.
         Objekt wird durch die id in bestimmt.
@@ -193,7 +193,7 @@ class BuchungOperations(Resource):
         akt = adm.get_buchung_by_key(id)
         return akt
 
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def delete(self, id):
         """Löschen einer bestimmten Aktivitaet-BO.
         Löschende Objekt wird durch id bestimmt.
@@ -222,7 +222,7 @@ class BuchungOperations(Resource):
 @zeiterfassungapp.route('/person')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class PersonListOperations(Resource):
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(person)
     def get(self):
         """Auslesen aller Person-Objekte.
@@ -233,7 +233,7 @@ class PersonListOperations(Resource):
 
     @zeiterfassungapp.marshal_with(person, code=200)
     @zeiterfassungapp.expect(person)  # Wir erwarten ein Person-Objekt von Client-Seite.
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def post(self):
         """Anlegen eines neuen Person-Objekts.
         """
@@ -242,8 +242,8 @@ class PersonListOperations(Resource):
         proposal = Person.from_dict(api.payload)
 
         if proposal is not None:
-            pers = adm.create_person(proposal.get_google_user_id(), proposal.get_vorname(), proposal.get_nachname(),
-                                     proposal.get_email(), proposal.get_benutzername())
+            pers = adm.create_person(proposal.get_google_user_id(), proposal.get_vorname(), proposal.get_nachname(), proposal.get_email(),
+                                     proposal.get_benutzername())
             return pers, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
@@ -255,7 +255,7 @@ class PersonListOperations(Resource):
 @zeiterfassungapp.param('id', 'Die ID des Person-Objekts')
 class PersonOperations(Resource):
     @zeiterfassungapp.marshal_with(person)
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def get(self, id):
         """Auslesen einer bestimmten Person-BO.
         Objekt wird durch die id in bestimmt.
@@ -264,7 +264,7 @@ class PersonOperations(Resource):
         pers = adm.get_person_by_id(id)
         return pers
 
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def delete(self, id):
         """Löschen einer bestimmten Person-BO.
         Löschende Objekt wird durch id bestimmt.
@@ -295,7 +295,7 @@ class PersonOperations(Resource):
 @zeiterfassungapp.param('email', 'Die Mail des Person-Objekts')
 class PersonOperations(Resource):
     @zeiterfassungapp.marshal_with(person)
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def get(self, email):
         """Auslesen einer bestimmten Person-BO.
         Objekt wird durch die id in bestimmt.
@@ -313,7 +313,7 @@ class PersonOperations(Resource):
 @zeiterfassungapp.route('/arbeitszeitkonto')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class ArbeitszeitkontoListOperations(Resource):
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(arbeitszeitkonto)
     def get(self):
         """Auslesen aller Arbeitszeitkonto-Objekte.
@@ -324,7 +324,7 @@ class ArbeitszeitkontoListOperations(Resource):
 
     @zeiterfassungapp.marshal_with(arbeitszeitkonto, code=200)
     @zeiterfassungapp.expect(arbeitszeitkonto)  # Wir erwarten ein Arbeitszeitkonto-Objekt von Client-Seite.
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def post(self):
         """Anlegen eines neuen Arbeitszeitkonto-Objekts.
         """
@@ -345,7 +345,7 @@ class ArbeitszeitkontoListOperations(Resource):
 @zeiterfassungapp.param('id', 'Die ID des Arbeitszeitkonto-Objekts')
 class ArbeitszeitkontoOperations(Resource):
     @zeiterfassungapp.marshal_with(arbeitszeitkonto)
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def get(self, id):
         """Auslesen einer bestimmten Arbeitszeitkonto-BO.
         Objekt wird durch die id in bestimmt.
@@ -354,7 +354,7 @@ class ArbeitszeitkontoOperations(Resource):
         arbeit = adm.get_arbeitszeitkonto_by_id(id)
         return arbeit
 
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def delete(self, id):
         """Löschen einer bestimmten Arbeitszeitkonto-BO.
         Löschende Objekt wird durch id bestimmt.
@@ -385,7 +385,7 @@ class ArbeitszeitkontoOperations(Resource):
 @zeiterfassungapp.param('id', 'Die Bezeichnung des Arbeitszeitkonto-Objekts')
 class ArbeitszeitkontoOperations(Resource):
     @zeiterfassungapp.marshal_with(arbeitszeitkonto)
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def get(self, id):
         """Auslesen einer bestimmten Arbeitszeitkonto-BO.
         Objekt wird durch die id in bestimmt.
@@ -396,8 +396,8 @@ class ArbeitszeitkontoOperations(Resource):
 
 @zeiterfassungapp.route('/ereignis')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-class ProjektListOperations(Resource):
-    @secured
+class EreignisListOperations(Resource):
+    #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(ereignis)
     def get(self):
         """Auslesen aller Projekt-Objekte.
@@ -408,7 +408,7 @@ class ProjektListOperations(Resource):
 
     @zeiterfassungapp.marshal_with(ereignis, code=200)
     @zeiterfassungapp.expect(ereignis)  # Wir erwarten ein Projekt-Objekt von Client-Seite.
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def post(self):
         """Anlegen eines neuen Projekt-Objekts.
         """
@@ -423,12 +423,12 @@ class ProjektListOperations(Resource):
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
             return '', 500
 
-@zeiterfassungapp.route('/Ereignis/<int:id>')
+@zeiterfassungapp.route('/ereignis/<int:id>')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 @zeiterfassungapp.param('id', 'Die ID des Ereignis-Objekts')
 class EreigniskontoOperations(Resource):
-    @zeiterfassungapp.marshal_with(Ereignis)
-    @secured
+    @zeiterfassungapp.marshal_with(ereignis)
+    #@secured zwecks Testung vom Backend deaktiviert
     def get(self, id):
         """Auslesen einer bestimmten Ereignis-BO.
         Objekt wird durch die id in bestimmt.
@@ -437,7 +437,7 @@ class EreigniskontoOperations(Resource):
         ereig = adm.get_ereignis_by_id(id)
         return ereig
 
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def delete(self, id):
         """Löschen einer bestimmten Projekt-BO.
         Löschende Objekt wird durch id bestimmt.
@@ -467,7 +467,7 @@ class EreigniskontoOperations(Resource):
 @zeiterfassungapp.route('/projekt')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class ProjektListOperations(Resource):
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(projekt)
     def get(self):
         """Auslesen aller Projekt-Objekte.
@@ -478,7 +478,7 @@ class ProjektListOperations(Resource):
 
     @zeiterfassungapp.marshal_with(projekt, code=200)
     @zeiterfassungapp.expect(projekt)  # Wir erwarten ein Projekt-Objekt von Client-Seite.
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def post(self):
         """Anlegen eines neuen Projekt-Objekts.
         """
@@ -499,7 +499,7 @@ class ProjektListOperations(Resource):
 @zeiterfassungapp.param('id', 'Die ID des Projekt-Objekts')
 class ProjektOperations(Resource):
     @zeiterfassungapp.marshal_with(projekt)
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def get(self, id):
         """Auslesen einer bestimmten Projekt-BO.
         Objekt wird durch die id in bestimmt.
@@ -508,7 +508,7 @@ class ProjektOperations(Resource):
         proj = adm.get_projekt_by_id(id)
         return proj
 
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def delete(self, id):
         """Löschen einer bestimmten Projekt-BO.
         Löschende Objekt wird durch id bestimmt.
@@ -541,7 +541,7 @@ class ProjektOperations(Resource):
 @zeiterfassungapp.route('/projektarbeit')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class ProjektarbeitListOperations(Resource):
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(projektarbeit)
     def get(self):
         """Auslesen aller Projektarbeit-Objekte.
@@ -552,7 +552,7 @@ class ProjektarbeitListOperations(Resource):
 
     @zeiterfassungapp.marshal_with(projektarbeit, code=200)
     @zeiterfassungapp.expect(projektarbeit)  # Wir erwarten ein Projektarbeit-Objekt von Client-Seite.
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def post(self):
         """Anlegen eines neuen Projektarbeit-Objekts.
         """
@@ -573,7 +573,7 @@ class ProjektarbeitListOperations(Resource):
 @zeiterfassungapp.param('id', 'Die ID des Projektarbeit-Objekts')
 class ProjektarbeitOperations(Resource):
     @zeiterfassungapp.marshal_with(projektarbeit)
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def get(self, id):
         """Auslesen einer bestimmten Projektarbeit-BO.
         Objekt wird durch die id in bestimmt.
@@ -582,7 +582,7 @@ class ProjektarbeitOperations(Resource):
         pa = adm.get_projektarbeit_by_id(id)
         return pa
 
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def delete(self, id):
         """Löschen einer bestimmten Projektarbeit-BO.
         Löschende Objekt wird durch id bestimmt.
@@ -614,7 +614,7 @@ class ProjektarbeitOperations(Resource):
 @zeiterfassungapp.route('/zeitintervall')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class ZeitintervallListOperations(Resource):
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(zeitintervall)
     def get(self):
         """Auslesen aller Zeitintervall-Objekte.
@@ -625,7 +625,7 @@ class ZeitintervallListOperations(Resource):
 
     @zeiterfassungapp.marshal_with(zeitintervall, code=200)
     @zeiterfassungapp.expect(zeitintervall)  # Wir erwarten ein Zeitintervall-Objekt von Client-Seite.
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def post(self):
         """Anlegen eines neuen Zeitintervall-Objekts.
         """
@@ -646,7 +646,7 @@ class ZeitintervallListOperations(Resource):
 @zeiterfassungapp.param('id', 'Die ID des Zeitintervall-Objekts')
 class ZeitintervallOperations(Resource):
     @zeiterfassungapp.marshal_with(zeitintervall)
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def get(self, id):
         """Auslesen einer bestimmten Zeitintervall-BO.
         Objekt wird durch die id in bestimmt.
@@ -655,7 +655,7 @@ class ZeitintervallOperations(Resource):
         zin = adm.get_zeitintervall_by_id(id)
         return zin
 
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def delete(self, id):
         """Löschen einer bestimmten Zeitintervall-BO.
         Löschende Objekt wird durch id bestimmt.
@@ -687,7 +687,7 @@ class ZeitintervallOperations(Resource):
 @zeiterfassungapp.route('/zeitintervallbuchung')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class ZeitintervallbuchungListOperations(Resource):
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(zeitintervallbuchung)
     def get(self):
         """Auslesen aller Zeitintervallbuchung-Objekte.
@@ -698,7 +698,7 @@ class ZeitintervallbuchungListOperations(Resource):
 
     @zeiterfassungapp.marshal_with(zeitintervallbuchung, code=200)
     @zeiterfassungapp.expect(zeitintervallbuchung)  # Wir erwarten ein Zeitintervallbuchung-Objekt von Client-Seite.
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def post(self):
         """Anlegen eines neuen Zeitintervallbuchung-Objekts.
         """
@@ -719,7 +719,7 @@ class ZeitintervallbuchungListOperations(Resource):
 @zeiterfassungapp.param('id', 'Die ID des Zeitintervallbuchung-Objekts')
 class ZeitintervallbuchungOperations(Resource):
     @zeiterfassungapp.marshal_with(zeitintervallbuchung)
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def get(self, id):
         """Auslesen einer bestimmten Zeitintervallbuchung-BO.
         Objekt wird durch die id in bestimmt.
@@ -728,7 +728,7 @@ class ZeitintervallbuchungOperations(Resource):
         zinb = adm.get_zeitintervallbuchung_by_id(id)
         return zinb
 
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def delete(self, id):
         """Löschen einer bestimmten Zeitintervallbuchung-BO.
         Löschende Objekt wird durch id bestimmt.
@@ -756,11 +756,11 @@ class ZeitintervallbuchungOperations(Resource):
 
 # Alle weiteren bo´s wie bei Ereignisbuchung erstellen
 
-@zeiterfassungapp.route('/Ereignisbuchung')
+@zeiterfassungapp.route('/ereignisbuchung')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 class EreignisbuchungListOperations(Resource):
-    @secured
-    @zeiterfassungapp.marshal_list_with(Ereignisbuchung)
+    #@secured zwecks Testung vom Backend deaktiviert
+    @zeiterfassungapp.marshal_list_with(ereignisbuchung)
     def get(self):
         """Auslesen aller Ereignisbuchung-Objekte.
         Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
@@ -768,9 +768,9 @@ class EreignisbuchungListOperations(Resource):
         zinb = adm.get_all_ereignisbuchung()
         return zinb
 
-    @zeiterfassungapp.marshal_with(Ereignisbuchung, code=200)
-    @zeiterfassungapp.expect(Ereignisbuchung)  # Wir erwarten ein Ereignisbuchung-Objekt von Client-Seite.
-    @secured
+    @zeiterfassungapp.marshal_with(ereignisbuchung, code=200)
+    @zeiterfassungapp.expect(ereignisbuchung)  # Wir erwarten ein Ereignisbuchung-Objekt von Client-Seite.
+    #@secured zwecks Testung vom Backend deaktiviert
     def post(self):
         """Anlegen eines neuen Ereignisbuchung-Objekts.
         """
@@ -786,12 +786,12 @@ class EreignisbuchungListOperations(Resource):
             return '', 500
 
 
-@zeiterfassungapp.route('/Ereignisbuchung/<int:id>')
+@zeiterfassungapp.route('/ereignisbuchung/<int:id>')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 @zeiterfassungapp.param('id', 'Die ID des Ereignisbuchung-Objekts')
 class EreignisbuchungOperations(Resource):
-    @zeiterfassungapp.marshal_with(Ereignisbuchung)
-    @secured
+    @zeiterfassungapp.marshal_with(ereignisbuchung)
+    #@secured zwecks Testung vom Backend deaktiviert
     def get(self, id):
         """Auslesen einer bestimmten Ereignisbuchung-BO.
         Objekt wird durch die id in bestimmt.
@@ -800,7 +800,7 @@ class EreignisbuchungOperations(Resource):
         zinb = adm.get_ereignisbuchung_by_id(id)
         return zinb
 
-    @secured
+    #@secured zwecks Testung vom Backend deaktiviert
     def delete(self, id):
         """Löschen einer bestimmten Ereignisbuchung-BO.
         Löschende Objekt wird durch id bestimmt.
@@ -810,8 +810,8 @@ class EreignisbuchungOperations(Resource):
         adm.delete_ereignisbuchung(zinb)
         return '', 200
 
-    @zeiterfassungapp.marshal_with(Ereignisbuchung)
-    @zeiterfassungapp.expect(Ereignisbuchung, validate=True)
+    @zeiterfassungapp.marshal_with(ereignisbuchung)
+    @zeiterfassungapp.expect(ereignisbuchung, validate=True)
 
     def put(self, id):
         """Update einer bestimmten Ereignisbuchung.

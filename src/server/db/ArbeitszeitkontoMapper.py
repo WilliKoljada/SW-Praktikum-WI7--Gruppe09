@@ -78,8 +78,8 @@ class ArbeitszeitkontoMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 arbeitszeitkonto.set_id(1)
 
-        command = "INSERT INTO arbeitszeitkonto (id, creation_date) VALUES (%s,%s)"
-        data = (arbeitszeitkonto.get_id(), arbeitszeitkonto.get_creation_date())
+        command = "INSERT INTO arbeitszeitkonto (id, arbeitspensum, creation_date) VALUES (%s,%s,%s)"
+        data = (arbeitszeitkonto.get_id(), arbeitszeitkonto.get_arbeitspensum(), arbeitszeitkonto.get_creation_date())
 
         cursor.execute(command, data)
 
@@ -95,7 +95,7 @@ class ArbeitszeitkontoMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "UPDATE arbeitszeitkonto SET WHERE id=%s, arbeitspensum=%s creation_date=%s"
-        data = (arbeitszeitkonto.get_id(), arbeitszeitkonto.set_arbeitspensum(), arbeitszeitkonto.get_creation_date())
+        data = (arbeitszeitkonto.get_id(), arbeitszeitkonto.get_arbeitspensum(), arbeitszeitkonto.get_creation_date())
 
         cursor.execute(command, data)
 

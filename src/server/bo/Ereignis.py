@@ -23,7 +23,7 @@ class Ereignis (bo.BusinessObject):
     def from_dict(dictionary=dict()):
         obj = Ereignis()
         obj.set_id(dictionary["id"])
-        obj.set_creation_date(Ereignis.date_format(dictionary["creation_date"]))
+        obj.set_creation_date((dictionary["creation_date"]))
         obj.set_zeitpunkt_ereigniseintritt(dictionary["zeitpunkt_ereigniseintritt"])
 
         return obj

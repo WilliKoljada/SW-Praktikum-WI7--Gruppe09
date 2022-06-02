@@ -79,7 +79,7 @@ class ZeitintervallMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 zeitintervall.set_id(1)
 
-        command = "INSERT INTO zeitintervall(id, creation_date, zeitintervall) VALUES (%s,%s,%s)"
+        command = "INSERT INTO zeitintervall (id, creation_date, zeitintervall) VALUES (%s,%s,%s)"
         data = (zeitintervall.get_id(), zeitintervall.get_creation_date(), zeitintervall.get_projektlaufzeit())
 
         cursor.execute(command, data)

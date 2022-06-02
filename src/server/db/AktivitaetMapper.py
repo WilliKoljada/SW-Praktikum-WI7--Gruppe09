@@ -45,7 +45,7 @@ class AktivitaetMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, Bezeichnung, Kapazität_in_Personentagen, creation_date WHERE id={}".format(key)
+        command = "SELECT * FROM aktivitaet WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -104,9 +104,9 @@ class AktivitaetMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE aktivitaet SET Bezeichnung=%s,Kapazität_in_Personentagen=%s,.creation_date=%s WHERE id=%s"
-        data = (aktivitaet.get_bezeichnung(), aktivitaet.get_kapazitaet_in_personentagen()
-            , aktivitaet.get_creation_date(), aktivitaet.get_id())
+        command = "UPDATE aktivitaet SET Bezeichnung=%s,Kapazität_in_Personentagen=%s, creation_date=%s WHERE id=%s"
+        data = (aktivitaet.get_bezeichnung(), aktivitaet.get_kapazitaet_in_personentagen(),
+                aktivitaet.get_creation_date(), aktivitaet.get_id())
 
         cursor.execute(command, data)
 

@@ -10,7 +10,7 @@ class Person (bo.BusinessObject):
         self._nachname = ''
         self._email = ''
         self._benutzername = ''
-        self._google_user_id = 0
+        self._google_id = ''
 
     def get_vorname (self):
         "Auslesen des vornamens"
@@ -45,10 +45,10 @@ class Person (bo.BusinessObject):
         self._benutzername = benutzername
 
     def get_google_user_id (self):
-        return self._google_user_id
+        return self._google_id
 
-    def set_google_user_id (self, google_user_id):
-        self._google_user_id = google_user_id
+    def set_google_user_id (self, google_id):
+        self._google_id = google_id
 
 
     # Person aus dictionary erstellen
@@ -56,11 +56,9 @@ class Person (bo.BusinessObject):
     def from_dict(dictionary=dict()):
         obj = Person()
         obj.set_id(dictionary["id"])
-        obj.set_creation_date(dictionary["creation_date"])
         obj.set_vorname(dictionary["vorname"])
         obj.set_nachname(dictionary["nachname"])
         obj.set_email(dictionary["email"])
         obj.set_is_benutzername(dictionary["benutzername"])
-        obj.set_google_user_id()
 
         return obj
