@@ -1,5 +1,4 @@
-
-import BusinessObject from './BusinessObject';
+import BusinessObject from './BusinessObjectBO';
 
 
 export default class BuchungBO extends BusinessObject {
@@ -9,18 +8,33 @@ export default class BuchungBO extends BusinessObject {
         this.ersteller = ersteller;
     }
    
-    // sets a ersteller
-    setersteller(ersteller) {
+    // Sets the ersteller of the buchung */
+    setErsteller(ersteller) {
     this.ersteller = ersteller;
     }
-    // gets a ersteller
-    getersteller() {
+    /** gets the ersteller of the buchung */
+    getErsteller() {
     return this.ersteller;
     }
     
+    /**
+   * Returns an Array of  BuchungBO from a given JSON structure
+   */
     static fromJSON(buchung) {
-    // Objekt anhand einer JSON-Struktur erstellen
-    let p = Object.setPrototypeOf(buchung, BuchungBO.prototype);
-    return p;
-    }
+        let result = [];
+    
+        if (Array.isArray(buchung)) {
+            buchung.forEach((c) => {
+            Object.setPrototypeOf(c, BuchungBO.prototype);
+            result.push(c);
+          })
+        } else {
+          // Es handelt sich offenbar um ein singuläres Objekt
+          let c = buchung;
+          Object.setPrototypeOf(c, BuchungBO.prototype);
+          result.push(c);
+        }
+    
+        return result;
+      }
 }

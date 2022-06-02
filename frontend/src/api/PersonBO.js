@@ -11,51 +11,65 @@ export default class PersonBO extends BusinessObject {
         this.email = email;
         this.benutzername = benutzername;
     }
-    // * Sets a google_id
-    setgoogle_id(google_id) {
+    // Sets the google_id of the PersonBO */
+    setGoogle_id(google_id) {
     this.google_id = google_id;
     }
-    // Gets google_id
-    getgoogle_id() {
+    /** gets the google_id of the PersonBO */
+    getGoogle_id() {
     return this.google_id;
     }
-    // * Sets a vorname
-    setvorname(vorname) {
+    // Sets the vorname of the PersonBO */
+    setVorname(vorname) {
     this.vorname = vorname;
     }  
-    // Gets vorname
-    getvorname() {
+    /** gets the vorname of the PersonBO */
+    getVorname() {
     return this.vorname;
     }
-    // * Sets nachname
-    setnachname(nachname) {
+    // Sets the nachname of the PersonBO */
+    setNachname(nachname) {
     this.nachname = nachname;
     }
-    // Gets nachname
-    getnachname() {
+    /** gets the nachname of the PersonBO */
+    getNachname() {
     return this.nachname;
     }
-    // * Sets email
-    setemail(email) {
+    // Sets the email of the PersonBO */
+    setEmail(email) {
     this.email = email;
     }
-    // Gets email
-    getemail() {
+    /** gets the email of the PersonBO */
+    getEmail() {
     return this.email;
     }
-    // * Sets benutzername
-    setbenutzername(benutzername) {
+    // Sets the benutzername of the PersonBO */
+    setBenutzername(benutzername) {
     this.benutzername = benutzername;
     }
-    // Gets benutzername
-    getbenutzername() {
+    /** gets the benutzername of the PersonBO */
+    getBenutzername() {
     return this.benutzername;
     }
    
-
+    /**
+   * Returns an Array of  PersonBO from a given JSON structure
+   */
     static fromJSON(person) {
-    // Objekt anhand einer JSON-Struktur erstellen
-    let p = Object.setPrototypeOf(person, PersonBO.prototype);
-    return p;
-    }
+        let result = [];
+    
+        if (Array.isArray(person)) {
+            person.forEach((c) => {
+            Object.setPrototypeOf(c, PersonBO.prototype);
+            result.push(c);
+          })
+        } else {
+          // Es handelt sich offenbar um ein singuläres Objekt
+          let c = person;
+          Object.setPrototypeOf(c, PersonBO.prototype);
+          result.push(c);
+        }
+    
+        return result;
+      }
 }
