@@ -1,4 +1,4 @@
-import BusinessObject from "./BusinessObjectBO";
+import BusinessObject from "./BusinessObject";
 
 /**
  * Represents an account object of a customer.

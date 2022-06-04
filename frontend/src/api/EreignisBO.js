@@ -1,4 +1,4 @@
-import BusinessObject from './BusinessObjectBO';
+import BusinessObject from './BusinessObject';
 
 
 export default class EreignisBO extends BusinessObject {

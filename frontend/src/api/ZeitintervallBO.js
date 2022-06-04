@@ -1,4 +1,4 @@
-import BusinessObject from './BusinessObjectBO';
+import BusinessObject from './BusinessObject';
 
 
 export default class ZeitintervallBO extends BusinessObject {
@@ -24,7 +24,7 @@ export default class ZeitintervallBO extends BusinessObject {
         let result = [];
     
         if (Array.isArray(zeit_inter)) {
-            Zeitinter.forEach((c) => {
+          zeit_inter.forEach((c) => {
             Object.setPrototypeOf(c, ZeitintervallBO.prototype);
             result.push(c);
           })

@@ -1,3 +1,5 @@
+import BusinessObject from "./BusinessObject";
+
 /**
  * Represents a aktivitaet
  */
@@ -48,7 +50,7 @@
     } else {
       // Es handelt sich offenbar um ein singuläres Objekt
       let s = kapazität;
-      Object.setPrototypeOf(a, AktivitaetBO.prototype);
+      Object.setPrototypeOf(s, AktivitaetBO.prototype);
       result.push(s);
     }
     return result;

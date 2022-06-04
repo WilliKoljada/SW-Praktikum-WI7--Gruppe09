@@ -8,7 +8,6 @@ import { withStyles, LinearProgress } from '@material-ui/core';
  * @See See Materiel-UIs [Progress](https://material-ui.com/components/progress/)
  * @See See Materiel-UIs [LinearProgress](https://material-ui.com/api/linear-progress/)
  *
- * @author [Christoph Kunz](https://github.com/christophkunz)
  */
 class LoadingProgress extends Component {
 

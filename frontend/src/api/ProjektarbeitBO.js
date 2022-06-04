@@ -1,4 +1,4 @@
-import BusinessObject from './BusinessObjectBO'
+import BusinessObject from './BusinessObject'
 
 export default class ProjektarbeitBO extends BusinessObject {
 

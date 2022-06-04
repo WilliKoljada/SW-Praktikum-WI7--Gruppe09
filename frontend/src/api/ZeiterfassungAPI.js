@@ -433,11 +433,11 @@ updatePeson(personID) {
       body: JSON.stringify(buchungID)
     }).then((responseJSON) => {
       // We always get an array of TransactionBO.fromJSON, but only need one object
-      let BuchungBO = BuchungBO.fromJSON(responseJSON)[0];
+      let buchungBO = BuchungBO.fromJSON(responseJSON)[0];
       // console.info(accountBO);
       return new Promise(function (resolve) {
         // We expect only one new account
-        resolve(BuchungBO);
+        resolve(buchungBO);
       })
     })
   }
@@ -549,7 +549,7 @@ updateBuchung(buchungID) {
         'Accept': 'application/json, text/plain',
         'Content-type': 'application/json',
       },
-      body: JSON.stringify(customerBO)
+      body: JSON.stringify(arbeitszeitkontoBO)
     }).then((responseJSON) => {
       // We always get an array of ArbeitszeitkontoBO.fromJSON
       let responseArbeitszeitkontoBO = ArbeitszeitkontoBO.fromJSON(responseJSON)[0];
@@ -586,10 +586,10 @@ updateBuchung(buchungID) {
    */
    getAllEreignis() {
     return this.#fetchAdvanced(this.#getAllEreignisURL()).then((responseJSON) => {
-      let EreignisBO = EreignisBO.fromJSON(responseJSON);
+      let ereignisBO = EreignisBO.fromJSON(responseJSON);
       // console.info(customerBOs);
       return new Promise(function (resolve) {
-        resolve(EreignisBOs);
+        resolve(ereignisBO);
       })
     })
   }
@@ -643,7 +643,7 @@ updateBuchung(buchungID) {
    * @public
    */
   updateEreignis(ereignisBO) {
-    return this.#fetchAdvanced(this.#updateEreignisByURL(arbeitszeitkontoBO.getID()), {
+    return this.#fetchAdvanced(this.#updateEreignisByURL(ereignisBO.getID()), {
       method: 'PUT',
       headers: {
         'Accept': 'application/json, text/plain',
@@ -849,7 +849,7 @@ updateBuchung(buchungID) {
         'Accept': 'application/json, text/plain',
         'Content-type': 'application/json',
       },
-      body: JSON.stringify(customerBO)
+      body: JSON.stringify(projektarbeitBO)
     }).then((responseJSON) => {
       // We always get an array of ProjektarbeitBO.fromJSON
       let responseProjektarbeitBO = ProjektarbeitBO.fromJSON(responseJSON)[0];
@@ -1047,7 +1047,7 @@ updateBuchung(buchungID) {
         'Accept': 'application/json, text/plain',
         'Content-type': 'application/json',
       },
-      body: JSON.stringify(customerBO)
+      body: JSON.stringify(zeitintervallbuchungBO)
     }).then((responseJSON) => {
       // We always get an array of ZeitintervallbuchungBO.fromJSON
       let responseZeitintervallbuchungBO = ZeitintervallbuchungBO.fromJSON(responseJSON)[0];

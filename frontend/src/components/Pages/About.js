@@ -27,7 +27,7 @@ function About() {
       <Paper elevation={0} className={classes.root}>
         <div className={classes.content}>
           <Typography variant='h6'>
-            StudiFix
+          Zeiterfassung
           </Typography>
           <br />
           
@@ -52,7 +52,7 @@ function About() {
           <Typography>
           React Frontend written by <Link href='https://github.com/Ka041'>Kaswara Al Mustafa</Link> <br />
           Python Backend written by <Link href='https://github.com/Aniqa301'>Aniqa Khan</Link> <br />
-          Python Backend written by <Link href='https://github.com/DominicHaffner'>Ayhan Cömert</Link> <br />
+          Python Backend written by <Link href='https://github.com/AyhanCoemert'>Ayhan Cömert</Link> <br />
           React Frontend written by <Link href='https://github.com/benjamintok'>Benjamin Tok</Link> <br />
           React Frontend written by <Link href='https://github.com/WilliKoljada'>Willi Koljada</Link> <br />
           </Typography>
