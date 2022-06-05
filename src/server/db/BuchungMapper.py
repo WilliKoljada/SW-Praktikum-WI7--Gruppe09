@@ -21,7 +21,7 @@ class BuchungMapper(Mapper):
         cursor.execute("SELECT * from buchung")
         tuples = cursor.fetchall()
 
-        for (id,creation_date, ersteller) in tuples:
+        for (id, ersteller, creation_date) in tuples:
             buchung = Buchung()
             buchung.set_id(id)
             buchung.set_creation_date(creation_date)
@@ -46,9 +46,10 @@ class BuchungMapper(Mapper):
         command = "SELECT * FROM buchung WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_date) in tuples:
+        for (id, ersteller, creation_date) in tuples:
             buchung = Buchung()
             buchung.set_id(id)
+            buchung.set_ersteller(ersteller)
             buchung.set_creation_date(creation_date)
 
             result = buchung
@@ -87,14 +88,15 @@ class BuchungMapper(Mapper):
         cursor.close()
         return buchung
 
+
     def update(self, buchung):
         """Wiederholtes Schreiben eines Objekts in die Datenbank.
         :param Buchung das Objekt, das in die DB geschrieben werden soll
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE buchung SET WHERE id=%s, ersteller=%s, creation_date=%s"
-        data = (buchung.get_id(), buchung.get_ersteller(), buchung.get_creation_date())
+        command = "UPDATE buchung SET ersteller=%s, creation_date=%s WHERE id=%s"
+        data = (buchung.get_ersteller(), buchung.get_creation_date(), buchung.get_id())
 
         cursor.execute(command, data)
 

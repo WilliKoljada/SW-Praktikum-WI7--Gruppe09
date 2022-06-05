@@ -13,6 +13,5 @@ class Zeitintervallbuchung (bo.BusinessObject):
     def from_dict(dictionary=dict()):
         obj = Zeitintervallbuchung()
         obj.set_id(dictionary["id"])
-        obj.set_creation_date(dictionary["creation_date"])
 
         return obj

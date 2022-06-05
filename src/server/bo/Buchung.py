@@ -11,8 +11,8 @@ class Buchung (bo.BusinessObject):
     def get_ersteller(self):
         return self._ersteller
 
-    def set_ersteller(self, value):
-        self._ersteller = value
+    def set_ersteller(self, ersteller):
+        self._ersteller = ersteller
 
 
     # Buchung aus dictionary erstellen
@@ -20,7 +20,6 @@ class Buchung (bo.BusinessObject):
     def from_dict(dictionary=dict()):
         obj = Buchung()
         obj.set_id(dictionary["id"])
-        obj.set_creation_date(dictionary["creation_date"])
-        obj.set_id(dictionary["ersteller"])
+        obj.set_ersteller(dictionary["ersteller"])
 
         return obj

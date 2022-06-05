@@ -19,5 +19,6 @@ class Zeitintervall (bo.BusinessObject):
     def from_dict(dictionary=dict()):
          obj = Zeitintervall()
          obj.set_id(dictionary["id"])
-         obj.set_creation_date(dictionary["creation_date"])
          obj.set_projektlaufzeit(dictionary["projektlaufzeit"])
+
+         return obj

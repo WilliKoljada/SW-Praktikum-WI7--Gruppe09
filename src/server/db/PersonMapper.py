@@ -117,8 +117,8 @@ class PersonMapper(Mapper):
         """
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, vorname, nachname, Email, Benutzername, creation_date, google_id, \
-         FROM person WHERE email={}".format(email)
+        command = "SELECT id, vorname, nachname, Benutzername, creation_date, google_id, \
+         FROM person WHERE Email={}".format(email)
 
         cursor.execute(command)
         tuples = cursor.fetchall()

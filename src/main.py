@@ -16,6 +16,7 @@ from server.bo.Zeitintervallbuchung import Zeitintervallbuchung
 from server.bo.Projektarbeit import Projektarbeit
 from server.bo.Ereignisbuchung import Ereignisbuchung
 from server.bo.Ereignis import Ereignis
+from server.bo.Buchung import Buchung
 
 '''Außerdem nutzen wir einen selbstgeschriebenen Decorator, der die Authentifikation übernimmt'''
 from SecurityDecorator import secured
@@ -37,7 +38,8 @@ BusinessObject dient als Basisklasse."""
 
 bo = api.model('BusinessObject', {
     'id': fields.Integer(attribute='_id', description='Der Unique Identifier eines Business Object'),
-    'creation_date': fields.Integer(attribute='_ersteller', description='Ersteller einer Buchung')
+    'creation_date': fields.DateTime(attribute='_creation_date', description='Das Erstellungsdatum eines bo',
+                                     dt_format='iso8601')
 })
 
 aktivitaet = api.inherit('Aktivitaet', bo, {
@@ -46,11 +48,11 @@ aktivitaet = api.inherit('Aktivitaet', bo, {
 })
 
 arbeitszeitkonto = api.inherit('Arbeitszeitkonto', bo, {
-    'arbeitspensum': fields.Integer(attribute='_arbeitspensum', description='Das Arbeitspensum'),
+    'arbeitspensum': fields.Float(attribute='_arbeitspensum', description='Das Arbeitspensum'),
 })
 
 buchung = api.inherit('Buchung', bo, {
-    'Ersteller': fields.Integer(attribute='_ersteller', description='Ersteller einer Buchung')
+    'ersteller': fields.String(attribute='_ersteller', description='Ersteller einer Buchung')
 
 })
 
@@ -62,7 +64,7 @@ person = api.inherit('Person', bo, {
 })
 
 projekt = api.inherit('Projekt', bo, {
-    'auftraggeber': fields.Integer(attribute='_auftraggeber', description='unique ID des Auftraggebers'),
+    'auftraggeber': fields.String(attribute='_auftraggeber', description='unique ID des Auftraggebers'),
     'bezeichnung': fields.String(attribute='_bezeichnung', description=' Bezeichnung des Projekts ')
 })
 
@@ -83,7 +85,7 @@ zeitintervallbuchung = api.inherit('Zeitintervallbuchung', bo, {
 })
 
 ereignis = api.inherit('Ereignis', bo, {
-    'zeitpunkt_ereigniseintritt': fields.Integer(attribute= '_zeitpunkt_ereigniseintritt', description='Zeitpunkt vom Ereignis')
+    'zeitpunkt_ereigniseintritt': fields.String(attribute= '_zeitpunkt_ereigniseintritt', description='Zeitpunkt vom Ereignis')
 })
 # Alle weiteren bo´s wie bei Aktivitaet erstellen
 
@@ -148,7 +150,7 @@ class AktivitaetOperations(Resource):
         """Update einer bestimmten Aktivitaet.
         """
         adm = Administration()
-        p = aktivitaet.from_dict(api.payload)
+        p = Aktivitaet.from_dict(api.payload)
 
         if p is not None:
             p.set_id(id)
@@ -159,30 +161,38 @@ class AktivitaetOperations(Resource):
 
 @zeiterfassungapp.route('/buchung')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-class BuchungOperations(Resource):
+class AktivitaetListOperations(Resource):
     #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(buchung)
     def get(self):
-        """Auslesen aller Bchungs-Objekte.
+        """Auslesen aller Aktivitaet-Objekte.
         Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
         adm = Administration()
-        trans = adm.get_alle_buchungen()
-        return trans
+        buch = adm.get_alle_buchungen()
+        return buch
 
+    @zeiterfassungapp.marshal_with(buchung, code=200)
+    @zeiterfassungapp.expect(buchung)  # Wir erwarten ein Aktivitaet-Objekt von Client-Seite.
     #@secured zwecks Testung vom Backend deaktiviert
-    def delete(self, id):
-        """Löschen einer bestimmten Person-BO.
-        Löschende Objekt wird durch id bestimmt.
+    def post(self):
+        """Anlegen eines neuen Aktivitaet-Objekts.
         """
         adm = Administration()
-        pers = adm.get_buchung_by_key(id)
-        adm.delete_buchung(pers)
-        return '', 200
+
+        proposal = Buchung.from_dict(api.payload)
+
+        if proposal is not None:
+            buch = adm.create_buchung(proposal.get_ersteller())
+            return buch, 200
+        else:
+            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
+            return '', 500
+
 
 @zeiterfassungapp.route('/buchung/<int:id>')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 @zeiterfassungapp.param('id', 'Die ID des Aktivitaet-Objekts')
-class BuchungOperations(Resource):
+class AktivitaetOperations(Resource):
     @zeiterfassungapp.marshal_with(buchung)
     #@secured zwecks Testung vom Backend deaktiviert
     def get(self, id):
@@ -190,8 +200,8 @@ class BuchungOperations(Resource):
         Objekt wird durch die id in bestimmt.
         """
         adm = Administration()
-        akt = adm.get_buchung_by_key(id)
-        return akt
+        buch = adm.get_aktivitaet_by_id(id)
+        return buch
 
     #@secured zwecks Testung vom Backend deaktiviert
     def delete(self, id):
@@ -199,18 +209,18 @@ class BuchungOperations(Resource):
         Löschende Objekt wird durch id bestimmt.
         """
         adm = Administration()
-        akt = adm.get_buchung_by_key(id)
-        adm.delete_buchung(akt)
+        buch = adm.get_buchung_by_key(id)
+        adm.delete_buchung(buch)
         return '', 200
 
     @zeiterfassungapp.marshal_with(buchung)
     @zeiterfassungapp.expect(buchung, validate=True)
 
     def put(self, id):
-        """Update einer bestimmten Person.
+        """Update einer bestimmten Aktivitaet.
         """
         adm = Administration()
-        p = buchung.from_dict(api.payload)
+        p = Buchung.from_dict(api.payload)
 
         if p is not None:
             p.set_id(id)
@@ -290,19 +300,19 @@ class PersonOperations(Resource):
         else:
             return '', 500
 
-@zeiterfassungapp.route('/person/<string:email>')
+"""@zeiterfassungapp.route('/person/<string:email>')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('email', 'Die Mail des Person-Objekts')
+@zeiterfassungapp.param('Email', 'Die Mail des Person-Objekts')
 class PersonOperations(Resource):
     @zeiterfassungapp.marshal_with(person)
     #@secured zwecks Testung vom Backend deaktiviert
     def get(self, email):
-        """Auslesen einer bestimmten Person-BO.
+        Auslesen einer bestimmten Person-BO.
         Objekt wird durch die id in bestimmt.
-        """
+        
         adm = Administration()
         pers = adm.get_person_by_email(email)
-        return pers
+        return pers"""
 
 
 

@@ -18,14 +18,14 @@ class EreignisMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from Ereignis")
+        cursor.execute("SELECT * from ereignis")
         tuples = cursor.fetchall()
 
-        for (id,creation_time, zeitpunkt_ereigniseintritt) in tuples:
+        for (id, Zeitpunkt_Ereigniseintritt, creation_date) in tuples:
             ereignis= Ereignis()
             ereignis.set_id(id)
-            ereignis.set_creation_date(creation_time)
-            ereignis.set_zeitpunkt_ereigniseintritt(zeitpunkt_ereigniseintritt)
+            ereignis.set_creation_date(creation_date)
+            ereignis.set_zeitpunkt_ereigniseintritt(Zeitpunkt_Ereigniseintritt)
             result.append(ereignis)
 
         self._cnx.commit()
@@ -79,7 +79,7 @@ class EreignisMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 ereignis.set_id(1)
 
-        command = "INSERT INTO ereignis (id, creation_date, zeitpunkt_ereigniseintritt) VALUES (%s,%s,%s)"
+        command = "INSERT INTO ereignis (id, creation_date, Zeitpunkt_Ereigniseintritt) VALUES (%s,%s,%s)"
         data = (
         ereignis.get_id(), ereignis.get_creation_date(), ereignis.get_zeitpunkt_ereigniseintritt())
         cursor.execute(command, data)
@@ -95,8 +95,8 @@ class EreignisMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE ereignis SET zeitpunkt_ereigniseintritt=%s,WHERE id=%s"
-        data = (ereignis.get_zeitpunkt_ereigniseintritt(), ereignis.get_id())
+        command = "UPDATE ereignis SET Zeitpunkt_Ereigniseintritt=%s, creation_date=%s WHERE id=%s"
+        data = (ereignis.get_zeitpunkt_ereigniseintritt(), ereignis.get_creation_date(), ereignis.get_id())
 
         cursor.execute(command, data)
 

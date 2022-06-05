@@ -21,12 +21,12 @@ class ProjektMapper(Mapper):
         cursor.execute("SELECT * from projekt")
         tuples = cursor.fetchall()
 
-        for (id,creation_date, auftraggeber, bezeichnung) in tuples:
+        for (id,Bezeichnung, Auftraggeber, creation_date) in tuples:
             projekt= Projekt()
             projekt.set_id(id)
             projekt.set_creation_date(creation_date)
-            projekt.set_auftraggeber(auftraggeber)
-            projekt.set_bezeichnung(bezeichnung)
+            projekt.set_auftraggeber(Auftraggeber)
+            projekt.set_bezeichnung(Bezeichnung)
             result.append(projekt)
 
         self._cnx.commit()
@@ -47,12 +47,12 @@ class ProjektMapper(Mapper):
         command = "SELECT * FROM projekt WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_date, auftraggeber, bezeichnung) in tuples:
+        for (id,Bezeichnung, Auftraggeber, creation_date) in tuples:
             projekt = Projekt()
             projekt.set_id(id)
             projekt.set_creation_date(creation_date)
-            projekt.set_auftraggeber(auftraggeber)
-            projekt.set_bezeichnung(bezeichnung)
+            projekt.set_auftraggeber(Auftraggeber)
+            projekt.set_bezeichnung(Bezeichnung)
 
             result = projekt
 

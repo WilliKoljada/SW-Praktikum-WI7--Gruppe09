@@ -311,7 +311,7 @@ class Administration(object):
         buchung.set_id(1)
         buchung.set_ersteller(ersteller)
 
-        with BuchungMapper as mapper:
+        with BuchungMapper() as mapper:
             return mapper.insert(buchung)
 
     def get_alle_buchungen(self):

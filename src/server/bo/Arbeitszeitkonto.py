@@ -18,7 +18,6 @@ class Arbeitszeitkonto(bo.BusinessObject):
         """Umwandeln eines Python dict() in ein Suggestion()."""
         obj = Arbeitszeitkonto()
         obj.set_id(dictionary["id"])  # eigentlich Teil von BusinessObject !
-        obj.set_creation_date(dictionary["creation_date"])
         obj.set_arbeitspensum(dictionary["arbeitspensum"])
 
 

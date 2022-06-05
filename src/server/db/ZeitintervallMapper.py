@@ -95,8 +95,8 @@ class ZeitintervallMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE zeitintervall SET creation_date=%s, zeitintervall=%s, WHERE id=%s"
-        data = (zeitintervall.get_id(), zeitintervall.get_creation_date(), zeitintervall.get_projektlaufzeit())
+        command = "UPDATE zeitintervall SET creation_date=%s, zeitintervall=%s WHERE id=%s"
+        data = ( zeitintervall.get_creation_date(), zeitintervall.get_projektlaufzeit(), zeitintervall.get_id())
 
         cursor.execute(command, data)
 

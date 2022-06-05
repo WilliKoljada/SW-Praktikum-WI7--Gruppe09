@@ -22,7 +22,7 @@ class ProjektarbeitMapper(Mapper):
         tuples = cursor.fetchall()
 
         for (id, Bezeichnung, creation_date) in tuples:
-            projektarbeit= Projektarbeit()
+            projektarbeit = Projektarbeit()
             projektarbeit.set_id(id)
             projektarbeit.set_bezeichnung(Bezeichnung)
             projektarbeit.set_creation_date(creation_date)
@@ -97,7 +97,7 @@ class ProjektarbeitMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "UPDATE projektarbeit SET Bezeichnung=%s, creation_date=%s WHERE id=%s"
-        data = (projektarbeit.get_bezeichnung(), projektarbeit.get_id())
+        data = (projektarbeit.get_bezeichnung(), projektarbeit.get_creation_date(), projektarbeit.get_id())
 
         cursor.execute(command, data)
 
