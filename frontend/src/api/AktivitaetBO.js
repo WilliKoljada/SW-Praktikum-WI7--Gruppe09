@@ -14,7 +14,7 @@ import BusinessObject from "./BusinessObject";
     }
 
 /** Sets the kapPerTag of the aktivitaet */
-    setKapazität(kapPerTag){
+    setKapazitaet(kapPerTag){
         this.kapaz = kapPerTag;
     }
 
@@ -39,17 +39,17 @@ import BusinessObject from "./BusinessObject";
    * Returns an Array of  AktivitaetBO from a given JSON structure
    */
 
-  static fromJSON(kapazität) {
+  static fromJSON(kapazitaet) {
     let result = [];
 
-    if (Array.isArray(kapazität)) {
+    if (Array.isArray(kapazitaet)) {
     kapazität.forEach((a) => {
         Object.setPrototypeOf(a, AktivitaetBO.prototype);
         result.push(a);
       })
     } else {
       // Es handelt sich offenbar um ein singuläres Objekt
-      let s = kapazität;
+      let s = kapazitaet;
       Object.setPrototypeOf(s, AktivitaetBO.prototype);
       result.push(s);
     }
