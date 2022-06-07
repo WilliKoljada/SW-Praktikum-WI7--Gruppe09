@@ -178,6 +178,7 @@ CREATE TABLE `projekt` (
   `Bezeichnung` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `Auftraggeber` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `creation_date` datetime NOT NULL,
+  `ersteller_ID` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -1,4 +1,5 @@
 '''Unser Service basiert auf Flask'''
+from inspect import Attribute
 from flask import Flask
 '''Auf Flask aufbauend nutzen wir RestX'''
 from flask_restx import Api, Resource, fields
@@ -65,7 +66,8 @@ person = api.inherit('Person', bo, {
 
 projekt = api.inherit('Projekt', bo, {
     'auftraggeber': fields.String(attribute='_auftraggeber', description='unique ID des Auftraggebers'),
-    'bezeichnung': fields.String(attribute='_bezeichnung', description=' Bezeichnung des Projekts ')
+    'bezeichnung': fields.String(attribute='_bezeichnung', description=' Bezeichnung des Projekts '),
+    'ersteller_ID': fields.Integer(attribute= 'ersteller_ID', description=' ID des Erstellers vom Projekt')
 })
 
 projektarbeit = api.inherit('Projektarbeit', bo, {
@@ -497,7 +499,7 @@ class ProjektListOperations(Resource):
         proposal = Projekt.from_dict(api.payload)
 
         if proposal is not None:
-            proj = adm.create_projekt(proposal.get_auftraggeber(), proposal.get_bezeichnung())
+            proj = adm.create_projekt(proposal.get_auftraggeber(), proposal.get_bezeichnung(), proposal.get_ersteller_ID())
             return proj, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.

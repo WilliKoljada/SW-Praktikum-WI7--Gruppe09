@@ -21,12 +21,13 @@ class ProjektMapper(Mapper):
         cursor.execute("SELECT * from projekt")
         tuples = cursor.fetchall()
 
-        for (id,Bezeichnung, Auftraggeber, creation_date) in tuples:
+        for (id,Bezeichnung, Auftraggeber, creation_date, ersteller_Id) in tuples:
             projekt= Projekt()
             projekt.set_id(id)
             projekt.set_creation_date(creation_date)
             projekt.set_auftraggeber(Auftraggeber)
             projekt.set_bezeichnung(Bezeichnung)
+            projekt.set_ersteller_ID(ersteller_Id)
             result.append(projekt)
 
         self._cnx.commit()
@@ -47,12 +48,41 @@ class ProjektMapper(Mapper):
         command = "SELECT * FROM projekt WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id,Bezeichnung, Auftraggeber, creation_date) in tuples:
+        for (id,Bezeichnung, Auftraggeber, creation_date, ersteller_Id) in tuples:
             projekt = Projekt()
             projekt.set_id(id)
             projekt.set_creation_date(creation_date)
             projekt.set_auftraggeber(Auftraggeber)
             projekt.set_bezeichnung(Bezeichnung)
+            projekt.set_ersteller_ID(ersteller_Id)
+
+            result = projekt
+
+        self._cnx.commit()
+        cursor.close()
+        return result
+
+
+    def find_by_ersteller_ID(self, key):
+        """Auslesen aller Projekt anhand der ID,
+        da diese vorgegeben ist, wird genau ein Objekt zurückgegeben.
+        :param key Primärschlüsselattribut
+        :return Projekt-Objekt, das dem übergebenen Schlüssel entspricht, None bei
+        nicht vorhandenem DB-Tupel
+        """
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT * FROM projekt WHERE id={}".format(key)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+        for (id,Bezeichnung, Auftraggeber, creation_date, ersteller_Id) in tuples:
+            projekt = Projekt()
+            projekt.set_id(id)
+            projekt.set_creation_date(creation_date)
+            projekt.set_auftraggeber(Auftraggeber)
+            projekt.set_bezeichnung(Bezeichnung)
+            projekt.set_ersteller_ID(ersteller_Id)
 
             result = projekt
 
@@ -64,13 +94,13 @@ class ProjektMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date, Auftraggeber, Bezeichnung FROM projekt WHERE Bezeichnung={}".format(
+        command = "SELECT id, creation_date, Auftraggeber, Bezeichnung, ersteller_ID FROM projekt WHERE Bezeichnung={}".format(
             bezeichnung)
 
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, Bezeichnung, Auftraggeber, creation_date) in tuples:
+        for (id, Bezeichnung, Auftraggeber, creation_date, ersteller_Id) in tuples:
             projekt = Projekt()
             projekt.set_id(id)
             projekt.set_bezeichnung(Bezeichnung)
@@ -104,8 +134,8 @@ class ProjektMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 projekt.set_id(1)
 
-        command = "INSERT INTO projekt (id, Bezeichnung, Auftraggeber, creation_date) VALUES (%s,%s,%s,%s)"
-        data = (projekt.get_id(), projekt.get_bezeichnung(), projekt.get_auftraggeber(), projekt.get_creation_date())
+        command = "INSERT INTO projekt (id, Bezeichnung, Auftraggeber, creation_date, ersteller_ID) VALUES (%s,%s,%s,%s, %s)"
+        data = (projekt.get_id(), projekt.get_bezeichnung(), projekt.get_auftraggeber(), projekt.get_creation_date(), projekt.get_ersteller_ID())
 
         cursor.execute(command, data)
 
@@ -120,8 +150,8 @@ class ProjektMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE projekt SET Auftraggeber=%s, Bezeichnung=%s, creation_date=%s, WHERE id=%s"
-        data = (projekt.get_auftraggeber(), projekt.get_bezeichnung(), projekt.get_creation_date(), projekt.get_id())
+        command = "UPDATE projekt SET Auftraggeber=%s, Bezeichnung=%s, creation_date=%s, ersteller_ID=%s WHERE id=%s"
+        data = (projekt.get_auftraggeber(), projekt.get_bezeichnung(), projekt.get_creation_date(), projekt.get_id(), projekt.get_ersteller_ID())
 
         cursor.execute(command, data)
 

@@ -191,12 +191,13 @@ class Administration(object):
 
     """projekt-spezifische Methoden"""
 
-    def create_projekt(self, auftraggeber, bezeichnung):
+    def create_projekt(self, auftraggeber, bezeichnung, ersteller_ID):
         """Ein Projekt anlegen"""
         p = Projekt()
         p.set_id(1)
         p.set_auftraggeber(auftraggeber)
         p.set_bezeichnung(bezeichnung)
+        p.set_ersteller_ID(ersteller_ID)
 
         with ProjektMapper() as mapper:
             return mapper.insert(p)
@@ -215,6 +216,10 @@ class Administration(object):
         """Alle Projekte auslesen."""
         with ProjektMapper() as mapper:
             return mapper.find_all()
+        
+    def get_projekt_by_ersteller_ID (self, ersteller_ID):
+        with ProjektMapper() as mapper:
+            return mapper.find_by_ersteller_ID(ersteller_ID)
 
     def save_projekt(self, projekt):
         """Die gegebene Projekte speichern."""
