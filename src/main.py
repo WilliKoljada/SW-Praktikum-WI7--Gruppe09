@@ -61,7 +61,8 @@ person = api.inherit('Person', bo, {
     'vorname': fields.String(attribute='_vorname', description='unique ID des Vornamens'),
     'nachname': fields.String(attribute='_nachname', description='nachname des Nachnamens'),
     'email': fields.String(attribute='_email', description='unique email des der Person'),
-    'benutzername': fields.String(attribute='_benutzername', description='benutzername des Benutzernamens')
+    'benutzername': fields.String(attribute='_benutzername', description='benutzername des Benutzernamens'),
+    'google_id': fields.String(attribute='_google_id', description='Google User Id des Profilinhabers'),
 })
 
 projekt = api.inherit('Projekt', bo, {
@@ -301,6 +302,19 @@ class PersonOperations(Resource):
             return '', 200
         else:
             return '', 500
+
+@zeiterfassungapp.route('/person-by-google-id/<string:google_id>')
+@zeiterfassungapp.response(500, 'Wenn ein Server-seitiger Fehler aufkommt')
+class UserGoogleOperations(Resource):
+    @zeiterfassungapp.marshal_with(person)
+    #@secured zwecks Testung vom Backend deaktiviert
+    def get(self, google_id):
+        """Auslesen eines bestimmten User-Objekts.
+        Das auszulesende Objekt wird durch die ```google_id``` in dem URI bestimmt."""
+
+        adm = Administration()
+        person = adm.get_user_by_google_user_id(google_id)
+        return person
 
 """@zeiterfassungapp.route('/person/<string:email>')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')

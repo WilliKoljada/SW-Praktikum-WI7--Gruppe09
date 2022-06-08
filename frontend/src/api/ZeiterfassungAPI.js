@@ -50,6 +50,7 @@ export default class ZeiterfassungAPI {
   #addPersonURL = () => `${this.#ZeiterfassungServerBaseURL}/person`;
   #updatePersonByIdgURL = (id) => `${this.#ZeiterfassungServerBaseURL}/person/${id}/`;
   #deletePersonByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/person/${id}`;
+  #getUserByGoogleIdURL = (google_id) => `${this.#ZeiterfassungServerBaseURL}/user-by-google-id/${google_id}`;
 
   // Arbeitszeitkonto related
   #getAllArbeitszeitkontoURL = () => `${this.#ZeiterfassungServerBaseURL}/arbeitszeitkonto`;
@@ -380,6 +381,19 @@ updatePeson(personID) {
       })
   }
 
+        /**
+   * Returns a Promise, which resolves to a UserBO
+   * @param {googleID} Email of the user to be retrieved
+   * @public
+   */
+         getUserByGoogleId(googleID){
+          return this.#fetchAdvanced(this.#getUserByGoogleIdURL(googleID)).then((responseJSON) => {
+            let userBOs = UserBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+              resolve(userBOs);
+          })
+        })
+        }
 
 
   /**
