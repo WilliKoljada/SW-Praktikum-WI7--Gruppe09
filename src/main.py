@@ -1,5 +1,47 @@
+"""
+A. Allgemeine Hinweise zu diesem Module:
+
+Normalerweise würde man eine Datei dieser Länge bzw. ein Module
+dieser Größe in mehrere Dateien bzw. Modules untergliedern. So könnte
+man z.B. pro Resource Class ein eigenes Module anlegen. Dadurch
+ergäben sich erhebliche Vorteile bzgl. der Wartungsfreundlichkeit
+dieses Modules. Es ergäben sich aber auch Nachteile! So haben Sie
+etwa mit einer Reihe von Abhängigkeiten z.B. zwischen der API-Definition
+und den Decorators zu tun. Außerdem verschlechtert sich aufgrund der Länge
+der Datei die Übersichtlichkeit der Inhalte und Strukturen.
+
+Abgesehen von Lehrbüchern und Vorlesungen müssen Sie in realen Projekten
+häufig die Vor- und Nachteile von Entscheidungen abwägen und sich dann
+bewusst für einen Weg entscheiden. Hier wurde die Entscheidung getroffen,
+die Einfachheit und Verständlichkeit des Source Codes höher zu werten als
+die Optimierung des Kopplungsgrads und damit die Wartbarkeit des Modules.
+
+B. Konventionen für dieses Module:
+
+    B.1. HTTP response status codes:
+
+        Folgende Codes werden verwendet:
+        200 OK           :      bei erfolgreichen requests. Af die Verwendung von
+                                weiter differenzierenden Statusmeldungen wie etwa
+                                '204 No Content' für erfolgreiche requests, die
+                                außer evtl. im Header keine weiteren Daten zurückliefern,
+                                wird in dieser Fallstudie auch aus Gründen einer
+                                möglichst einfachen Umsetzung verzichtet.
+        401 Unauthorized :      falls der User sich nicht gegenüber dem System
+                                authentisiert hat und daher keinen Zugriff erhält.
+        404 Not Found    :      falls eine angefragte Resource nicht verfügbar ist
+        500 Internal Server Error : falls der Server einen Fehler erkennt,
+                                diesen aber nicht genauer zu bearbeiten weiß.
+
+    B.2. Name des Moduls:
+        Der Name dieses Moduls lautet main.py. Grund hierfür ist, dass Google
+        App Engine, diesen Namen bevorzugt und sich dadurch das Deployment
+        einfacher gestaltet. Natürlich wären auch andere Namen möglich. Dies
+        wäre aber mit zusätzlichem Konfigurationsaufwand in der Datei app.yaml
+        verbunden.
+"""
+
 '''Unser Service basiert auf Flask'''
-from inspect import Attribute
 from flask import Flask
 '''Auf Flask aufbauend nutzen wir RestX'''
 from flask_restx import Api, Resource, fields
