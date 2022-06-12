@@ -1,5 +1,5 @@
-from src.server.bo.Ereignisbuchung import Ereignisbuchung
-from src.server.db.Mapper import Mapper
+from server.bo.Ereignisbuchung import Ereignisbuchung
+from server.db.Mapper import Mapper
 
 
 class EreignisbuchungMapper(Mapper):
