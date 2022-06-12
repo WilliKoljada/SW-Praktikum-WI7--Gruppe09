@@ -1,5 +1,5 @@
-from src.server.bo.Aktivitaet import Aktivitaet
-from src.server.db.Mapper import Mapper
+from server.bo.Aktivitaet import Aktivitaet
+from server.db.Mapper import Mapper
 
 
 class AktivitaetMapper(Mapper):
