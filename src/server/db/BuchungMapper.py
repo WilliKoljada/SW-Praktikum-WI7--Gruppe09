@@ -1,5 +1,5 @@
-from src.server.bo.Buchung import Buchung
-from src.server.db.Mapper import Mapper
+from server.bo.Buchung import Buchung
+from server.db.Mapper import Mapper
 
 
 class BuchungMapper(Mapper):
