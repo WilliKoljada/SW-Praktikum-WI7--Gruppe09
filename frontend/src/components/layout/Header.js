@@ -38,14 +38,16 @@ class Header extends Component {
       <Paper variant='outlined' >
         <ProfileDropDown user={user} />
         <Typography variant='h3' component='h1' align='center'>
-          Zeiterfassung
+          Zeiterfassungsapp.
         </Typography>
         
         {
           user ?
-            <Tabs indicatorColor='primary' textColor='primary' centered value={this.state.tabindex} onChange={this.handleTabChange} >
-              <Tab label='Aktivitaten' component={RouterLink} to={`/createAktivitaet`} />
-              <Tab label='Alle Prjektmitglieder' component={RouterLink} to={`/`} />
+            <Tabs indicatorColor='secondary' textColor='secondary' centered value={this.state.tabindex} onChange={this.handleTabChange} >
+              <Tab label='Projects' component={RouterLink} to={`/createAktivitaet`} />
+              <Tab label='Activities' component={RouterLink} to={`/createAktivitaet`} />
+              <Tab label='Persons' component={RouterLink} to={`/`} />
+              <Tab label='Times' component={RouterLink} to={`/`} />
               <Tab label='About' component={RouterLink} to={`/about`} />
             </Tabs>
             : null
