@@ -53,7 +53,7 @@ class App extends React.Component {
 			});
 			// The user is signed in
 			user.getIdToken().then(token => {
-				// Add the token to the browser's cookies. The server will then be
+				// Add the token to the browser"s cookies. The server will then be
 				// able to verify the token against the API.
 				// SECURITY NOTE: As cookies can easily be modified, only put the
 				// token (which is verified server-side) in a cookie; do not add other
@@ -74,7 +74,7 @@ class App extends React.Component {
 			});
 		} else {
 			// User has logged out, so clear the id token
-			document.cookie = 'token=;path=/';
+			document.cookie = "token=;path=/";
 
 			// Set the logged out user to null
 			this.setState({
@@ -105,7 +105,7 @@ class App extends React.Component {
 	 */
 	componentDidMount() {
 		firebase.initializeApp(firebaseConfig);
-		firebase.auth().languageCode = 'en';
+		firebase.auth().languageCode = "en";
 		firebase.auth().onAuthStateChanged(this.handleAuthStateChange);
 	}
 
@@ -118,19 +118,19 @@ class App extends React.Component {
 				{/* Global CSS reset and browser normalization. CssBaseline kickstarts an elegant, consistent, and simple baseline to build upon. */}
 				<CssBaseline />
 				<Router basename={process.env.PUBLIC_URL}>
-					<Container maxWidth='md'>
+					<Container maxWidth="md">
 						<Header user={currentUser} />
 						{
 							// Is a user signed in?
 							currentUser ?
 								<>
-									<Redirect from='/' to='About' />
-									<Route exact path='/about'>
+									<Redirect from="/" to="About" />
+									<Route exact path="/about">
 										<About />
-										</Route>
+									</Route>
 
-									<Route path='/Aktivitaten' />
-									<Route exact path='/createAktivitaet'>
+									<Route path="/Aktivitaten" />
+									<Route exact path="/createAktivitaet">
 										<createAktivitaet />
 									</Route>
 								</>
@@ -138,7 +138,7 @@ class App extends React.Component {
 								:
 								// else show the sign in page
 								<>
-									<Redirect to='/index.html' />
+									<Redirect to="/index.html" />
 									<SignIn onSignIn={this.handleSignIn} />
 								</>
 						}
