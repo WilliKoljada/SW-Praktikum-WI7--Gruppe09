@@ -3,11 +3,20 @@ import BusinessObject from './BusinessObject';
 
 export default class ProjektBO extends BusinessObject {
 
-    constructor(bezeichung, auftraggeber, ersteller_ID){
+    constructor(name, bezeichung, auftraggeber, ersteller_ID){
         super();
+        this.name = name;
         this.bezeichung = bezeichung;
         this.auftraggeber = auftraggeber;
         this.ersteller_ID = ersteller_ID;
+    }
+    /** Sets the bezeichung of the projekt */
+        setName(name) {
+      this.name = name;
+    }
+    /** gets the bezeichung of the projekt */
+    getName() {
+    return this.name;
     }
     /** Sets the bezeichung of the projekt */
     setBezeichnung(bezeichung) {
