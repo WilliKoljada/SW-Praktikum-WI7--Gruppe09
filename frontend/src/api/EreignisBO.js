@@ -7,7 +7,7 @@ export default class EreignisBO extends BusinessObject {
         super();
         this.zeitpunkt_ereigniseintritt = zeitpunkt_ereigniseintritt;
     }
-   
+
     // Sets the zeitpunkt_ereigniseintritt of the EreignisBO */
     setProjektlaufzeit(projektlaufzeit) {
     this.projektlaufzeit = projektlaufzeit;
@@ -16,13 +16,13 @@ export default class EreignisBO extends BusinessObject {
     getProjektlaufzeit() {
     return this.zeitpunkt_ereigniseintritt;
     }
-    
+
     /**
    * Returns an Array of  EreignisBO from a given JSON structure
    */
     static fromJSON(zeitpunkt_ereig) {
         let result = [];
-    
+
         if (Array.isArray(zeitpunkt_ereig)) {
             zeitpunkt_ereig.forEach((c) => {
             Object.setPrototypeOf(c, EreignisBO.prototype);
@@ -34,7 +34,7 @@ export default class EreignisBO extends BusinessObject {
           Object.setPrototypeOf(c, EreignisBO.prototype);
           result.push(c);
         }
-    
+
         return result;
       }
 }

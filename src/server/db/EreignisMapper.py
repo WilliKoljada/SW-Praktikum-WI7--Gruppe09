@@ -18,14 +18,17 @@ class EreignisMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from ereignis")
+        cursor.execute("SELECT id, type, datum, startzeit, endzeit, personID from ereignis")
         tuples = cursor.fetchall()
 
-        for (id, Zeitpunkt_Ereigniseintritt, creation_date) in tuples:
+        for (id, type, datum, startzeit, endzeit, personID) in tuples:
             ereignis= Ereignis()
             ereignis.set_id(id)
-            ereignis.set_creation_date(creation_date)
-            ereignis.set_zeitpunkt_ereigniseintritt(Zeitpunkt_Ereigniseintritt)
+            ereignis.set_type(type)
+            ereignis.set_datum(datum)
+            ereignis.set_startzeit(startzeit)
+            ereignis.set_endzeit(endzeit)
+            ereignis.set_personID(personID)
             result.append(ereignis)
 
         self._cnx.commit()
@@ -43,14 +46,73 @@ class EreignisMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM ereignis WHERE id={}".format(key)
+        command = "SELECT id, type, datum, startzeit, endzeit, personID FROM ereignis WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_time, zeitpunkt_ereigniseintritt) in tuples:
-            ereignis = Ereignis()
+        for (id, type, datum, startzeit, endzeit, personID) in tuples:
+            ereignis= Ereignis()
             ereignis.set_id(id)
-            ereignis.set_creation_date(creation_time)
-            ereignis.set_zeitpunkt_ereigniseintritt(zeitpunkt_ereigniseintritt)
+            ereignis.set_type(type)
+            ereignis.set_datum(datum)
+            ereignis.set_startzeit(startzeit)
+            ereignis.set_endzeit(endzeit)
+            ereignis.set_personID(personID)
+
+            result = ereignis
+
+        self._cnx.commit()
+        cursor.close()
+        return result
+
+    def find_by_type(self, value):
+        """Auslesen aller Ereignis anhand der type,
+        da diese vorgegeben ist, wird genau ein Objekt zurückgegeben.
+        :param key Primärschlüsselattribut
+        :return Ereignis-Objekt, das dem übergebenen Schlüssel entspricht, None bei
+        nicht vorhandenem DB-Tupel
+        """
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT id, type, datum, startzeit, endzeit, personID FROM ereignis WHERE type LIKE '{}'".format(value)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+        for (id, type, datum, startzeit, endzeit, personID) in tuples:
+            ereignis= Ereignis()
+            ereignis.set_id(id)
+            ereignis.set_type(type)
+            ereignis.set_datum(datum)
+            ereignis.set_startzeit(startzeit)
+            ereignis.set_endzeit(endzeit)
+            ereignis.set_personID(personID)
+
+            result = ereignis
+
+        self._cnx.commit()
+        cursor.close()
+        return result
+
+    def find_by_personID(self, personID):
+        """Auslesen aller Ereignis anhand der type,
+        da diese vorgegeben ist, wird genau ein Objekt zurückgegeben.
+        :param key Primärschlüsselattribut
+        :return Ereignis-Objekt, das dem übergebenen Schlüssel entspricht, None bei
+        nicht vorhandenem DB-Tupel
+        """
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT id, type, datum, startzeit, endzeit, personID FROM ereignis WHERE personID={}".format(personID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+        for (id, type, datum, startzeit, endzeit, personID) in tuples:
+            ereignis= Ereignis()
+            ereignis.set_id(id)
+            ereignis.set_type(type)
+            ereignis.set_datum(datum)
+            ereignis.set_startzeit(startzeit)
+            ereignis.set_endzeit(endzeit)
+            ereignis.set_personID(personID)
 
             result = ereignis
 
@@ -79,9 +141,8 @@ class EreignisMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 ereignis.set_id(1)
 
-        command = "INSERT INTO ereignis (id, creation_date, Zeitpunkt_Ereigniseintritt) VALUES (%s,%s,%s)"
-        data = (
-        ereignis.get_id(), ereignis.get_creation_date(), ereignis.get_zeitpunkt_ereigniseintritt())
+        command = "INSERT INTO ereignis (id, type, datum, startzeit, endzeit, personID) VALUES (%s,%s,%s,%s,%s,%s)"
+        data = (ereignis.get_id(), ereignis.get_type(), ereignis.datum(), ereignis.get_startzeit(), ereignis.get_endzeit(), ereignis.get_personID())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -95,9 +156,8 @@ class EreignisMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE ereignis SET Zeitpunkt_Ereigniseintritt=%s, creation_date=%s WHERE id=%s"
-        data = (ereignis.get_zeitpunkt_ereigniseintritt(), ereignis.get_creation_date(), ereignis.get_id())
-
+        command = "UPDATE ereignis SET type=%s, datm=%s, startzeit=%s, endzeit=%s, personID=%s WHERE id=%s"
+        data = (ereignis.get_type(), ereignis.datum(), ereignis.get_startzeit(), ereignis.get_endzeit(), ereignis.get_personID(), ereignis.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -111,7 +171,6 @@ class EreignisMapper(Mapper):
 
         command = "DELETE FROM ereignis WHERE id={}".format(ereignis.get_id())
         cursor.execute(command)
-
         self._cnx.commit()
         cursor.close()
 
@@ -121,7 +180,11 @@ class EreignisMapper(Mapper):
     # Zum Testen ausführen
 if (__name__ == "__main__"):
     with EreignisMapper() as mapper:
-            ereignis = Ereignis()
-            ereignis.set_zeitpunkt_ereigniseintritt("Mathe Chat")
-
-            mapper.insert(ereignis)
+        ereignis = Ereignis()
+        ereignis.set_id(12)
+        ereignis.set_type("Urlaub")
+        ereignis.set_datum("2022-06-13")
+        ereignis.set_startzeit("07:30:00")
+        ereignis.set_endzeit("16:00:00")
+        ereignis.set_personID(1)
+        mapper.insert(ereignis)
