@@ -3,16 +3,20 @@ import BusinessObject from './BusinessObject';
 export default class EreignisBO extends BusinessObject {
   constructor(type, bezeichnung, datum, startzeit, endzeit, personID){
     super();
-
+    this.type = type;
     this.bezeichnung = bezeichnung;
     this.datum = datum;
     this.startzeit = startzeit;
     this.endzeit = endzeit;
     this.personID = personID;
   }
-
+  /** sets the type of the EreignisBO */
+  setType(type) {
+    this.type = type;
   }
-
+  /** gets the type of the EreignisBO */
+  getType() {
+    return this.type;
   }
   /** sets the bezeichnung of the EreignisBO */
   setBezeichnung(bezeichnung) {
