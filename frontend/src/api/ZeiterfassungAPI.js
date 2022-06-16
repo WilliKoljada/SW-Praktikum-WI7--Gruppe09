@@ -66,12 +66,13 @@ export default class ZeiterfassungAPI {
   #updateEreignisByURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignis/${id}`;
   #deleteEreignisByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignis/${id}`;
 
-  // Projekt related
+    // Projekt related
   #getAllProjektsURL = () => `${this.#ZeiterfassungServerBaseURL}/projekt`;
   #getProjektByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
-  #addProjektByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
-  #updateProjektByURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
-  #deleteProjektByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
+  #addProjektURL = () => `${this.#ZeiterfassungServerBaseURL}/projekt`;
+  #updateProjektURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
+  #deleteProjektURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
+
 
   // Projektarbeit related
   #getAllProjektarbeitURL = () => `${this.#ZeiterfassungServerBaseURL}/projektarbeit`;
