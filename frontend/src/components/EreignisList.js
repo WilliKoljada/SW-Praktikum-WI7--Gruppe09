@@ -46,7 +46,7 @@ class EreignisList extends Component {
           ereigniss: [],
           loadingInProgress: false,
           loadingEreignisError: e
-        )
+        }
       )
     );
 
@@ -184,14 +184,19 @@ class EreignisList extends Component {
           </Grid>
         </Grid>
         {
-
+          // Show the list of EreignisListEntry components
+          // Do not use strict comparison, since expandedEreignisID maybe a string if given from the URL parameters
           filteredEreigniss.map(ereignis =>
             <EreignisListEntry key={ereignis.getID()} ereignis={ereignis} expandedState={expandedEreignisID === ereignis.getID()}
               onExpandedStateChange={this.onExpandedStateChange}
               onEreignisDeleted={this.ereignisDeleted}
             />)
         }
-
+        <LoadingProgress show={loadingInProgress} />
+        <ContextErrorMessage error={error} contextErrorMsg={`The list of ereignis could not be loaded.`} onReload={this.getEreigniss} />
+        <EreignisForm show={showEreignisForm} onClose={this.ereignisFormClosed} />
+      </div>
+    );
   }
 }
 
