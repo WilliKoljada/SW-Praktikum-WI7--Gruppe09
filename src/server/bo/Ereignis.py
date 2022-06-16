@@ -9,7 +9,9 @@ class Ereignis (bo.BusinessObject):
         self._type = ""
         self._datum = None
         self._startzeit = None
-
+        self._endzeit = None
+        self._aktivitaetID = 0
+        self._personID = 0
 
     def get_type(self):
         return self._type
@@ -26,7 +28,14 @@ class Ereignis (bo.BusinessObject):
     def get_startzeit(self):
         return self._startzeit
 
+    def set_startzeit(self, startzeit):
+        self._startzeit = startzeit
 
+    def get_endzeit(self):
+        return self._endzeit
+
+    def set_endzeit(self, endzeit):
+        self._endzeit = endzeit
 
     def get_personID(self):
         return self._personID
@@ -39,6 +48,10 @@ class Ereignis (bo.BusinessObject):
     def from_dict(dictionary=dict()):
         obj = Ereignis()
         obj.set_id(dictionary["id"])
-
+        obj.set_type(dictionary["type"])
+        obj.set_datum(dictionary["datum"])
+        obj.set_startzeit(dictionary["startzeit"])
+        obj.set_endzeit(dictionary["endzeit"])
+        obj.set_personID(dictionary["personID"])
 
         return obj
