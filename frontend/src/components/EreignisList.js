@@ -25,6 +25,7 @@ class EreignisList extends Component {
     // Init the state
     this.state = {
       ereigniss: [],
+      filteredEreigniss: [],
       ereignisFilter: "",
       error: null,
       loadingInProgress: false,
@@ -88,6 +89,14 @@ class EreignisList extends Component {
    *
    * @param {ereignis} EreignisBO of the EreignisListEntry to be deleted
    */
+  ereignisDeleted = ereignis => {
+    const newEreignisList = this.state.ereigniss.filter(ereignisFromState => ereignisFromState.getID() !== ereignis.getID());
+    this.setState({
+      ereigniss: newEreignisList,
+      filteredEreigniss: [...newEreignisList],
+      showEreignisForm: false
+    });
+  }
 
   /** Handles the onClick event of the add ereignis button */
   addEreignisButtonClicked = event => {
@@ -117,7 +126,16 @@ class EreignisList extends Component {
   }
 
   /** Handels onChange events of the ereignis filter text field */
-  filterFieldValueChange = event =>
+  filterFieldValueChange = event => {
+    const value = event.target.value.toLowerCase();
+    this.setState({
+      filteredEreigniss: this.state.ereigniss.filter(ereignis => {
+        let nameContainsValue = ereignis.getName().toLowerCase().includes(value);
+        return nameContainsValue;
+      }),
+      ereignisFilter: value
+    });
+  }
 
   /** Handles the onClose event of the clear filter button */
   clearFilterFieldButtonClicked = () => {
@@ -129,7 +147,52 @@ class EreignisList extends Component {
   }
 
   /** Renders the component */
-  render()
+  render() {
+    const { classes } = this.props;
+    const { filteredEreigniss, ereignisFilter, expandedEreignisID, loadingInProgress, error, showEreignisForm } = this.state;
+
+    return (
+      <div className={classes.root}>
+        <Grid className={classes.ereignisFilter} container spacing={1} justifyContent="flex-start" alignItems="center">
+          <Grid item>
+            <Typography>
+              Filter ereignis list by name:
+              </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              autoFocus
+              fullWidth
+              id="ereignisFilter"
+              type="text"
+              value={ereignisFilter}
+              onChange={this.filterFieldValueChange}
+              InputProps={{
+                endAdornment: <InputAdornment position="end">
+                  <IconButton onClick={this.clearFilterFieldButtonClicked}>
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>,
+              }}
+            />
+          </Grid>
+          <Grid item xs />
+          <Grid item>
+            <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={this.addEreignisButtonClicked}>
+              Buchung
+          </Button>
+          </Grid>
+        </Grid>
+        {
+
+          filteredEreigniss.map(ereignis =>
+            <EreignisListEntry key={ereignis.getID()} ereignis={ereignis} expandedState={expandedEreignisID === ereignis.getID()}
+              onExpandedStateChange={this.onExpandedStateChange}
+              onEreignisDeleted={this.ereignisDeleted}
+            />)
+        }
+
+  }
 }
 
 /** Component specific styles */
