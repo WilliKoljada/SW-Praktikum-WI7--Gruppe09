@@ -46,7 +46,7 @@ class EreignisList extends Component {
           ereigniss: [],
           loadingInProgress: false,
           loadingEreignisError: e
-
+        )
       )
     );
 
