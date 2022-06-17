@@ -90,7 +90,7 @@ class AktivitaetList extends Component {
    * @param {aktivitaet} AktivitaetBO of the AktivitaetListEntry to be deleted
    */
   aktivitaetDeleted = aktivitaet => {
-    const newAktivitaetList = this.state.aktivitaet.filter(aktivitaetFromState => aktivitaetFromState.getID() !== aktivitaet.getID());
+    const newAktivitaetList = this.state.aktivitaets.filter(aktivitaetFromState => aktivitaetFromState.getID() !== aktivitaet.getID());
     this.setState({
       aktivitaets: newAktivitaetList,
       filteredAktivitaets: [...newAktivitaetList],
@@ -153,7 +153,7 @@ class AktivitaetList extends Component {
 
     return (
       <div className={classes.root}>
-        <Grid className={classes.aktivitaetFilter} container spacing={1} justify="flex-start" alignItems="center">
+        <Grid className={classes.aktivitaetFilter} container spacing={1} justifyContent="flex-start" alignItems="center">
           <Grid item>
             <Typography>
               Filter aktivität list by name:
@@ -201,10 +201,10 @@ class AktivitaetList extends Component {
 }
 
 /** Component specific styles */
-const styles = theme => (
-  root:
+const styles = theme => ({
+  root: {
     width: '100%',
-
+  },
   aktivitaetFilter: {
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(1),
