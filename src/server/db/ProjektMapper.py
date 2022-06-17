@@ -18,16 +18,15 @@ class ProjektMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from projekt")
+        cursor.execute("SELECT id, name, beschreibung, personID from projekt")
         tuples = cursor.fetchall()
 
-        for (id,Bezeichnung, Auftraggeber, creation_date, ersteller_Id) in tuples:
+        for (id, name, beschreibung, personID) in tuples:
             projekt= Projekt()
             projekt.set_id(id)
-            projekt.set_creation_date(creation_date)
-            projekt.set_auftraggeber(Auftraggeber)
-            projekt.set_bezeichnung(Bezeichnung)
-            projekt.set_ersteller_ID(ersteller_Id)
+            projekt.set_name(name)
+            projekt.set_beschreibung(beschreibung)
+            projekt.set_personID(personID)
             result.append(projekt)
 
         self._cnx.commit()
@@ -45,16 +44,16 @@ class ProjektMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM projekt WHERE id={}".format(key)
+        command = "SELECT id, name, beschreibung, personID FROM projekt WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id,Bezeichnung, Auftraggeber, creation_date, ersteller_Id) in tuples:
+
+        for (id, name, beschreibung, personID) in tuples:
             projekt = Projekt()
             projekt.set_id(id)
-            projekt.set_creation_date(creation_date)
-            projekt.set_auftraggeber(Auftraggeber)
-            projekt.set_bezeichnung(Bezeichnung)
-            projekt.set_ersteller_ID(ersteller_Id)
+            projekt.set_name(name)
+            projekt.set_beschreibung(beschreibung)
+            projekt.set_personID(personID)
 
             result = projekt
 
@@ -62,50 +61,21 @@ class ProjektMapper(Mapper):
         cursor.close()
         return result
 
-
-    def find_by_ersteller_ID(self, key):
-        """Auslesen aller Projekt anhand der ID,
-        da diese vorgegeben ist, wird genau ein Objekt zurückgegeben.
-        :param key Primärschlüsselattribut
-        :return Projekt-Objekt, das dem übergebenen Schlüssel entspricht, None bei
-        nicht vorhandenem DB-Tupel
-        """
-        result = None
-
-        cursor = self._cnx.cursor()
-        command = "SELECT * FROM projekt WHERE id={}".format(key)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-        for (id,Bezeichnung, Auftraggeber, creation_date, ersteller_Id) in tuples:
-            projekt = Projekt()
-            projekt.set_id(id)
-            projekt.set_creation_date(creation_date)
-            projekt.set_auftraggeber(Auftraggeber)
-            projekt.set_bezeichnung(Bezeichnung)
-            projekt.set_ersteller_ID(ersteller_Id)
-
-            result = projekt
-
-        self._cnx.commit()
-        cursor.close()
-        return result
-
-    def find_by_bezeichnung(self, bezeichnung):
+    def find_by_name(self, name):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date, Auftraggeber, Bezeichnung, ersteller_ID FROM projekt WHERE Bezeichnung={}".format(
-            bezeichnung)
+        command = "SELECT id, name, beschreibung, personID FROM projekt WHERE name LIKE '{}'".format(name)
 
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, Bezeichnung, Auftraggeber, creation_date, ersteller_Id) in tuples:
+        for (id, name, beschreibung, personID) in tuples:
             projekt = Projekt()
             projekt.set_id(id)
-            projekt.set_bezeichnung(Bezeichnung)
-            projekt.set_auftraggeber(Auftraggeber)
-            projekt.set_creation_date(creation_date)
+            projekt.set_name(name)
+            projekt.set_beschreibung(beschreibung)
+            projekt.set_personID(personID)
             result.append(projekt)
 
         self._cnx.commit()
@@ -134,8 +104,8 @@ class ProjektMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 projekt.set_id(1)
 
-        command = "INSERT INTO projekt (id, Bezeichnung, Auftraggeber, creation_date, ersteller_ID) VALUES (%s,%s,%s,%s, %s)"
-        data = (projekt.get_id(), projekt.get_bezeichnung(), projekt.get_auftraggeber(), projekt.get_creation_date(), projekt.get_ersteller_ID())
+        command = "INSERT INTO projekt (id, name, beschreibung, personID) VALUES (%s,%s,%s,%s)"
+        data = (projekt.get_id(), projekt.get_name(), projekt.get_beschreibung(), projekt.get_personID())
 
         cursor.execute(command, data)
 
@@ -176,8 +146,10 @@ class ProjektMapper(Mapper):
     # Zum Testen ausführen
 if (__name__ == "__main__"):
     with ProjektMapper() as mapper:
-            projekt = Projekt()
-            projekt.set_bezeichnung("madrid")
-            projekt.set_auftraggeber('Real')
+        projekt = Projekt()
+        projekt.set_name("madrid")
+        projekt.set_beschreibung("beschreibung")
+        projekt.set_personID(1)
+        projekt.set_id(1)
 
-            mapper.insert(projekt)
+        mapper.insert(projekt)
