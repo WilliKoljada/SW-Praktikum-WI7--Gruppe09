@@ -28,14 +28,15 @@ class Administration(object):
 
     """person-spezifische Methoden"""
 
-    def create_person(self, google_id, vorname, nachname, email, benutzername):
+    def create_person(self, vorname, nachname, email, benutzername, role, google_id):
         """Eine Person anlegen"""
         p = Person()
-        p.set_google_user_id(google_id)
+        p.set_google_id(google_id)
         p.set_vorname(vorname)
         p.set_nachname(nachname)
         p.set_email(email)
-        p.set_is_benutzername(benutzername)
+        p.set_benutzername(benutzername)
+        p.set_role(role)
         p.set_id(1)
 
         with PersonMapper() as mapper:
