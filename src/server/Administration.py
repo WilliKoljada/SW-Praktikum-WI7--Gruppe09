@@ -78,12 +78,12 @@ class Administration(object):
 
     """aktivitaet-spezifische Methoden"""
 
-    def create_aktivitaet(self, bezeichnung, kapazitaet_in_personentagen):
+    def create_aktivitaet(self, name, beschreibung, projektID):
         """Eine Aktivitaet anlegen"""
         p = Aktivitaet()
-        p.set_id(1)
-        p.set_bezeichnung(bezeichnung)
-        p.set_kapazitaet_in_personentagen(kapazitaet_in_personentagen)
+        p.set_name(name)
+        p.set_beschreibung(beschreibung)
+        p.set_projektID(projektID)
 
         with AktivitaetMapper() as mapper:
             return mapper.insert(p)
