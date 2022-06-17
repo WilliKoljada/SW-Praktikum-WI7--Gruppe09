@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Paper, Typography, Tabs, Tab } from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
-import ProfileDropDown from '../dialogs/ProfileDropDown';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Paper, Typography, Tabs, Tab } from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
+import ProfileDropDown from "../dialogs/ProfileDropDown";
 
 /**
  * Shows the header with the main navigation Tabs within a Paper.
- * 
+ *
  * @see See Material-UIs [Tabs](https://material-ui.com/components/tabs/)
  * @see See Material-UIs [Paper](https://material-ui.com/components/paper/)
- * 
+ *
  */
 class Header extends Component {
 
@@ -35,20 +35,20 @@ class Header extends Component {
     const { user } = this.props;
 
     return (
-      <Paper variant='outlined' >
+      <Paper variant="outlined" >
         <ProfileDropDown user={user} />
-        <Typography variant='h3' component='h1' align='center'>
-          Zeiterfassungsapp.
+        <Typography variant="h3" component="h1" align="center">
+          Zeiterfassung System
         </Typography>
-        
+
         {
           user ?
-            <Tabs indicatorColor='secondary' textColor='secondary' centered value={this.state.tabindex} onChange={this.handleTabChange} >
-              <Tab label='Projects' component={RouterLink} to={`/createAktivitaet`} />
-              <Tab label='Activities' component={RouterLink} to={`/createAktivitaet`} />
-              <Tab label='Persons' component={RouterLink} to={`/`} />
-              <Tab label='Times' component={RouterLink} to={`/`} />
-              <Tab label='About' component={RouterLink} to={`/about`} />
+            <Tabs indicatorColor="primary" textColor="primary" centered value={this.state.tabindex} onChange={this.handleTabChange} >
+              <Tab label="Personen" component={RouterLink} to={`/persons`} />
+              <Tab label="Projekte" component={RouterLink} to={`/projekte`} />
+              <Tab label="Zeitintervall" component={RouterLink} to={`/zeitintervall`} />
+              <Tab label="Arbeitzeitkonto" component={RouterLink} to={`/arbeitzeit`} />
+              <Tab label="About" component={RouterLink} to={`/about`} />
             </Tabs>
             : null
         }

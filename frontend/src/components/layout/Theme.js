@@ -56,7 +56,7 @@ const theme = createTheme({
     },
     icon: colors.blueGrey[600],
     divider: colors.grey[200]
-  }, 
+  },
 });
 
 
