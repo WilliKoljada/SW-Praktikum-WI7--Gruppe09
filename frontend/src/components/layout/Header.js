@@ -46,6 +46,8 @@ class Header extends Component {
             <Tabs indicatorColor="primary" textColor="primary" centered value={this.state.tabindex} onChange={this.handleTabChange} >
               <Tab label="Personen" component={RouterLink} to={`/persons`} />
               <Tab label="Projekte" component={RouterLink} to={`/projekte`} />
+              <Tab label="Aktivitaten" component={RouterLink} to={`/aktivitaeten`} />
+              <Tab label="Ereignisse" component={RouterLink} to={`/ereignis`} />
               <Tab label="Zeitintervall" component={RouterLink} to={`/zeitintervall`} />
               <Tab label="Arbeitzeitkonto" component={RouterLink} to={`/arbeitzeit`} />
               <Tab label="About" component={RouterLink} to={`/about`} />
