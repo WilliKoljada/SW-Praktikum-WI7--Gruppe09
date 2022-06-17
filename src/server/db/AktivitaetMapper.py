@@ -146,9 +146,10 @@ class AktivitaetMapper(Mapper):
 if (__name__ == "__main__"):
     with AktivitaetMapper() as mapper:
             aktivitaet = Aktivitaet()
-            aktivitaet = Aktivitaet()
             aktivitaet.set_name('sff')
+            aktivitaet.set_id(2)
             aktivitaet.set_beschreibung("beschreibung")
+            aktivitaet.set_projektID(1)
 
 
             mapper.insert(aktivitaet)
