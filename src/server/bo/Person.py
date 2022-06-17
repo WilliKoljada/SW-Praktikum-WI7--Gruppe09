@@ -40,14 +40,14 @@ class Person (bo.BusinessObject):
         "Auslesen des benutzername"
         return self._benutzername
 
-    def set_is_benutzername(self, benutzername):
+    def set_benutzername(self, benutzername):
         "Akzeptieren der benutzername"
         self._benutzername = benutzername
 
-    def get_google_user_id (self):
+    def get_google_id (self):
         return self._google_id
 
-    def set_google_user_id (self, google_id):
+    def set_google_id (self, google_id):
         self._google_id = google_id
 
 
@@ -59,6 +59,7 @@ class Person (bo.BusinessObject):
         obj.set_vorname(dictionary["vorname"])
         obj.set_nachname(dictionary["nachname"])
         obj.set_email(dictionary["email"])
-        obj.set_is_benutzername(dictionary["benutzername"])
+        obj.set_benutzername(dictionary["benutzername"])
+        obj.set_google_id(dictionary["google_id"])
 
         return obj
