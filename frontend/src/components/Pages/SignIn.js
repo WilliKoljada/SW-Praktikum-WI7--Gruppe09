@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Button, Grid, Typography, withStyles } from '@material-ui/core';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Button, Grid, Typography, withStyles } from "@material-ui/core";
 
 /**
 Beschreibt die Komponente der Sign-In Seite
@@ -21,12 +21,12 @@ class SignIn extends Component {
 
 		return (
 			<div>
-				<Typography className={classes.root} align='center' variant='h6'>Welcome to Zeiterfassungsapp.  </Typography>
-				<Typography className={classes.root} align='center'>It appears, that you are not signed in.</Typography>
-				<Typography className={classes.root} align='center'>In order to use our services, please: </Typography>
-				<Grid container justify='center'>
+				<Typography className={classes.root} align="center" variant="h6">Welcome   </Typography>
+				<Typography className={classes.root} align="center">It appears, that you are not signed in.</Typography>
+				<Typography className={classes.root} align="center">To use the services of Zeiterfassung please.</Typography>
+				<Grid container justifyContent="center">
 					<Grid item>
-						<Button variant='contained' color='secondary' onClick={this.handleSignInButton}>
+						<Button variant="contained" color="secondary" onClick={this.handleSignInButton}>
 							Sign in with Google
       			</Button>
 					</Grid>
