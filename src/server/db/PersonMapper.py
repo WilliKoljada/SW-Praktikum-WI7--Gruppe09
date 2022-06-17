@@ -18,18 +18,18 @@ class PersonMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from person")
+        cursor.execute("SELECT id, vorname, nachname, email, benutzername, role, google_id from person")
         tuples = cursor.fetchall()
 
-        for (id, vorname, nachname, Email, Benutzername, creation_date, google_id) in tuples:
+        for (id, vorname, nachname, Email, Benutzername, role, google_id) in tuples:
             person = Person()
             person.set_id(id)
             person.set_vorname(vorname)
             person.set_nachname(nachname)
             person.set_email(Email)
-            person.set_is_benutzername(Benutzername)
-            person.set_creation_date(creation_date)
-            person.set_google_user_id(google_id)
+            person.set_benutzername(Benutzername)
+            person.set_google_id(google_id)
+            person.set_role(role)
             result.append(person)
 
         self._cnx.commit()
@@ -37,7 +37,7 @@ class PersonMapper(Mapper):
 
         return result
 
-    def find_by_key(self, id):
+    def find_by_key(self, key):
         """Suchen eines Benutzers mit vorgegebener Person ID. Da diese eindeutig ist,
         wird genau ein Objekt zurückgegeben.
         :param id Primärschlüsselattribut (->DB)
@@ -46,26 +46,19 @@ class PersonMapper(Mapper):
         """
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, vorname, nachname, Email, Benutzername, creation_date, google_id FROM person WHERE id={}".\
-            format(id)
+        command = "SELECT id, vorname, nachname, email, benutzername, role, google_id FROM person WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        try:
-            (id, vorname, nachname, Email, Benutzername, creation_date, google_id) = tuples[0]
+        for (id, vorname, nachname, email, benutzername, role, google_id) in tuples:
             person = Person()
             person.set_id(id)
             person.set_vorname(vorname)
             person.set_nachname(nachname)
-            person.set_email(Email)
-            person.set_is_benutzername(Benutzername)
-            person.set_creation_date(creation_date)
-            person.set_google_user_id(google_id)
-
-        except IndexError:
-            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
-            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
-            person = None
+            person.set_email(email)
+            person.set_benutzername(benutzername)
+            person.set_role(role)
+            person.set_google_id(google_id)
 
         self._cnx.commit()
         cursor.close()
@@ -75,7 +68,6 @@ class PersonMapper(Mapper):
     def find_by_google_user_id(self, google_user_id):
         """Suchen eines Benutzers mit vorgegebener Google ID. Da diese eindeutig ist,
         wird genau ein Objekt zurückgegeben.
-
         :param google_user_id die Google ID des gesuchten Users.
         :return User-Objekt, das die übergebene Google ID besitzt,
             None bei nicht vorhandenem DB-Tupel.
@@ -83,21 +75,20 @@ class PersonMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, vorname, nachname, Email, Benutzername, creation_date, google_id FROM person WHERE id=\
-        '{}".format(google_user_id)
+        command = "SELECT id, vorname, nachname, email, benutzername, role, google_id FROM person WHERE google_id='{}".format(google_user_id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, vorname, nachname, Email, Benutzername, creation_date, google_id) = tuples[0]
+            (id, vorname, nachname, email, benutzername, role, google_id) = tuples[0]
             u = Person()
             u.set_id(id)
             u.set_vorname(vorname)
             u.set_nachname(nachname)
-            u.set_email(Email)
-            u.set_is_benutzername(Benutzername)
-            u.set_creation_date(creation_date)
-            u.set_google_user_id(google_id)
+            u.set_email(email)
+            u.set_benutzername(benutzername)
+            u.set_role(role)
+            u.set_google_id(google_id)
             result = u
         except IndexError:
             """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
@@ -117,22 +108,22 @@ class PersonMapper(Mapper):
         """
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, vorname, nachname, Benutzername, creation_date, google_id, \
-         FROM person WHERE Email={}".format(email)
+        command = "SELECT id, vorname, nachname, email, benutzername, role, google_id, \
+         FROM person WHERE email={}".format(email)
 
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, vorname, nachname, Email, Benutzername, creation_date, google_id) = tuples[0]
+            (id, vorname, nachname, email, benutzername, role, google_id) = tuples[0]
             person = Person()
             person.set_id(id)
             person.set_vorname(vorname)
             person.set_nachname(nachname)
-            person.set_email(Email)
-            person.set_is_benutzername(Benutzername)
-            person.set_creation_date(creation_date)
-            person.set_google_user_id(google_id)
+            person.set_email(email)
+            person.set_benutzername(benutzername)
+            person.set_role(role)
+            person.set_google_id(google_id)
 
             result = person
 
@@ -170,10 +161,9 @@ class PersonMapper(Mapper):
 
                 person.set_id(maxid[0] + 1)
 
-        command = "INSERT INTO person (id, vorname, nachname, Email, Benutzername, creation_date, google_id) \
-        VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        command = "INSERT INTO person (id, vorname, nachname, email, benutzername, role, google_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         data = (person.get_id(), person.get_vorname(), person.get_nachname(),
-        person.get_email(), person.get_benutzername(), person.get_creation_date(), person.get_google_user_id())
+        person.get_email(), person.get_benutzername(), person.get_role(), person.get_google_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -186,30 +176,20 @@ class PersonMapper(Mapper):
         """
 
         cursor = self._cnx.cursor()
-        command = "UPDATE person SET vorname = ('{}'), nachname = ('{}'), Email = ('{}')," \
-                      " Benutzername = ('{}'), creation_date = ('{}'), google_id = ('{}') WHERE id = ('{}')" \
-                .format(person.get_vorname(),
-                        person.get_nachname(),
-                        person.get_email(),
-                        person.get_benutzername(),
-                        person.get_creation_date(),
-                        person.get_google_user_id(),
-                        person.get_id()
-                        )
-        cursor.execute(command)
-
+        command = "UPDATE person SET vorname=%s, nachname=%s, email=%s benutzername=%s, role=%s, google_id=%s WHERE id=%s"
+        data = (person.get_vorname(), person.get_nachname(), person.get_email(), person.get_benutzername(), person.get_role(), person.get_google_id(), person.get_id())
+        cursor.execute(command, data)
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, person):
+    def delete(self, id):
         """Löschen der Daten eines Projekt-Objekts aus der Datenbank.
         :param Person das aus der DB zu löschende "Objekt"
         """
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM person WHERE id={}".format(person.get_id())
+        command = "DELETE FROM person WHERE id={}".format(id)
         cursor.execute(command)
-
         self._cnx.commit()
         cursor.close()
 
@@ -217,12 +197,15 @@ class PersonMapper(Mapper):
 
 
     # Zum Testen ausführen
-if (__name__ == "__main__"):
+if __name__ == "__main__":
     with PersonMapper() as mapper:
-            person = Person()
-            person.set_vorname('')
-            person.set_nachname('')
-            person.set_is_benutzername('')
+        person = Person()
+        person.set_email(1)
+        person.set_vorname("test")
+        person.set_nachname("user")
+        person.set_email("test@user.de")
+        person.set_benutzername("testuser")
+        person.set_role("admin")
+        person.set_google_id("jdhbkjv-fukjhr-efkjwfb")
 
-
-            mapper.insert(person)
+        mapper.insert(person)
