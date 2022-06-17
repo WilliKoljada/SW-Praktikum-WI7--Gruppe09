@@ -5,20 +5,22 @@ class Aktivitaet(bo.BusinessObject):
 
     def __init__(self):
         super().__init__()
-        self._bezeichnung = ""
-        self._kapazitaet_in_personentagen = ""
+        self._name = ""
+        self._beschreibung = ""
+        self._projektID = 0
 
-    def set_bezeichnung(self, bezeichnung):
-        self._bezeichnung = bezeichnung
+    def set_name(self, name):
+        self._name = name
 
-    def get_bezeichnung(self):
-        return self._bezeichnung
+    def get_name(self):
+        return self._name
 
-    def set_kapazitaet_in_personentagen(self, kapazitaet_in_personentagen):
-        self._kapazitaet_in_personentagen = kapazitaet_in_personentagen
+    def set_beschreibung(self, beschreibung):
+        self._beschreibung = beschreibung
 
-    def get_kapazitaet_in_personentagen(self):
-        return self._kapazitaet_in_personentagen
+    def get_beschreibung(self):
+        return self._beschreibung
+
 
 
     @staticmethod
@@ -26,8 +28,9 @@ class Aktivitaet(bo.BusinessObject):
         """Umwandeln eines Python dict() in ein Rating()."""
         obj = Aktivitaet()
         obj.set_id(dictionary["id"])  # eigentlich Teil von BusinessObject !
-        obj.set_bezeichnung(dictionary["bezeichnung"])
-        obj.set_kapazitaet_in_personentagen(dictionary["kapazitaet_in_personentagen"])
+        obj.set_name(dictionary["name"])
+        obj.set_beschreibung(dictionary["beschreibung"])
+        obj.set_projektID(dictionary["projektID"])
 
         return obj
 
