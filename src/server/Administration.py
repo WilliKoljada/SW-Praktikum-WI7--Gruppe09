@@ -192,13 +192,12 @@ class Administration(object):
 
     """projekt-spezifische Methoden"""
 
-    def create_projekt(self, auftraggeber, bezeichnung, ersteller_ID):
+    def create_projekt(self, name, beschreibung, personID):
         """Ein Projekt anlegen"""
         p = Projekt()
-        p.set_id(1)
-        p.set_auftraggeber(auftraggeber)
-        p.set_bezeichnung(bezeichnung)
-        p.set_ersteller_ID(ersteller_ID)
+        p.set_name(name)
+        p.set_beschreibung(beschreibung)
+        p.set_personID(personID)
 
         with ProjektMapper() as mapper:
             return mapper.insert(p)
