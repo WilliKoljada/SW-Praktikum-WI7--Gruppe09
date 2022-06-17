@@ -6,27 +6,27 @@ class Projekt (bo.BusinessObject):
 
     def __init__(self):
         super().__init__()
-        self._bezeichnung = ""
-        self._auftraggeber = ""
-        self.ersteller_ID = 0
+        self._name = ""
+        self._beschreibung = ""
+        self.personID = 0
 
-    def get_bezeichnung(self):
-        return self._bezeichnung
+    def get_beschreibung(self):
+        return self._beschreibung
 
-    def set_bezeichnung(self, value):
-        self._bezeichnung = value
+    def set_beschreibung(self, value):
+        self._beschreibung = value
 
-    def get_auftraggeber(self):
-        return self._auftraggeber
+    def get_name(self):
+        return self._name
 
-    def set_auftraggeber(self, value):
-        self._auftraggeber = value
+    def set_name(self, value):
+        self._name = value
 
-    def get_ersteller_ID(self):
-        return self.ersteller_ID
+    def get_personID(self):
+        return self.personID
     
-    def set_ersteller_ID(self, ersteller_ID):
-        self._ersteller_ID = ersteller_ID
+    def set_personID(self, personID):
+        self._personID = personID
 
 
 
@@ -35,9 +35,8 @@ class Projekt (bo.BusinessObject):
     def from_dict(dictionary=dict()):
         obj = Projekt()
         obj.set_id(dictionary["id"])
-        obj.set_creation_date((dictionary["creation_date"]))
-        obj.set_bezeichnung(dictionary["bezeichnung"])
-        obj.set_auftraggeber(dictionary["auftraggeber"])
-        obj.set_ersteller_ID(dictionary["ersteller_ID"])
+        obj.set_name((dictionary["name"]))
+        obj.set_beschreibung(dictionary["beschreibung"])
+        obj.set_personID(dictionary["personID"])
 
         return obj
