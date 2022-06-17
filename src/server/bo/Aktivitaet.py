@@ -21,6 +21,11 @@ class Aktivitaet(bo.BusinessObject):
     def get_beschreibung(self):
         return self._beschreibung
 
+    def set_projektID(self, projektID):
+        self._projektID = projektID
+
+    def get_projektID(self):
+        return self._projektID
 
 
     @staticmethod
