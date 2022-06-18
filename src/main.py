@@ -41,25 +41,21 @@ B. Konventionen für dieses Module:
         verbunden.
 """
 
-'''Unser Service basiert auf Flask'''
+"""Unser Service basiert auf Flask"""
+from inspect import Attribute
 from flask import Flask
-'''Auf Flask aufbauend nutzen wir RestX'''
+"""Auf Flask aufbauend nutzen wir RestX"""
 from flask_restx import Api, Resource, fields
-'''Wir benutzen noch eine Flask-Erweiterung für Cross-Origin Resource Sharing'''
+"""Wir benutzen noch eine Flask-Erweiterung für Cross-Origin Resource Sharing"""
 from flask_cors import CORS
-'''Wir greifen natürlich auf unsere Applikationslogik inkl. BusinessObject-Klassen zurück'''
+"""Wir greifen natürlich auf unsere Applikationslogik inkl. BusinessObject-Klassen zurück"""
 
 from server.bo.Aktivitaet import Aktivitaet
-from server.bo.Arbeitszeitkonto import Arbeitszeitkonto
 from server.Administration import Administration
 from server.bo.Projekt import Projekt
 from server.bo.Person import Person
 from server.bo.Zeitintervall import Zeitintervall
-from server.bo.Zeitintervallbuchung import Zeitintervallbuchung
-from server.bo.Projektarbeit import Projektarbeit
-from server.bo.Ereignisbuchung import Ereignisbuchung
 from server.bo.Ereignis import Ereignis
-from server.bo.Buchung import Buchung
 
 """Außerdem nutzen wir einen selbstgeschriebenen Decorator, der die Authentifikation übernimmt"""
 from SecurityDecorator import secured
@@ -123,8 +119,8 @@ ereignis = api.inherit("Ereignis", bo, {
 })
 # Alle weiteren bo´s wie bei Aktivitaet erstellen
 
-@zeiterfassungapp.route('/aktivitaet')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.route("/aktivitaet")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
 class AktivitaetListOperations(Resource):
     #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(aktivitaet)
@@ -146,16 +142,16 @@ class AktivitaetListOperations(Resource):
         proposal = Aktivitaet.from_dict(api.payload)
 
         if proposal is not None:
-            akt = adm.create_aktivitaet(proposal.get_bezeichnung(), proposal.get_kapazitaet_in_personentagen())
+            akt = adm.create_aktivitaet(proposal.get_name(), proposal.get_beschreibung(), proposal.get_projektID())
             return akt, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
-            return '', 500
+            return "", 500
 
 
-@zeiterfassungapp.route('/aktivitaet/<int:id>')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('id', 'Die ID des Aktivitaet-Objekts')
+@zeiterfassungapp.route("/aktivitaet/<int:id>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("id", "Die ID des Aktivitaet-Objekts")
 class AktivitaetOperations(Resource):
     @zeiterfassungapp.marshal_with(aktivitaet)
     #@secured zwecks Testung vom Backend deaktiviert
@@ -173,13 +169,11 @@ class AktivitaetOperations(Resource):
         Löschende Objekt wird durch id bestimmt.
         """
         adm = Administration()
-        akt = adm.get_aktivitaet_by_id(id)
-        adm.delete_aktivitaet(akt)
-        return '', 200
+        adm.delete_aktivitaet(id)
+        return "", 200
 
     @zeiterfassungapp.marshal_with(aktivitaet)
     @zeiterfassungapp.expect(aktivitaet, validate=True)
-
     def put(self, id):
         """Update einer bestimmten Aktivitaet.
         """
@@ -188,10 +182,25 @@ class AktivitaetOperations(Resource):
 
         if p is not None:
             p.set_id(id)
-            adm.save_aktivitaet(p)
-            return '', 200
+            adm.update_aktivitaet(p)
+            return p, 200
         else:
-            return '', 500
+            return "", 500
+
+
+@zeiterfassungapp.route("/aktivitaet/<string:name>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("name", "Der Name des Aktivitaet-Objekts")
+class AktivitaetNameOperations(Resource):
+    @zeiterfassungapp.marshal_with(aktivitaet)
+    #@secured zwecks Testung vom Backend deaktiviert
+    def get(self, name):
+        """Auslesen einer bestimmten Aktivitaet-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        akt = adm.get_aktivitaet_by_name(name)
+        return akt
 
 @zeiterfassungapp.route('/buchung')
 @zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
