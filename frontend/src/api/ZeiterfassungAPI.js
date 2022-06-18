@@ -125,85 +125,62 @@ export default class ZeiterfassungAPI {
     })
   }
 
-  /**
-   * Returns a Promise, which resolves to a CustomerBO
-   *
-   * @param {Number} AktivitaetID to be retrieved
-   * @public
-   */
+
   getAktivitaet(AktivitaetID) {
     return this.#fetchAdvanced(this.#getAktivitaetURL(AktivitaetID)).then((responseJSON) => {
-      // We always get an array of CustomerBOs.fromJSON, but only need one object
       let responseAktivitaetID = AktivitaetID.fromJSON(responseJSON)[0];
-      // console.info(responseCustomerBO);
+      // console.info(responseAktivitaetBO);
       return new Promise(function (resolve) {
         resolve(responseAktivitaetID);
       })
     })
   }
 
-  /**
-   * Adds a customer and returns a Promise, which resolves to a new CustomerBO object with the
-   * firstName and lastName of the parameter customerBO object.
-   *
-   * @param {AktivitaetBO} AktivitaetBO to be added. The ID of the new customer is set by the backend
-   * @public
-   */
+
   addAktivitaet(aktivitaetBO) {
     return this.#fetchAdvanced(this.#addAktivitaetURL(), {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Accept': 'application/json, text/plain',
-        'Content-type': 'application/json',
+        "Accept": "application/json, text/plain",
+        "Content-type": "application/json",
       },
       body: JSON.stringify(aktivitaetBO)
     }).then((responseJSON) => {
-      // We always get an array of CustomerBOs.fromJSON, but only need one object
       let responseaktivitaetBO = aktivitaetBO.fromJSON(responseJSON)[0];
-      // console.info(accountBOs);
+      // console.info(aktivitaetBOs);
       return new Promise(function (resolve) {
         resolve(responseaktivitaetBO);
       })
     })
   }
 
-  /**
-   * Updates a customer and returns a Promise, which resolves to a CustomerBO.
-   *
-   * @param {AktivitaetBO} aktivitaetBO to be updated
-   * @public
-   */
+
   updateAktivitaet(aktivitaetBO) {
     return this.#fetchAdvanced(this.#updateAktivitaetURL(aktivitaetBO.getId()), {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Accept': 'application/json, text/plain',
-        'Content-type': 'application/json',
+        "Accept": "application/json, text/plain",
+        "Content-type": "application/json",
       },
       body: JSON.stringify(aktivitaetBO)
     }).then((responseJSON) => {
-      // We always get an array of CustomerBOs.fromJSON
+      // We always get an array of AktivitaetBOs.fromJSON
       let responseAktivitaetBO = AktivitaetBO.fromJSON(responseJSON)[0];
-      // console.info(accountBOs);
+      // console.info(aktivitaetBOs);
       return new Promise(function (resolve) {
         resolve(responseAktivitaetBO);
       })
     })
   }
 
-  /**
-   * Returns a Promise, which resolves to an Array of AccountBOs
-   *
-   * @param {Number} aktivitaetID to be deleted
-   * @public
-   */
+
   deleteAktivitaet(aktivitaetID) {
     return this.#fetchAdvanced(this.#deleteAktivitaetURL(aktivitaetID), {
-      method: 'DELETE'
+      method: "DELETE"
     }).then((responseJSON) => {
-      // We always get an array of CustomerBOs.fromJSON
+      // We always get an array of AktivitaetBOs.fromJSON
       let responseAktivitaetID = AktivitaetBO.fromJSON(responseJSON)[0];
-      // console.info(accountBOs);
+      // console.info(aktivitaetBOs);
       return new Promise(function (resolve) {
         resolve(responseAktivitaetID);
       })
