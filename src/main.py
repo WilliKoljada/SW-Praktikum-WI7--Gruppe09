@@ -419,7 +419,7 @@ class ProjektOperations(Resource):
         Löschende Objekt wird durch id bestimmt.
         """
         adm = Administration()
-        adm.delete_project(id)
+        adm.delete_projekt(id)
         return "", 200
 
     @zeiterfassungapp.marshal_with(projekt)
@@ -473,7 +473,7 @@ class ZeitintervallListOperations(Resource):
 @zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
 @zeiterfassungapp.param("id", "Die ID des Zeitintervall-Objekts")
 class ZeitintervallOperations(Resource):
-    @zeiterfassungapp.marshal_with(Zeitintervall)
+    @zeiterfassungapp.marshal_with(zeitintervall)
     #@secured zwecks Testung vom Backend deaktiviert
     def get(self, id):
         """Auslesen einer bestimmten Zeitintervall-BO.
@@ -538,6 +538,13 @@ class ZeintervallPersonIDOperations(Resource):
         return zi
 
 
-
+"""
+Nachdem wir nun sämtliche Resourcen definiert haben, die wir via REST bereitstellen möchten,
+müssen nun die App auch tatsächlich zu starten.
+Diese Zeile ist leider nicht Teil der Flask-Doku! In jener Doku wird von einem Start via Kommandozeile ausgegangen.
+Dies ist jedoch für uns in der Entwicklungsumgebung wenig komfortabel. Deshlab kommt es also schließlich zu den 
+folgenden Zeilen. 
+**ACHTUNG:** Diese Zeile wird nur in der lokalen Entwicklungsumgebung ausgeführt und hat in der Cloud keine Wirkung!
+"""
 if __name__ == "__main__":
     app.run(debug=True)
