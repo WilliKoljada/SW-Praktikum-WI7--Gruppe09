@@ -202,78 +202,8 @@ class AktivitaetNameOperations(Resource):
         akt = adm.get_aktivitaet_by_name(name)
         return akt
 
-@zeiterfassungapp.route('/buchung')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-class AktivitaetListOperations(Resource):
-    #@secured zwecks Testung vom Backend deaktiviert
-    @zeiterfassungapp.marshal_list_with(buchung)
-    def get(self):
-        """Auslesen aller Aktivitaet-Objekte.
-        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
-        adm = Administration()
-        buch = adm.get_alle_buchungen()
-        return buch
-
-    @zeiterfassungapp.marshal_with(buchung, code=200)
-    @zeiterfassungapp.expect(buchung)  # Wir erwarten ein Aktivitaet-Objekt von Client-Seite.
-    #@secured zwecks Testung vom Backend deaktiviert
-    def post(self):
-        """Anlegen eines neuen Aktivitaet-Objekts.
-        """
-        adm = Administration()
-
-        proposal = Buchung.from_dict(api.payload)
-
-        if proposal is not None:
-            buch = adm.create_buchung(proposal.get_ersteller())
-            return buch, 200
-        else:
-            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
-            return '', 500
-
-
-@zeiterfassungapp.route('/buchung/<int:id>')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('id', 'Die ID des Aktivitaet-Objekts')
-class AktivitaetOperations(Resource):
-    @zeiterfassungapp.marshal_with(buchung)
-    #@secured zwecks Testung vom Backend deaktiviert
-    def get(self, id):
-        """Auslesen einer bestimmten Aktivitaet-BO.
-        Objekt wird durch die id in bestimmt.
-        """
-        adm = Administration()
-        buch = adm.get_aktivitaet_by_id(id)
-        return buch
-
-    #@secured zwecks Testung vom Backend deaktiviert
-    def delete(self, id):
-        """Löschen einer bestimmten Aktivitaet-BO.
-        Löschende Objekt wird durch id bestimmt.
-        """
-        adm = Administration()
-        buch = adm.get_buchung_by_key(id)
-        adm.delete_buchung(buch)
-        return '', 200
-
-    @zeiterfassungapp.marshal_with(buchung)
-    @zeiterfassungapp.expect(buchung, validate=True)
-
-    def put(self, id):
-        """Update einer bestimmten Aktivitaet.
-        """
-        adm = Administration()
-        p = Buchung.from_dict(api.payload)
-
-        if p is not None:
-            p.set_id(id)
-            adm.save_buchung(p)
-            return '', 200
-        else:
-            return '', 500
-
-@zeiterfassungapp.route('/person')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.route("/person")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
 class PersonListOperations(Resource):
     #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(person)
@@ -295,17 +225,16 @@ class PersonListOperations(Resource):
         proposal = Person.from_dict(api.payload)
 
         if proposal is not None:
-            pers = adm.create_person(proposal.get_google_user_id(), proposal.get_vorname(), proposal.get_nachname(), proposal.get_email(),
-                                     proposal.get_benutzername())
+            pers = adm.create_person(proposal.get_vorname(), proposal.get_nachname(), proposal.get_email(),
+                                     proposal.get_benutzername(), proposal.get_role(), proposal.get_google_id())
             return pers, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
-            return '', 500
+            return "", 500
 
-
-@zeiterfassungapp.route('/person/<int:id>')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('id', 'Die ID des Person-Objekts')
+@zeiterfassungapp.route("/person/<int:id>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("id", "Die ID des Person-Objekts")
 class PersonOperations(Resource):
     @zeiterfassungapp.marshal_with(person)
     #@secured zwecks Testung vom Backend deaktiviert
@@ -323,13 +252,11 @@ class PersonOperations(Resource):
         Löschende Objekt wird durch id bestimmt.
         """
         adm = Administration()
-        pers = adm.get_person_by_id(id)
-        adm.delete_person(pers)
-        return '', 200
+        adm.delete_person(id)
+        return "", 200
 
     @zeiterfassungapp.marshal_with(person)
     @zeiterfassungapp.expect(person, validate=True)
-
     def put(self, id):
         """Update einer bestimmten Person.
         """
@@ -338,37 +265,25 @@ class PersonOperations(Resource):
 
         if p is not None:
             p.set_id(id)
-            adm.save_person(p)
-            return '', 200
+            adm.update_person(p)
+            return p, 200
         else:
-            return '', 500
+            return "", 500
 
-@zeiterfassungapp.route('/person-by-google-id/<string:google_id>')
-@zeiterfassungapp.response(500, 'Wenn ein Server-seitiger Fehler aufkommt')
-class UserGoogleOperations(Resource):
-    @zeiterfassungapp.marshal_with(person)
-    #@secured zwecks Testung vom Backend deaktiviert
-    def get(self, google_id):
-        """Auslesen eines bestimmten User-Objekts.
-        Das auszulesende Objekt wird durch die ```google_id``` in dem URI bestimmt."""
 
-        adm = Administration()
-        person = adm.get_user_by_google_user_id(google_id)
-        return person
-
-"""@zeiterfassungapp.route('/person/<string:email>')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('Email', 'Die Mail des Person-Objekts')
-class PersonOperations(Resource):
+@zeiterfassungapp.route("/person/<string:email>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("email", "Die Email des Person-Objekts")
+class PersonEmailOperations(Resource):
     @zeiterfassungapp.marshal_with(person)
     #@secured zwecks Testung vom Backend deaktiviert
     def get(self, email):
-        Auslesen einer bestimmten Person-BO.
+        """Auslesen einer bestimmten Person-BO.
         Objekt wird durch die id in bestimmt.
-        
+        """
         adm = Administration()
-        pers = adm.get_person_by_email(email)
-        return pers"""
+        person = adm.get_person_by_email(email)
+        return person
 
 
 
