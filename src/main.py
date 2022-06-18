@@ -131,8 +131,12 @@ zeitintervallbuchung = api.inherit('Zeitintervallbuchung', bo, {
     '': fields.Integer(attribute= '', description='   ')
 })
 
-ereignis = api.inherit('Ereignis', bo, {
-    'zeitpunkt_ereigniseintritt': fields.String(attribute= '_zeitpunkt_ereigniseintritt', description='Zeitpunkt vom Ereignis')
+ereignis = api.inherit("Ereignis", bo, {
+    "type": fields.String(attribute= "_type", description="Type des Ereignis"),
+    "datum": fields.Date(attribute="_datum", description="Datum des Ereignis"),
+    "startzeit": fields.DateTime(attribute="_startzeit", description="Begin Zeit des Ereignis"),
+    "endzeit": fields.DateTime(attribute="_endzeit", description="End Zeit des Ereignis"),
+    "personID": fields.Integer(attribute= "personID", description="person ID des Ereignis")
 })
 # Alle weiteren bo´s wie bei Aktivitaet erstellen
 
