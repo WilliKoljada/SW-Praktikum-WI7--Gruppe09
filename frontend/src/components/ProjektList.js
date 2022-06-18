@@ -25,25 +25,30 @@ class ProjektList extends Component {
     // Init the state
     this.state = {
       projekte: [],
+      filteredProjekte: [],
+      projektFilter: "",
+      error: null,
       loadingInProgress: false,
-      loadingProjektError: null,
-      addingProjektError: null,
+      expandedProjektID: expandedID,
+      showProjektForm: false
     };
   }
 
-  /** Fetches AccountBOs for the current customer */
-  getProjekt = () => {
-    ZeiterfassungAPI.getAPI().getProjekt(this.props.customer.getID()).then(accountBOs =>
-      this.setState({  // Set new state when AccountBOs have been fetched
-        accounts: accountBOs,
-        loadingInProgress: false, // loading indicator
-        loadingAccountError: null
-      })).catch(e =>
-        this.setState({ // Reset state with error from catch
-          accounts: [],
-          loadingInProgress: false,
-          loadingProjektError: e
-        })
+  /** Fetches ProjektBOs for the current person */
+  getProjekte = () => {
+    ZeiterfassungAPI.getAPI().getProjekte()
+      .then(projektBOs =>
+        this.setState({  // Set new state when ProjektBOs have been fetched
+          projekte: projektBOs,
+          loadingInProgress: false, // loading indicator
+          loadingProjektError: null
+        })).catch(e =>
+          this.setState({ // Reset state with error from catch
+            projekte: [],
+            loadingInProgress: false,
+            loadingProjektError: e
+          }
+        )
       );
 
     // set loading to true
@@ -55,56 +60,91 @@ class ProjektList extends Component {
 
   /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
   componentDidMount() {
-    this.getAccounts();
+    this.getProjekte();
   }
 
-  /** Lifecycle method, which is called when the component was updated */
-  componentDidUpdate(prevProps) {
-    // reload accounts if shown state changed. Occures if the CustomerListEntrys ExpansionPanel was expanded
-    // if ((this.props.show !== prevProps.show)) {
-    //   this.getAccounts();
-    // }
-  }
+/**
+   * Handles onExpandedStateChange events from the ProjektListEntry component. Toggels the expanded state of
+   * the ProjektListEntry of the given ProjektBO.
+   *
+   * @param {projekt} ProjektBO of the ProjektListEntry to be toggeled
+   */
+   onExpandedStateChange = projekt => {
+    // console.log(projektID);
+    // Set expandend projekt entry to null by default
+    let newID = null;
 
-  /** Adds an account for the current customer */
-  addProjekt = () => {
-    BankAPI.getAPI().addAccountForCustomer(this.props.customer.getID()).then(projektBO => {
-      // console.log(accountBO)
-      this.setState({  // Set new state when AccountBOs have been fetched
-        projekt: [...this.state.projekt, projektBO],
-        loadingInProgress: false, // loading indicator
-        addingProjektError: null
-      })
-    }).catch(e =>
-      this.setState({ // Reset state with error from catch
-        accounts: [],
-        loadingInProgress: false,
-        addingProjektError: e
-      })
-    );
-
-    // set loading to true
+    // If same projekt entry is clicked, collapse it else expand a new one
+    if (projekt.getID() !== this.state.expandedProjektID) {
+      // Expand the projekt entry with projektID
+      newID = projekt.getID();
+    }
+    // console.log(newID);
     this.setState({
-      loadingInProgress: true,
-      addingProjektError: null
+      expandedProjektID: newID,
     });
   }
 
-  /** Handles onAccountDelete events from an AccountListEntry  */
-  deleteProjektHandler = (deletedProjekt) => {
-    // console.log(deletedAccount.getID());
+  /**
+   * Handles onProjektDeleted events from the ProjektListEntry component
+   *
+   * @param {projekt} ProjektBO of the ProjektListEntry to be deleted
+   */
+  projektDeleted = projekt => {
+    const newProjektList = this.state.projekte.filter(projektFromState => projektFromState.getID() !== projekt.getID());
     this.setState({
-      projekt: this.state.projekte.filter(projekt => projekt.getID() !== deletedProjekt.getID())
-    })
+      projekte: newProjektList,
+      filteredProjekte: [...newProjektList],
+      showProjektForm: false
+    });
+  }
+
+  /** Handles the onClick event of the add projekt button */
+  addProjektButtonClicked = event => {
+    // Do not toggle the expanded state
+    event.stopPropagation();
+    //Show the ProjektForm
+    this.setState({
+    showProjektForm: true
+    });
+  }
+
+/** Handles the onClose event of the ProjektForm */
+  projektFormClosed = projekt => {
+    // projekt is not null and therefore created
+    if (projekt) {
+      const newProjektList = [...this.state.projekte, projekt];
+      this.setState({
+        projekte: newProjektList,
+        filteredProjekte: [...newProjektList],
+        showProjektForm: false
+      });
+    } else {
+      this.setState({
+        showProjektForm: false
+      });
+    }
+  }
+
+  /** Handels onChange events of the projekt filter text field */
+  filterFieldValueChange = event => {
+    const value = event.target.value.toLowerCase();
+    this.setState({
+      filteredProjekte: this.state.projekte.filter(projekt => {
+        let nameContainsValue = projekt.getName().toLowerCase().includes(value);
+        let bezeichungContainsValue = projekt.getBezeichung().toLowerCase().includes(value);
+        let auftraggeberContainsValue = projekt.getAuftraggeber().toLowerCase().includes(value);
+        return nameContainsValue || bezeichungContainsValue || auftraggeberContainsValue;
+      }),
+      projektFilter: value
+    });
   }
 
   /** Renders the component */
   render() {
-    const { classes, customer } = this.props;
-    // Use the states customer
-    const { projekte, loadingInProgress, loadingProjektError, addingProjektError } = this.state;
+    const { classes } = this.props;
+    const { filteredProjekte, projektFilter, expandedProjektID, loadingInProgress, error, showProjektForm } = this.state;
 
-    // console.log(this.props);
     return (
       <div className={classes.root}>
         <Grid className={classes.projektFilter} container spacing={1} justify="flex-start" alignItems="center">
