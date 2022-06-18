@@ -342,12 +342,13 @@ class Administration(object):
 
     """ereignis-spezifische Methoden"""
 
-    def create_ereignis (self, zeitpunkt_ereig):
+    def create_ereignis (self, type, datum, startzeit, endzeit, personID):
         ereignis = Ereignis()
-        ereignis.set_zeitpunkt_ereigniseintritt(zeitpunkt_ereig)
-
-        with EreignisMapper() as mapper:
-            return mapper.insert(ereignis)
+        ereignis.set_type(type)
+        ereignis.set_datum(datum)
+        ereignis.set_startzeit(startzeit)
+        ereignis.set_endzeit(endzeit)
+        ereignis.set_personID(personID)
 
     def get_all_ereignisse (self):
         with EreignisMapper() as mapper:
