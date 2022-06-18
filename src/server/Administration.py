@@ -270,12 +270,14 @@ class Administration(object):
 
     """zeitintervall-spezifische Methoden"""
 
-
-    def create_zeitintervall(self, projekt_runtime):
+    def create_zeitintervall(self, datum, startzeit, endzeit, aktivitaetID, personID):
         """Eine Zeitintervall anlegen"""
         p = Zeitintervall()
-        p.set_id(1)
-        p.set_projektlaufzeit(projekt_runtime)
+        p.set_datum(datum)
+        p.set_startzeit(startzeit)
+        p.set_endzeit(endzeit)
+        p.set_aktivitaetID(aktivitaetID)
+        p.set_personID(personID)
 
         with ZeitintervallMapper() as mapper:
             return mapper.insert(p)
