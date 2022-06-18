@@ -289,106 +289,20 @@ class PersonEmailOperations(Resource):
 
 
 
-# Alle weiteren bo´s wie bei Arbeitszeitkonto erstellen
-
-@zeiterfassungapp.route('/arbeitszeitkonto')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-class ArbeitszeitkontoListOperations(Resource):
-    #@secured zwecks Testung vom Backend deaktiviert
-    @zeiterfassungapp.marshal_list_with(arbeitszeitkonto)
-    def get(self):
-        """Auslesen aller Arbeitszeitkonto-Objekte.
-        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
-        adm = Administration()
-        arbeit = adm.get_all_arbeitszeitkonto()
-        return arbeit
-
-    @zeiterfassungapp.marshal_with(arbeitszeitkonto, code=200)
-    @zeiterfassungapp.expect(arbeitszeitkonto)  # Wir erwarten ein Arbeitszeitkonto-Objekt von Client-Seite.
-    #@secured zwecks Testung vom Backend deaktiviert
-    def post(self):
-        """Anlegen eines neuen Arbeitszeitkonto-Objekts.
-        """
-        adm = Administration()
-
-        proposal = Arbeitszeitkonto.from_dict(api.payload)
-
-        if proposal is not None:
-            arbeit = adm.create_arbeitszeitkonto(proposal.get_arbeitspensum())
-            return arbeit, 200
-        else:
-            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
-            return '', 500
-
-
-@zeiterfassungapp.route('/arbeitszeitkonto/<int:id>')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('id', 'Die ID des Arbeitszeitkonto-Objekts')
-class ArbeitszeitkontoOperations(Resource):
-    @zeiterfassungapp.marshal_with(arbeitszeitkonto)
-    #@secured zwecks Testung vom Backend deaktiviert
-    def get(self, id):
-        """Auslesen einer bestimmten Arbeitszeitkonto-BO.
-        Objekt wird durch die id in bestimmt.
-        """
-        adm = Administration()
-        arbeit = adm.get_arbeitszeitkonto_by_id(id)
-        return arbeit
-
-    #@secured zwecks Testung vom Backend deaktiviert
-    def delete(self, id):
-        """Löschen einer bestimmten Arbeitszeitkonto-BO.
-        Löschende Objekt wird durch id bestimmt.
-        """
-        adm = Administration()
-        arbeit = adm.get_arbeitszeitkonto_by_id(id)
-        adm.delete_arbeitszeitkonto(arbeit)
-        return '', 200
-
-    @zeiterfassungapp.marshal_with(arbeitszeitkonto)
-    @zeiterfassungapp.expect(arbeitszeitkonto, validate=True)
-
-    def put(self, id):
-        """Update einer bestimmten Arbeitszeitkonto.
-        """
-        adm = Administration()
-        p = Arbeitszeitkonto.from_dict(api.payload)
-
-        if p is not None:
-            p.set_id(id)
-            adm.save_arbeitszeitkonto(p)
-            return '', 200
-        else:
-            return '', 500
-
-@zeiterfassungapp.route('/arbeitszeitkonto/<int:id>')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('id', 'Die Bezeichnung des Arbeitszeitkonto-Objekts')
-class ArbeitszeitkontoOperations(Resource):
-    @zeiterfassungapp.marshal_with(arbeitszeitkonto)
-    #@secured zwecks Testung vom Backend deaktiviert
-    def get(self, id):
-        """Auslesen einer bestimmten Arbeitszeitkonto-BO.
-        Objekt wird durch die id in bestimmt.
-        """
-        adm = Administration()
-        arbeit = adm.get_arbeitszeitkonto_by_id(id)
-        return arbeit
-
-@zeiterfassungapp.route('/ereignis')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.route("/ereignis")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
 class EreignisListOperations(Resource):
     #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(ereignis)
     def get(self):
-        """Auslesen aller Projekt-Objekte.
+        """Auslesen aller Ereignis-Objekte.
         Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
         adm = Administration()
         proj = adm.get_all_ereignisse()
         return proj
 
     @zeiterfassungapp.marshal_with(ereignis, code=200)
-    @zeiterfassungapp.expect(ereignis)  # Wir erwarten ein Projekt-Objekt von Client-Seite.
+    @zeiterfassungapp.expect(ereignis)  # Wir erwarten ein Ereignis-Objekt von Client-Seite.
     #@secured zwecks Testung vom Backend deaktiviert
     def post(self):
         """Anlegen eines neuen Projekt-Objekts.
@@ -398,15 +312,16 @@ class EreignisListOperations(Resource):
         proposal = Ereignis.from_dict(api.payload)
 
         if proposal is not None:
-            ereig = adm.create_ereignis(proposal.get_zeitpunkt_ereigniseintritt())
+            ereig = adm.create_ereignis(proposal.get_type(), proposal.get_datum(), proposal.get_startzeit(),
+                                        proposal.get_endzeit(), proposal.get_personID())
             return ereig, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
-            return '', 500
+            return "", 500
 
-@zeiterfassungapp.route('/ereignis/<int:id>')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('id', 'Die ID des Ereignis-Objekts')
+@zeiterfassungapp.route("/ereignis/<int:id>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("id", "Die ID des Ereignis-Objekts")
 class EreigniskontoOperations(Resource):
     @zeiterfassungapp.marshal_with(ereignis)
     #@secured zwecks Testung vom Backend deaktiviert
@@ -424,9 +339,8 @@ class EreigniskontoOperations(Resource):
         Löschende Objekt wird durch id bestimmt.
         """
         adm = Administration()
-        ereig = adm.get_ereignis_by_id(id)
-        adm.delete_ereignis(ereig)
-        return '', 200
+        adm.delete_ereignis(id)
+        return "", 200
 
     @zeiterfassungapp.marshal_with(ereignis)
     @zeiterfassungapp.expect(ereignis, validate=True)
@@ -438,10 +352,25 @@ class EreigniskontoOperations(Resource):
 
         if p is not None:
             p.set_id(id)
-            adm.save_ereignis(p)
-            return '', 200
+            adm.update_ereignis(p)
+            return p, 200
         else:
-            return '', 500
+            return "", 500
+
+
+@zeiterfassungapp.route("/ereignis/<string:type>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("type", "Der Type des Ereignis-Objekts")
+class EreignisTypeOperations(Resource):
+    @zeiterfassungapp.marshal_with(ereignis)
+    #@secured zwecks Testung vom Backend deaktiviert
+    def get(self, type):
+        """Auslesen einer bestimmten Aktivitaet-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        ereignis = adm.get_ereignis_by_type(type)
+        return ereignis
 
 # Alle weiteren bo´s wie bei Projekt erstellen
 
