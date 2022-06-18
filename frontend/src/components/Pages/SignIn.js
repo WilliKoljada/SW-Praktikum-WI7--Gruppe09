@@ -21,7 +21,7 @@ class SignIn extends Component {
 
 		return (
 			<div>
-				<Typography className={classes.root} align="center" variant="h6">Welcome   </Typography>
+				<Typography className={classes.root} color="primary" align="center" variant="h6">Welcome   </Typography>
 				<Typography className={classes.root} align="center">Dear user, it appears that you are not signed in yet.</Typography>
 				<Typography className={classes.root} align="center">In order to use the services of Zeiterfassungsapp, please</Typography>
 				<Grid container justifyContent="center">
