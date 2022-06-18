@@ -42,7 +42,6 @@ B. Konventionen für dieses Module:
 """
 
 """Unser Service basiert auf Flask"""
-from inspect import Attribute
 from flask import Flask
 """Auf Flask aufbauend nutzen wir RestX"""
 from flask_restx import Api, Resource, fields
@@ -202,6 +201,7 @@ class AktivitaetNameOperations(Resource):
         akt = adm.get_aktivitaet_by_name(name)
         return akt
 
+
 @zeiterfassungapp.route("/person")
 @zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
 class PersonListOperations(Resource):
@@ -284,10 +284,6 @@ class PersonEmailOperations(Resource):
         adm = Administration()
         person = adm.get_person_by_email(email)
         return person
-
-
-
-
 
 @zeiterfassungapp.route("/ereignis")
 @zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
@@ -372,6 +368,7 @@ class EreignisTypeOperations(Resource):
         ereignis = adm.get_ereignis_by_type(type)
         return ereignis
 
+
 @zeiterfassungapp.route("/projekt")
 @zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
 class ProjektListOperations(Resource):
@@ -422,7 +419,7 @@ class ProjektOperations(Resource):
         Löschende Objekt wird durch id bestimmt.
         """
         adm = Administration()
-        adm.delete_projekt(id)
+        adm.delete_project(id)
         return "", 200
 
     @zeiterfassungapp.marshal_with(projekt)
@@ -440,20 +437,107 @@ class ProjektOperations(Resource):
         else:
             return "", 500
 
+# Alle weiteren bo´s wie bei Zeitintervall erstellen
+
+@zeiterfassungapp.route("/zeitintervall")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+class ZeitintervallListOperations(Resource):
+    #@secured zwecks Testung vom Backend deaktiviert
+    @zeiterfassungapp.marshal_list_with(zeitintervall)
+    def get(self):
+        """Auslesen aller Zeitintervall-Objekte.
+        Sollten keine Customer-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben."""
+        adm = Administration()
+        zin = adm.get_all_zeitintervall()
+        return zin
+
+    @zeiterfassungapp.marshal_with(zeitintervall, code=200)
+    @zeiterfassungapp.expect(zeitintervall)  # Wir erwarten ein Zeitintervall-Objekt von Client-Seite.
+    #@secured zwecks Testung vom Backend deaktiviert
+    def post(self):
+        """Anlegen eines neuen Zeitintervall-Objekts.
+        """
+        adm = Administration()
+
+        proposal = Zeitintervall.from_dict(api.payload)
+
+        if proposal is not None:
+            zin = adm.create_zeitintervall(proposal.get_projektlaufzeit())
+            return zin, 200
+        else:
+            # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
+            return "", 500
+
+
+@zeiterfassungapp.route("/zeitintervall/<int:id>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("id", "Die ID des Zeitintervall-Objekts")
+class ZeitintervallOperations(Resource):
+    @zeiterfassungapp.marshal_with(Zeitintervall)
+    #@secured zwecks Testung vom Backend deaktiviert
+    def get(self, id):
+        """Auslesen einer bestimmten Zeitintervall-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        zin = adm.get_zeitintervall_by_id(id)
+        return zin
+
+    #@secured zwecks Testung vom Backend deaktiviert
+    def delete(self, id):
+        """Löschen einer bestimmten Zeitintervall-BO.
+        Löschende Objekt wird durch id bestimmt.
+        """
+        adm = Administration()
+        adm.delete_zeitintervall(id)
+        return "", 200
+
+    @zeiterfassungapp.marshal_with(zeitintervall)
+    @zeiterfassungapp.expect(zeitintervall, validate=True)
+    def put(self, id):
+        """Update einer bestimmten Zeitintervall.
+        """
+        adm = Administration()
+        zi = Zeitintervall.from_dict(api.payload)
+
+        if zi is not None:
+            zi.set_id(id)
+            adm.save_zeitintervall(zi)
+            return zi, 200
+        else:
+            return "", 500
+
+
+@zeiterfassungapp.route("/zeitintervall/<int:aktivitaetID>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("aktivitaetID", "Der aktivitaet id des Zeitintervall-Objekts")
+class ZeintervallAktivitaetIDOperations(Resource):
+    @zeiterfassungapp.marshal_with(zeitintervall)
+    #@secured zwecks Testung vom Backend deaktiviert
+    def get(self, aktivitaetID):
+        """Auslesen einer bestimmten Zeitintervall-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        zi = adm.get_zeitintervall_by_aktivitaetID(aktivitaetID)
+        return zi
+
+
+@zeiterfassungapp.route("/zeitintervall/<int:personID>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("personID", "Der aktivitaet id des Zeitintervall-Objekts")
+class ZeintervallPersonIDOperations(Resource):
+    @zeiterfassungapp.marshal_with(zeitintervall)
+    #@secured zwecks Testung vom Backend deaktiviert
+    def get(self, personID):
+        """Auslesen einer bestimmten Zeitintervall-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        zi = adm.get_zeitintervall_by_personID(personID)
+        return zi
 
 
 
-
-
-    """
-    Nachdem wir nun sämtliche Resourcen definiert haben, die wir via REST bereitstellen möchten,
-    müssen nun die App auch tatsächlich zu starten.
-
-    Diese Zeile ist leider nicht Teil der Flask-Doku! In jener Doku wird von einem Start via Kommandozeile ausgegangen.
-    Dies ist jedoch für uns in der Entwicklungsumgebung wenig komfortabel. Deshlab kommt es also schließlich zu den 
-    folgenden Zeilen. 
-
-    **ACHTUNG:** Diese Zeile wird nur in der lokalen Entwicklungsumgebung ausgeführt und hat in der Cloud keine Wirkung!
-    """
-    if __name__ == '__main__':
-        app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
