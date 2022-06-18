@@ -157,26 +157,20 @@ class ProjektList extends Component {
 /** Component specific styles */
 const styles = theme => ({
   root: {
-    width: "100%",
+    width: '100%',
   },
-  accountList: {
-    marginBottom: theme.spacing(2),
-  },
-  addAccountButton: {
-    position: "absolute",
-    right: theme.spacing(3),
-    bottom: theme.spacing(1),
+  projektFilter: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(1),
   }
 });
 
 /** PropTypes */
-AccountList.propTypes = {
+ProjektList.propTypes = {
   /** @ignore */
   classes: PropTypes.object.isRequired,
-  /** The CustomerBO of this AccountList */
-  customer: PropTypes.object.isRequired,
-  /** If true, accounts are (re)loaded */
-  show: PropTypes.bool.isRequired
+  /** @ignore */
+  location: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(ProjektList);
+export default withRouter(withStyles(styles)(ProjektList));
