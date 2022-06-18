@@ -28,6 +28,21 @@ export default class ZeiterfassungAPI {
   //#ZeiterfassungServerBaseURL = '/api/zeiterfassungapp';
 
 
+  // Person related
+  #getAllPersonURL = () => `${this.#ZeiterfassungServerBaseURL}/person`;
+  #getPersonByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/person/${id}`;
+  #getPersonByEmailURL = (email) => `${this.#ZeiterfassungServerBaseURL}/person/${email}`;
+  #addPersonURL = () => `${this.#ZeiterfassungServerBaseURL}/person`;
+  #updatePersonURL = (id) => `${this.#ZeiterfassungServerBaseURL}/person/${id}/`;
+  #deletePersonURL = (id) => `${this.#ZeiterfassungServerBaseURL}/person/${id}`;
+
+  // Projekt related
+  #getAllProjektsURL = () => `${this.#ZeiterfassungServerBaseURL}/projekt`;
+  #getProjektByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
+  #addProjektURL = () => `${this.#ZeiterfassungServerBaseURL}/projekt`;
+  #updateProjektURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
+  #deleteProjektURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
+
   // Aktivitaet related
   #getAllAktivitaetURL = () => `${this.#ZeiterfassungServerBaseURL}/aktivitaet`;
   #addAktivitaetURL = () => `${this.#ZeiterfassungServerBaseURL}/aktivitaet`;
@@ -35,73 +50,23 @@ export default class ZeiterfassungAPI {
   #updateAktivitaetURL = (id) => `${this.#ZeiterfassungServerBaseURL}/aktivitaet/${id}`;
   #deleteAktivitaetURL = (id) => `${this.#ZeiterfassungServerBaseURL}/aktivitaet/${id}`;
 
-
-  // Buchung related
-  #getAllBuchungURL = () => `${this.#ZeiterfassungServerBaseURL}/buchung`;
-  #getBuchungByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/buchung/${id}`;
-  #addBuchungURL = (id) => `${this.#ZeiterfassungServerBaseURL}/buchung/${id}/`;
-  #updateBuchungURL = (id) => `${this.#ZeiterfassungServerBaseURL}/buchung/${id}`;
-  #deleteBuchungIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/buchung/${id}`;
-
-  // Person related
-  #getAllPersonURL = () => `${this.#ZeiterfassungServerBaseURL}/person`;
-  #getPersonByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/person/${id}`;
-  #getPersonByEmailURL = (email) => `${this.#ZeiterfassungServerBaseURL}/person/${email}`;
-  #addPersonURL = () => `${this.#ZeiterfassungServerBaseURL}/person`;
-  #updatePersonByIdgURL = (id) => `${this.#ZeiterfassungServerBaseURL}/person/${id}/`;
-  #deletePersonByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/person/${id}`;
-  #getUserByGoogleIdURL = (google_id) => `${this.#ZeiterfassungServerBaseURL}/user-by-google-id/${google_id}`;
-
-  // Arbeitszeitkonto related
-  #getAllArbeitszeitkontoURL = () => `${this.#ZeiterfassungServerBaseURL}/arbeitszeitkonto`;
-  #getArbeitszeitkontoByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/arbeitszeitkonto/${id}`;
-  #addArbeitszeitkontoByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/arbeitszeitkonto/${id}`;
-  #updateArbeitszeitkontoByURL = (id) => `${this.#ZeiterfassungServerBaseURL}/arbeitszeitkonto/${id}`;
-  #deleteArbeitszeitkontodURL = (id) => `${this.#ZeiterfassungServerBaseURL}/arbeitszeitkonto/${id}`;
-
   // Ereignis related
   #getAllEreignisURL = () => `${this.#ZeiterfassungServerBaseURL}/ereignis`;
   #getEreignisByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignis/${id}`;
-  #addEreignisByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignis/${id}`;
-  #updateEreignisByURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignis/${id}`;
-  #deleteEreignisByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignis/${id}`;
-
-    // Projekt related
-  #getAllProjektsURL = () => `${this.#ZeiterfassungServerBaseURL}/projekt`;
-  #getProjektByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
-  #addProjektURL = () => `${this.#ZeiterfassungServerBaseURL}/projekt`;
-  #updateProjektURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
-  #deleteProjektURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
-
-
-  // Projektarbeit related
-  #getAllProjektarbeitURL = () => `${this.#ZeiterfassungServerBaseURL}/projektarbeit`;
-  #getProjektarbeitByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projektarbeit/${id}`;
-  #addProjektarbeitByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projektarbeit/${id}`;
-  #updateProjektarbeitByURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projektarbeit/${id}`;
-  #deleteProjektarbeitByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projektarbeit/${id}`;
+  #addEreignisURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignis/${id}`;
+  #updateEreignisURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignis/${id}`;
+  #deleteEreignisURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignis/${id}`;
 
   // Zeitintervall related
   #getAllZeitintervallURL = () => `${this.#ZeiterfassungServerBaseURL}/zeitintervall`;
-  #getZeitintervallByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervall/${id}`;
-  #addZeitintervallByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervall/${id}`;
-  #updateZeitintervallByURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervall/${id}`;
-  #deleteZeitintervallByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervall/${id}`;
+  #getZeitintervallURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervall/${id}`;
+  #addZeitintervallURL = () => `${this.#ZeiterfassungServerBaseURL}/zeitintervall`;
+  #updateZeitintervallURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervall/${id}`;
+  #deleteZeitintervallURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervall/${id}`;
 
-  // Zeitintervallbuchung related
-  #getAllZeitintervallbuchunglURL = () => `${this.#ZeiterfassungServerBaseURL}/zeitintervallbuchung`;
-  #getZeitintervallbuchungByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervallbuchung/${id}`;
-  #addZeitintervallbuchungByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervallbuchung/${id}`;
-  #updateZeitintervallbuchungByURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervallbuchung/${id}`;
-  #deleteZeitintervallbuchungByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervallbuchung/${id}`;
-
-
-  // Ereignisbuchung related
-  #getAllEreignisbuchunglURL = () => `${this.#ZeiterfassungServerBaseURL}/ereignisbuchung`;
-  #getEreignisbuchungByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignisbuchung/${id}`;
-  #addEreignisbuchungByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignisbuchung/${id}`;
-  #updateEreignisbuchungByURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignisbuchung/${id}`;
-  #deleteEreignisbuchungByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignisbuchung/${id}`;
+  // Arbeitszeitkonto related
+  #getAllArbeitszeitkontoURL = () => `${this.#ZeiterfassungServerBaseURL}/arbeitszeitkonto`;
+  #getArbeitszeitkontoByUserIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/arbeitszeitkonto/${id}`;
 
 
   /**
