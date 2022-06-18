@@ -372,10 +372,8 @@ class EreignisTypeOperations(Resource):
         ereignis = adm.get_ereignis_by_type(type)
         return ereignis
 
-# Alle weiteren bo´s wie bei Projekt erstellen
-
-@zeiterfassungapp.route('/projekt')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@zeiterfassungapp.route("/projekt")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
 class ProjektListOperations(Resource):
     #@secured zwecks Testung vom Backend deaktiviert
     @zeiterfassungapp.marshal_list_with(projekt)
@@ -397,16 +395,16 @@ class ProjektListOperations(Resource):
         proposal = Projekt.from_dict(api.payload)
 
         if proposal is not None:
-            proj = adm.create_projekt(proposal.get_auftraggeber(), proposal.get_bezeichnung(), proposal.get_ersteller_ID())
+            proj = adm.create_projekt(proposal.get_name(), proposal.get_beschreibung(), proposal.get_personID())
             return proj, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
-            return '', 500
+            return "", 500
 
 
-@zeiterfassungapp.route('/projekt/<int:id>')
-@zeiterfassungapp.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
-@zeiterfassungapp.param('id', 'Die ID des Projekt-Objekts')
+@zeiterfassungapp.route("/projekt/<int:id>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("id", "Die ID des Projekt-Objekts")
 class ProjektOperations(Resource):
     @zeiterfassungapp.marshal_with(projekt)
     #@secured zwecks Testung vom Backend deaktiviert
@@ -424,13 +422,11 @@ class ProjektOperations(Resource):
         Löschende Objekt wird durch id bestimmt.
         """
         adm = Administration()
-        proj = adm.get_projekt_by_id(id)
-        adm.delete_projekt(proj)
-        return '', 200
+        adm.delete_projekt(id)
+        return "", 200
 
     @zeiterfassungapp.marshal_with(projekt)
     @zeiterfassungapp.expect(projekt, validate=True)
-
     def put(self, id):
         """Update eines bestimmten Projekts.
         """
@@ -439,10 +435,10 @@ class ProjektOperations(Resource):
 
         if p is not None:
             p.set_id(id)
-            adm.save_projekt(p)
-            return '', 200
+            adm.update_projekt(p)
+            return p, 200
         else:
-            return '', 500
+            return "", 500
 
 
 
