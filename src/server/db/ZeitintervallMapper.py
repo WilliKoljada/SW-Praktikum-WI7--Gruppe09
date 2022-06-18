@@ -21,11 +21,14 @@ class ZeitintervallMapper(Mapper):
         cursor.execute("SELECT * from zeitintervall")
         tuples = cursor.fetchall()
 
-        for (id,creation_date,project_runtime) in tuples:
-            zeitintervall= Zeitintervall()
+        for (id, datum, startzeit, endzeit, aktivitaetID, personID) in tuples:
+            zeitintervall = Zeitintervall()
             zeitintervall.set_id(id)
-            zeitintervall.set_creation_date(creation_date)
-            zeitintervall.set_projektlaufzeit(project_runtime)
+            zeitintervall.set_datum(datum)
+            zeitintervall.set_startzeit(startzeit)
+            zeitintervall.set_endzeit(endzeit)
+            zeitintervall.set_aktivitaetID(aktivitaetID)
+            zeitintervall.set_personID(personID)
             result.append(zeitintervall)
 
         self._cnx.commit()
@@ -46,11 +49,14 @@ class ZeitintervallMapper(Mapper):
         command = "SELECT * FROM zeitintervall WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, creation_date, project_runtime) in tuples:
+        for (id, datum, startzeit, endzeit, aktivitaetID, personID) in tuples:
             zeitintervall = Zeitintervall()
             zeitintervall.set_id(id)
-            zeitintervall.set_creation_date(creation_date)
-            zeitintervall.set_projektlaufzeit(project_runtime)
+            zeitintervall.set_datum(datum)
+            zeitintervall.set_startzeit(startzeit)
+            zeitintervall.set_endzeit(endzeit)
+            zeitintervall.set_aktivitaetID(aktivitaetID)
+            zeitintervall.set_personID(personID)
 
             result = zeitintervall
 
@@ -58,13 +64,15 @@ class ZeitintervallMapper(Mapper):
         cursor.close()
         return result
 
-    def insert(self, zeitintervall):
-        """Einfügen eines Zeitintervall-Objekts in die Datenbank.
-        Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
-        berichtigt.
-        :param zeitintervall das zu speichernde Objekt
-        :return das bereits übergebene Objekt, jedoch mit ggf. korrigierter ID.
-        """
+        def find_by_personID(self, personID):
+            """Auslesen aller Zeitintervall anhand der ID,
+            da diese vorgegeben ist, wird genau ein Objekt zurückgegeben.
+            :param key Primärschlüsselattribut
+            :return Zeitintervall-Objekt, das dem übergebenen Schlüssel entspricht, None bei
+            nicht vorhandenem DB-Tupel
+            """
+            result = None
+
         cursor = self._cnx.cursor()
         cursor.execute("SELECT MAX(id) AS maxid FROM zeitintervall")
         tuples = cursor.fetchall()
