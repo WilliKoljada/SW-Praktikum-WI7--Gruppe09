@@ -1,4 +1,4 @@
-import BusinessObject from './BusinessObject';
+import BusinessObject from "./BusinessObject";
 
 
 export default class PersonBO extends BusinessObject {
