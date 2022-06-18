@@ -33,14 +33,14 @@ function About() {
 
           <h4>Database</h4>
           <Typography>
-          Database written by <Link href="https://github.com/DominicHaffner">Ayhan Cömert</Link> <br />
+          Database written by <Link href="https://github.com/AyhanCoemert">Ayhan Cömert</Link> <br />
           Database written by <Link href="https://github.com/WilliKoljada">Willi Koljada</Link> <br />
           </Typography>
           <br />
 
           <h4> React Frontend</h4>
           <Typography>
-          React Frontend written by <Link href="https://github.com/Aniqa301">Aniqa Khan</Link> <br />
+          React Frontend written by <Link href="https://github.com/AniqaKhan301">Aniqa Khan</Link> <br />
           React Frontend written by <Link href="https://github.com/AyhanCoemert">Ayhan Cömert</Link> <br />
           React Frontend written by <Link href="https://github.com/WilliKoljada">Willi Koljada</Link> <br />
           React Frontend written by <Link href="https://github.com/Ka041">Kaswara Al Mustafa</Link> <br />
@@ -51,7 +51,7 @@ function About() {
           <h4>Python Backend </h4>
           <Typography>
           React Frontend written by <Link href="https://github.com/Ka041">Kaswara Al Mustafa</Link> <br />
-          Python Backend written by <Link href="https://github.com/Aniqa301">Aniqa Khan</Link> <br />
+          Python Backend written by <Link href="https://github.com/AniqaKhan301">Aniqa Khan</Link> <br />
           Python Backend written by <Link href="https://github.com/AyhanCoemert">Ayhan Cömert</Link> <br />
           React Frontend written by <Link href="https://github.com/benjamintok">Benjamin Tok</Link> <br />
           React Frontend written by <Link href="https://github.com/WilliKoljada">Willi Koljada</Link> <br />
