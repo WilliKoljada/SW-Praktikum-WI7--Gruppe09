@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Paper, Typography, Tabs, Tab } from "@material-ui/core";
+import { Paper, Typography, Tabs, Tab, AppBar } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
 import ProfileDropDown from "../dialogs/ProfileDropDown";
 
@@ -35,15 +35,19 @@ class Header extends Component {
     const { user } = this.props;
 
     return (
-      <Paper variant="outlined" >
+      <Paper elevation={3} >
         <ProfileDropDown user={user} />
-        <Typography variant="h3" component="h1" align="center">
-          Zeiterfassung System
+        <Typography variant="h3" component="h1" align="center" color="primary">
+           Zeiterfassungsapp
         </Typography>
+        <Typography variant='h5' component='h2' align='center'>
+           Track your productivity.
+         </Typography> <br></br>
 
         {
           user ?
-            <Tabs indicatorColor="primary" textColor="primary" centered value={this.state.tabindex} onChange={this.handleTabChange} >
+            <AppBar position="static" color="secondary">
+             <Tabs variant="scrollable" indicatorColor="secondary" textColor="primary" centered value={this.state.tabindex} onChange={this.handleTabChange} >
               <Tab label="Personen" component={RouterLink} to={`/persons`} />
               <Tab label="Projekte" component={RouterLink} to={`/projekte`} />
               <Tab label="Aktivitaten" component={RouterLink} to={`/aktivitaeten`} />
@@ -52,6 +56,7 @@ class Header extends Component {
               <Tab label="Arbeitzeitkonto" component={RouterLink} to={`/arbeitzeit`} />
               <Tab label="About" component={RouterLink} to={`/about`} />
             </Tabs>
+             </AppBar>
             : null
         }
       </Paper>

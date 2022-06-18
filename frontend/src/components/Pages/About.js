@@ -27,7 +27,7 @@ function About() {
       <Paper elevation={0} className={classes.root}>
         <div className={classes.content}>
           <Typography variant="h6">
-          Zeiterfassung
+          Zeiterfassungsapp
           </Typography>
           <br />
 
