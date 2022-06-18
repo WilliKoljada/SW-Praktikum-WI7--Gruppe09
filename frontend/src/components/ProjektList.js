@@ -1,17 +1,26 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { withStyles, ListItem } from "@material-ui/core";
-import { Button, List } from "@material-ui/core";
+import { withStyles, Button, TextField, InputAdornment, IconButton, Grid, Typography } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import ClearIcon from "@material-ui/icons/Clear"
+import { withRouter } from "react-router-dom";
 import { ZeiterfassungAPI } from "../api";
 import ContextErrorMessage from "./dialogs/ContextErrorMessage";
 import LoadingProgress from "./dialogs/LoadingProgress";
+import ProjektForm from "./dialogs/ProjektForm";
 import ProjektListEntry from "./entries/ProjektListEntry";
 
 class ProjektList extends Component {
 
   constructor(props) {
     super(props);
+
+     // console.log(props);
+    let expandedID = null;
+
+    if (this.props.location.expandProjekt) {
+      expandedID = this.props.location.expandProjekt.getID();
+    }
 
     // Init the state
     this.state = {
@@ -98,20 +107,48 @@ class ProjektList extends Component {
     // console.log(this.props);
     return (
       <div className={classes.root}>
-        <List className={classes.ProjektList}>
-          {
-            projekte.map(projekt => <ProjektListEntry key={projekt.getID()} person={person} projekt={projekt} onProjektDeleted={this.deleteProjektHandler}
-              show={this.props.show} />)
-          }
-          <ListItem>
-            <LoadingProgress show={loadingInProgress} />
-            <ContextErrorMessage error={loadingProjektError} contextErrorMsg={`List of projekt for person ${person.getID()} could not be loaded.`} onReload={this.getProjekt} />
-            <ContextErrorMessage error={addingProjektError} contextErrorMsg={`Projekt for person ${person.getID()} could not be added.`} onReload={this.addProjekt} />
-          </ListItem>
-        </List>
-        <Button className={classes.addProjektButton} variant="contained" color="primary" startIcon={<AddIcon />} onClick={this.addProjekt}>
-          Add Projekt
-        </Button>
+        <Grid className={classes.projektFilter} container spacing={1} justify="flex-start" alignItems="center">
+          <Grid item>
+            <Typography>
+              Filter projekt list by name:
+              </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              autoFocus
+              fullWidth
+              id="projektFilter"
+              type="text"
+              value={projektFilter}
+              onChange={this.filterFieldValueChange}
+              InputProps={{
+                endAdornment: <InputAdornment position="end">
+                  <IconButton onClick={this.clearFilterFieldButtonClicked}>
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>,
+              }}
+            />
+          </Grid>
+          <Grid item xs />
+          <Grid item>
+            <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={this.addProjektButtonClicked}>
+              Add Projekt
+          </Button>
+          </Grid>
+        </Grid>
+        {
+          // Show the list of ProjektListEntry components
+          // Do not use strict comparison, since expandedProjektID maybe a string if given from the URL parameters
+          filteredProjekte.map(projekt =>
+            <ProjektListEntry key={projekt.getID()} projekt={projekt} expandedState={expandedProjektID === projekt.getID()}
+              onExpandedStateChange={this.onExpandedStateChange}
+              onProjektDeleted={this.projektDeleted}
+            />)
+        }
+        <LoadingProgress show={loadingInProgress} />
+        <ContextErrorMessage error={error} contextErrorMsg={`The list of projekte could not be loaded.`} onReload={this.getProjekte} />
+        <ProjektForm show={showProjektForm} onClose={this.projektFormClosed} />
       </div>
     );
   }
