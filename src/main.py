@@ -61,42 +61,34 @@ from server.bo.Ereignisbuchung import Ereignisbuchung
 from server.bo.Ereignis import Ereignis
 from server.bo.Buchung import Buchung
 
-'''Außerdem nutzen wir einen selbstgeschriebenen Decorator, der die Authentifikation übernimmt'''
+"""Außerdem nutzen wir einen selbstgeschriebenen Decorator, der die Authentifikation übernimmt"""
 from SecurityDecorator import secured
 
 """Hier wird Flask instanziert"""
 app = Flask(__name__)
 
 """Flask-Erweiterung für Cross-Origin Resource Sharing"""
-CORS(app, resources=r'/zeiterfassungapp/*')
+CORS(app, resources=r"/zeiterfassungapp/*")
 
-api = Api(app, version='1.0', title='Zeiterfassungapp API',
-          description='Eine rudimentäre Demo-Api für Listenerstellung.')
+api = Api(app, version="1.0", title="Zeiterfassungapp API",
+          description="Eine rudimentäre Demo-Api für Listenerstellung.")
 
 """Namespaces"""
-zeiterfassungapp = api.namespace('Zeiterfassungapp', description="Funktionen der App") #Name der App?
+zeiterfassungapp = api.namespace("Zeiterfassungapp", description="Funktionen der App") #Name der App?
 
 """Nachfolgend werden analog zu unseren BusinessObject-Klassen transferierbare Strukturen angelegt.
 BusinessObject dient als Basisklasse."""
 
-bo = api.model('BusinessObject', {
-    'id': fields.Integer(attribute='_id', description='Der Unique Identifier eines Business Object'),
-    'creation_date': fields.DateTime(attribute='_creation_date', description='Das Erstellungsdatum eines bo',
-                                     dt_format='iso8601')
+bo = api.model("BusinessObject", {
+    "id": fields.Integer(attribute="_id", description="Der Unique Identifier eines Business Object"),
+    #"creation_date": fields.DateTime(attribute="_creation_date", description="Das Erstellungsdatum eines bo",
+    #                                 dt_format="iso8601")
 })
 
-aktivitaet = api.inherit('Aktivitaet', bo, {
-    'bezeichnung': fields.String(attribute='_bezeichnung', description='unique Bezeichnung der Aktivitaet'),
-    'kapazitaet_in_personentagen': fields.String(attribute='_kapazitaet_in_personentagen', description='Kapazitaet in Personentagen')
-})
-
-arbeitszeitkonto = api.inherit('Arbeitszeitkonto', bo, {
-    'arbeitspensum': fields.Float(attribute='_arbeitspensum', description='Das Arbeitspensum'),
-})
-
-buchung = api.inherit('Buchung', bo, {
-    'ersteller': fields.String(attribute='_ersteller', description='Ersteller einer Buchung')
-
+aktivitaet = api.inherit("Aktivitaet", bo, {
+    "name": fields.String(attribute="_name", description="der NAme der Aktivitaet"),
+    "beschreibung": fields.String(attribute="_beschreibung", description="die Beschreibung der Aktivitaet"),
+    "projektID": fields.Integer(attribute="_projektID", description="der ID des Projekt zum dem die Aktivitaet gehört")
 })
 
 person = api.inherit("Person", bo, {
@@ -108,27 +100,18 @@ person = api.inherit("Person", bo, {
     "google_id": fields.String(attribute="_google_id", description="google_id der Person")
 })
 
-
-projekt = api.inherit('Projekt', bo, {
-    'auftraggeber': fields.String(attribute='_auftraggeber', description='unique ID des Auftraggebers'),
-    'bezeichnung': fields.String(attribute='_bezeichnung', description=' Bezeichnung des Projekts '),
-    'ersteller_ID': fields.Integer(attribute= 'ersteller_ID', description=' ID des Erstellers vom Projekt')
+projekt = api.inherit("Projekt", bo, {
+    "name": fields.String(attribute="_name", description="name des Projekt"),
+    "beschreibung": fields.String(attribute="_beschreibung", description="die Beschreibung des Projekts"),
+    "personID": fields.Integer(attribute= "personID", description="ID des Erstellers vom Projekt(auftraggeber)")
 })
 
-projektarbeit = api.inherit('Projektarbeit', bo, {
-    'bezeichnung': fields.String(attribute='_bezeichnung', description='Bezeichnung der Projektarbeit')
-})
-
-zeitintervall = api.inherit('Zeitintervall', bo, {
-    'projektlaufzeit': fields.Integer(attribute='_projektlaufzeit', description='Projektlaufzeit')
-})
-
-ereignisbuchung = api.inherit('Ereignisbuchung', bo, {
-    'ereignisbuchung_id': fields.Integer(attribute= 'ereignisbuchung_id', description='Ereignisbuchung-ID einer Ereignisbuchunguchung')
-})
-
-zeitintervallbuchung = api.inherit('Zeitintervallbuchung', bo, {
-    '': fields.Integer(attribute= '', description='   ')
+zeitintervall = api.inherit("Zeitintervall", bo, {
+    "datum": fields.Date(attribute="_datum", description="Datum des Zeitintervall"),
+    "startzeit": fields.DateTime(attribute="_startzeit", description="Begin Zeit des Zeitintervall"),
+    "endzeit": fields.DateTime(attribute="_endzeit", description="End Zeit des Zeitintervall"),
+    "aktivitaetID": fields.Integer(attribute= "aktivitaetID", description="aktivitaet ID des Zeitintervall"),
+    "personID": fields.Integer(attribute= "personID", description="ID des Erstellers vom Zeitintervall")
 })
 
 ereignis = api.inherit("Ereignis", bo, {
