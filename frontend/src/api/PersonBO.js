@@ -1,4 +1,4 @@
-import BusinessObject from './BusinessObject';
+import BusinessObject from "./BusinessObject";
 
 
 export default class PersonBO extends BusinessObject {
@@ -9,7 +9,8 @@ export default class PersonBO extends BusinessObject {
         this.vorname = vorname;
         this.nachname = nachname;
         this.email = email;
-        this.benutzername = benutzername;
+        this.benutzername = benutzername
+        this.role = role
     }
     // Sets the google_id of the PersonBO */
     setGoogle_id(google_id) {
@@ -51,7 +52,16 @@ export default class PersonBO extends BusinessObject {
     getBenutzername() {
     return this.benutzername;
     }
-   
+    // Sets the role of the PersonBO */
+    setRole(role) {
+      this.role = role;
+    }
+    /** gets the role of the PersonBO */
+    getRole() {
+      return this.role;
+    }
+
+
     /**
    * Returns an Array of  PersonBO from a given JSON structure
    */
