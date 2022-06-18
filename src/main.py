@@ -99,13 +99,15 @@ buchung = api.inherit('Buchung', bo, {
 
 })
 
-person = api.inherit('Person', bo, {
-    'vorname': fields.String(attribute='_vorname', description='unique ID des Vornamens'),
-    'nachname': fields.String(attribute='_nachname', description='nachname des Nachnamens'),
-    'email': fields.String(attribute='_email', description='unique email des der Person'),
-    'benutzername': fields.String(attribute='_benutzername', description='benutzername des Benutzernamens'),
-    'google_id': fields.String(attribute='_google_id', description='Google User Id des Profilinhabers'),
+person = api.inherit("Person", bo, {
+    "vorname": fields.String(attribute="_vorname", description="Vornamen der Person"),
+    "nachname": fields.String(attribute="_nachname", description="nachname der Person"),
+    "email": fields.String(attribute="_email", description="unique email des der Person"),
+    "benutzername": fields.String(attribute="_benutzername", description="benutzername der Person"),
+    "role": fields.String(attribute="_role", description="role der Person"),
+    "google_id": fields.String(attribute="_google_id", description="google_id der Person")
 })
+
 
 projekt = api.inherit('Projekt', bo, {
     'auftraggeber': fields.String(attribute='_auftraggeber', description='unique ID des Auftraggebers'),
