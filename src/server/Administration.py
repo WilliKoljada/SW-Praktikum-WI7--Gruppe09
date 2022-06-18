@@ -342,7 +342,7 @@ class Administration(object):
 
     """ereignis-spezifische Methoden"""
 
-    def create_ereignis (self, type, datum, startzeit, endzeit, personID):
+    def create_ereignis(self, type, datum, startzeit, endzeit, personID):
         ereignis = Ereignis()
         ereignis.set_type(type)
         ereignis.set_datum(datum)
@@ -350,15 +350,26 @@ class Administration(object):
         ereignis.set_endzeit(endzeit)
         ereignis.set_personID(personID)
 
-    def get_all_ereignisse (self):
         with EreignisMapper() as mapper:
-            return mapper.find_all()
+            return mapper.insert(ereignis)
+
+    def get_ereignis_by_type(self, type):
+        with EreignisMapper() as mapper:
+            return mapper.find_by_type(type)
+
+    def get_ereignis_by_personID(self, personID):
+        with EreignisMapper() as mapper:
+            return mapper.find_by_personID(personID)
 
     def get_ereignis_by_id(self, id):
         with EreignisMapper() as mapper:
             return mapper.find_by_key(id)
 
-    def save_ereignis (self, ereignis):
+    def get_all_ereignisse(self):
+        with EreignisMapper() as mapper:
+            return mapper.find_all()
+
+    def update_ereignis(self, ereignis):
         with EreignisMapper() as mapper:
             return mapper.update(ereignis)
 
