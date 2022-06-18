@@ -270,12 +270,14 @@ class Administration(object):
 
     """zeitintervall-spezifische Methoden"""
 
-
-    def create_zeitintervall(self, projekt_runtime):
+    def create_zeitintervall(self, datum, startzeit, endzeit, aktivitaetID, personID):
         """Eine Zeitintervall anlegen"""
         p = Zeitintervall()
-        p.set_id(1)
-        p.set_projektlaufzeit(projekt_runtime)
+        p.set_datum(datum)
+        p.set_startzeit(startzeit)
+        p.set_endzeit(endzeit)
+        p.set_aktivitaetID(aktivitaetID)
+        p.set_personID(personID)
 
         with ZeitintervallMapper() as mapper:
             return mapper.insert(p)
@@ -340,22 +342,34 @@ class Administration(object):
 
     """ereignis-spezifische Methoden"""
 
-    def create_ereignis (self, zeitpunkt_ereig):
+    def create_ereignis(self, type, datum, startzeit, endzeit, personID):
         ereignis = Ereignis()
-        ereignis.set_zeitpunkt_ereigniseintritt(zeitpunkt_ereig)
+        ereignis.set_type(type)
+        ereignis.set_datum(datum)
+        ereignis.set_startzeit(startzeit)
+        ereignis.set_endzeit(endzeit)
+        ereignis.set_personID(personID)
 
         with EreignisMapper() as mapper:
             return mapper.insert(ereignis)
 
-    def get_all_ereignisse (self):
+    def get_ereignis_by_type(self, type):
         with EreignisMapper() as mapper:
-            return mapper.find_all()
+            return mapper.find_by_type(type)
+
+    def get_ereignis_by_personID(self, personID):
+        with EreignisMapper() as mapper:
+            return mapper.find_by_personID(personID)
 
     def get_ereignis_by_id(self, id):
         with EreignisMapper() as mapper:
             return mapper.find_by_key(id)
 
-    def save_ereignis (self, ereignis):
+    def get_all_ereignisse(self):
+        with EreignisMapper() as mapper:
+            return mapper.find_all()
+
+    def update_ereignis(self, ereignis):
         with EreignisMapper() as mapper:
             return mapper.update(ereignis)
 
