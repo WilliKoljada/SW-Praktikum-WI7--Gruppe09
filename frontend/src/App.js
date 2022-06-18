@@ -10,7 +10,6 @@ import SignIn from './components/Pages/SignIn'
 import LoadingProgress from './components/dialogs/LoadingProgress';
 import ContextErrorMessage from './components/dialogs/ContextErrorMessage';
 import firebaseConfig from './firebaseconfig';
-import CreateAktivitaet from './components/createAktivitaet';
 /**
  * The main bank administration app. It uses Googles firebase to log into the bank end. For routing the 
  * user to the respective pages, react-router-dom ist used.
