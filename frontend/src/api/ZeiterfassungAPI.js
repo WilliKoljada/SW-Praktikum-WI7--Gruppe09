@@ -79,7 +79,7 @@ export default class ZeiterfassungAPI {
    *  Returns a Promise which resolves to a json object.
    *  The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
    *  fetchAdvanced throws an Error also an server status errors
-
+   */
   #fetchAdvanced = (url, init) => fetch(url, init)
     .then(res => {
       // The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
@@ -90,7 +90,11 @@ export default class ZeiterfassungAPI {
     }
   )
 
-
+  /**
+   * Returns a Promise, which resolves to an Array of CustomerBOs
+   *
+   * @public
+   */
   getAktivitaets() {
     return this.#fetchAdvanced(this.#getAllAktivitaetURL()).then((responseJSON) => {
       let aktivitaetBOs = AktivitaetBO.fromJSON(responseJSON);
@@ -101,8 +105,15 @@ export default class ZeiterfassungAPI {
     })
   }
 
+  /**
+   * Returns a Promise, which resolves to a AktivitaetBO
+   *
+   * @param {Number} AktivitaetID to be retrieved
+   * @public
+   */
   getAktivitaet(AktivitaetID) {
     return this.#fetchAdvanced(this.#getAktivitaetURL(AktivitaetID)).then((responseJSON) => {
+      // We always get an array of AktivitaetBOs.fromJSON, but only need one object
       let responseAktivitaetID = AktivitaetID.fromJSON(responseJSON)[0];
       // console.info(responseAktivitaetBO);
       return new Promise(function (resolve) {
@@ -111,7 +122,12 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Adds an aktivitaet and returns a Promise, which resolves to a new AktivitaetBO object with the
+   *
+   * @param {AktivitaetBO} AktivitaetBO to be added. The ID of the new aktivitaet is set by the backend
+   * @public
+   */
   addAktivitaet(aktivitaetBO) {
     return this.#fetchAdvanced(this.#addAktivitaetURL(), {
       method: "POST",
@@ -121,6 +137,7 @@ export default class ZeiterfassungAPI {
       },
       body: JSON.stringify(aktivitaetBO)
     }).then((responseJSON) => {
+      // We always get an array of AktivitaetBOs.fromJSON, but only need one object
       let responseaktivitaetBO = aktivitaetBO.fromJSON(responseJSON)[0];
       // console.info(aktivitaetBOs);
       return new Promise(function (resolve) {
@@ -129,7 +146,12 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Updates an aktivitaet and returns a Promise, which resolves to a AktivitaetBO.
+   *
+   * @param {AktivitaetBO} aktivitaetBO to be updated
+   * @public
+   */
   updateAktivitaet(aktivitaetBO) {
     return this.#fetchAdvanced(this.#updateAktivitaetURL(aktivitaetBO.getId()), {
       method: "PUT",
@@ -139,6 +161,7 @@ export default class ZeiterfassungAPI {
       },
       body: JSON.stringify(aktivitaetBO)
     }).then((responseJSON) => {
+      // We always get an array of AktivitaetBOs.fromJSON
       let responseAktivitaetBO = AktivitaetBO.fromJSON(responseJSON)[0];
       // console.info(aktivitaetBOs);
       return new Promise(function (resolve) {
@@ -147,11 +170,17 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Returns a Promise, which resolves to an Array of AccountBOs
+   *
+   * @param {Number} aktivitaetID to be deleted
+   * @public
+   */
   deleteAktivitaet(aktivitaetID) {
     return this.#fetchAdvanced(this.#deleteAktivitaetURL(aktivitaetID), {
       method: "DELETE"
     }).then((responseJSON) => {
+      // We always get an array of AktivitaetBOs.fromJSON
       let responseAktivitaetID = AktivitaetBO.fromJSON(responseJSON)[0];
       // console.info(aktivitaetBOs);
       return new Promise(function (resolve) {
@@ -160,7 +189,12 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Returns a Promise, which resolves to an Array of PersonBOs
+   *
+   * @param {Number} personID for which the the persons should be retrieved
+   * @public
+   */
   getPersons() {
     return this.#fetchAdvanced(this.#getAllPersonURL())
       .then((responseJSON) => {
@@ -172,7 +206,12 @@ export default class ZeiterfassungAPI {
       })
   }
 
-
+  /**
+   * Returns a Promise, which resolves to an Array of PersonBOs
+   *
+   * @param {Number} PersonID for which the the person should be retrieved
+   * @public
+   */
   getPersonByID(PersonID) {
     return this.#fetchAdvanced(this.#getPersonByIdURL(PersonID))
       .then((responseJSON) => {
@@ -184,7 +223,12 @@ export default class ZeiterfassungAPI {
       })
   }
 
-
+  /**
+   * Returns a Promise, which resolves to an Array of PersonBOs
+   *
+   * @param {String} PersonEmail for which the the person should be retrieved
+   * @public
+   */
   getPersonByMail(PersonEmail) {
     return this.#fetchAdvanced(this.#getPersonByEmailURL(PersonEmail))
       .then((responseJSON) => {
@@ -197,7 +241,12 @@ export default class ZeiterfassungAPI {
   }
 
 
-
+  /**
+   * Returns a Promise, which resolves to an PersonBOs
+   *
+   * @param {PersonBo} personID for which the the accounts should be added to
+   * @public
+   */
   addPerson(personBO) {
     return this.#fetchAdvanced(this.#addPersonURL(), {
       method: "POST",
@@ -207,6 +256,7 @@ export default class ZeiterfassungAPI {
       },
       body: JSON.stringify(personBO)
     }).then((responseJSON) => {
+      // We always get an array of PersonBO.fromJSON, but only need one object
       let responsePersonBO = PersonBO.fromJSON(responseJSON)[0];
       // console.info(personBO);
       return new Promise(function (resolve) {
@@ -216,6 +266,12 @@ export default class ZeiterfassungAPI {
     })
   }
 
+  /**
+   * Updates a person and returns a Promise, which resolves to a PersonBO.
+   *
+   * @param {PersonBO} personBO to be updated
+   * @public
+   */
   updatePerson(personBO) {
     return this.#fetchAdvanced(this.#updatePersonURL(personBO.getID()), {
       method: "PUT",
@@ -225,6 +281,7 @@ export default class ZeiterfassungAPI {
       },
       body: JSON.stringify(personBO)
     }).then((responseJSON) => {
+      // We always get an array of PersonBOs.fromJSON
       let responsePersonID = PersonBO.fromJSON(responseJSON)[0];
       // console.info(personBOs);
       return new Promise(function (resolve) {
@@ -234,11 +291,17 @@ export default class ZeiterfassungAPI {
   }
 
 
-
+  /**
+   * Deletes the given Person and returns a Promise, which resolves to an PersonBO
+   *
+   * @param personID to be deleted
+   * @public
+   */
   deletePerson(personID) {
     return this.#fetchAdvanced(this.#deletePersonURL(personID), {
       method: "DELETE"
     }).then((responseJSON) => {
+      // We always get an array of PersonBO.fromJSON, but only need one object
       let responsePersonBO = PersonBO.fromJSON(responseJSON)[0];
       // console.info(personBOs);
       return new Promise(function (resolve) {
@@ -247,7 +310,11 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Returns a Promise, which resolves to an Array of ProjektBOs
+   *
+   * @public
+   */
    getProjekts() {
     return this.#fetchAdvanced(this.#getAllProjektsURL())
       .then((responseJSON) => {
@@ -258,10 +325,16 @@ export default class ZeiterfassungAPI {
       })
   }
 
-
+  /**
+   * Returns a Promise, which resolves to a ProjektBO
+   *
+   * @param {Number} projektID to be retrieved
+   * @public
+   */
    getProjekt(projektID) {
     return this.#fetchAdvanced(this.#getProjektByIdURL(projektID))
       .then((responseJSON) => {
+      // We always get an array of ProjektBOs.fromJSON, but only need one object
       let responseProjektBO = ProjektBO.fromJSON(responseJSON)[0];
       // console.info(responseProjektBO);
       return new Promise(function (resolve) {
@@ -270,6 +343,12 @@ export default class ZeiterfassungAPI {
     })
   }
 
+  /**
+   * Adds a projekt and returns a Promise, which resolves to a new ProjektBO object with the
+   *
+   * @param {ProjektBO} projektBO to be added. The ID of the new Projekt is set by the backend
+   * @public
+   */
   addProjekt(projektBO) {
     return this.#fetchAdvanced(this.#addProjektURL(), {
       method: "POST",
@@ -279,6 +358,7 @@ export default class ZeiterfassungAPI {
       },
       body: JSON.stringify(projektBO)
     }).then((responseJSON) => {
+      // We always get an array of ProjektBO.fromJSON, but only need one object
       let responseProjektBO = ProjektBO.fromJSON(responseJSON)[0];
       // console.info(ProjektBOs);
       return new Promise(function (resolve) {
@@ -287,7 +367,12 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Updates a project and returns a Promise, which resolves to a ProjektBO.
+   *
+   * @param {ProjektBO} projektBO to be updated
+   * @public
+   */
   updateProjekt(projektBO) {
     return this.#fetchAdvanced(this.#updateProjektURL(projektBO.getID()), {
       method: "PUT",
@@ -297,6 +382,7 @@ export default class ZeiterfassungAPI {
       },
       body: JSON.stringify(projektBO)
     }).then((responseJSON) => {
+      // We always get an array of ProjektBO.fromJSON
       let responseProjektBO = ProjektBO.fromJSON(responseJSON)[0];
       // console.info(ProjektBOs);
       return new Promise(function (resolve) {
@@ -305,11 +391,17 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Returns a Promise, which resolves to an Array of projektIDs
+   *
+   * @param {Number} projektID to be deleted
+   * @public
+   */
   deleteProjekt(projektID) {
     return this.#fetchAdvanced(this.#deleteProjektURL(projektID), {
       method: "DELETE"
     }).then((responseJSON) => {
+      // We always get an array of ProjektBO.fromJSON
       let responseProjektBO = ProjektBO.fromJSON(responseJSON)[0];
       // console.info(ProjektBOs);
       return new Promise(function (resolve) {
@@ -318,7 +410,11 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Returns a Promise, which resolves to an Array of EreignisBO
+   *
+   * @public
+   */
    getEreigniss() {
     return this.#fetchAdvanced(this.#getAllEreignisURL()).then((responseJSON) => {
       let ereignisBO = EreignisBO.fromJSON(responseJSON);
@@ -329,9 +425,15 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Returns a Promise, which resolves to a EreignisBO
+   *
+   * @param {Number} EreignisID to be retrieved
+   * @public
+   */
   getEreignis(EreignisID) {
     return this.#fetchAdvanced(this.#getEreignisByIdURL(EreignisID)).then((responseJSON) => {
+      // We always get an array of EreignisBO.fromJSON, but only need one object
       let responseEreignisID = EreignisBO.fromJSON(responseJSON)[0];
       // console.info(responseEreignisBO);
       return new Promise(function (resolve) {
@@ -340,7 +442,12 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Adds a ereignis and returns a Promise, which resolves to a new EreignisBO object with the
+   *
+   * @param {EreignisBO} ereignisBO to be added. The ID of the new Ereignis is set by the backend
+   * @public
+   */
   addEreignis(ereignisBO) {
     return this.#fetchAdvanced(this.#addEreignisURL(), {
       method: "POST",
@@ -350,6 +457,7 @@ export default class ZeiterfassungAPI {
       },
       body: JSON.stringify(ereignisBO)
     }).then((responseJSON) => {
+      // We always get an array of EreignisBO.fromJSON, but only need one object
       let responseEreignisBO = EreignisBO.fromJSON(responseJSON)[0];
       // console.info(ereignisBOs);
       return new Promise(function (resolve) {
@@ -358,7 +466,12 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Updates a ereignis and returns a Promise, which resolves to a EreignisBO.
+   *
+   * @param {EreignisBO} EreignisBO to be updated
+   * @public
+   */
   updateEreignis(ereignisBO) {
     return this.#fetchAdvanced(this.#updateEreignisURL(ereignisBO.getID()), {
       method: "PUT",
@@ -368,6 +481,7 @@ export default class ZeiterfassungAPI {
       },
       body: JSON.stringify(ereignisBO)
     }).then((responseJSON) => {
+      // We always get an array of EreignisBO.fromJSON
       let responseEreignisBO = EreignisBO.fromJSON(responseJSON)[0];
       // console.info(ereignisBOs);
       return new Promise(function (resolve) {
@@ -376,11 +490,17 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Returns a Promise, which resolves to an Array of EreignisBO
+   *
+   * @param {Number} ereignisID to be deleted
+   * @public
+   */
   deleteEreignis(ereignisID) {
     return this.#fetchAdvanced(this.#deleteEreignisURL(ereignisID), {
       method: "DELETE"
     }).then((responseJSON) => {
+      // We always get an array of ArbeitszeitkontoBO.fromJSON
       let responseaEreignisBO = EreignisBO.fromJSON(responseJSON)[0];
       // console.info(ereignisBOs);
       return new Promise(function (resolve) {
@@ -389,6 +509,11 @@ export default class ZeiterfassungAPI {
     })
   }
 
+  /**
+   * Returns a Promise, which resolves to an Array of ArbeitszeitkontoBO
+   *
+   * @public
+   */
    getArbeitszeitkonten() {
     return this.#fetchAdvanced(this.#getAllArbeitszeitkontoURL()).then((responseJSON) => {
       let ArbeitszeitkontoBOs = ArbeitszeitkontoBO.fromJSON(responseJSON);
@@ -399,9 +524,15 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Returns a Promise, which resolves to a ArbeitszeitkontoBO
+   *
+   * @param {Number} userID to be retrieved
+   * @public
+   */
   getArbeitszeitkonto(userID) {
     return this.#fetchAdvanced(this.#getArbeitszeitkontoByUserIdURL(userID)).then((responseJSON) => {
+      // We always get an array of ArbeitszeitkontoBOs.fromJSON, but only need one object
       let responseArbeitszeitkontoBO = ArbeitszeitkontoBO.fromJSON(responseJSON)[0];
       // console.info(responseArbeitszeitkontoBO);
       return new Promise(function (resolve) {
@@ -411,7 +542,11 @@ export default class ZeiterfassungAPI {
   }
 
 
-
+  /**
+   * Returns a Promise, which resolves to an Array of ZeitIntervallBO
+   *
+   * @public
+   */
    getZeitIntervalls() {
     return this.#fetchAdvanced(this.#getAllZeitintervallURL()).then((responseJSON) => {
       let responseZeitintervallBO = ZeitintervallBO.fromJSON(responseJSON);
@@ -422,9 +557,15 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Returns a Promise, which resolves to a ZeitintervallBO
+   *
+   * @param {Number} zeitintervallID to be retrieved
+   * @public
+   */
   getZeitIntervall(zeitintervallID) {
     return this.#fetchAdvanced(this.#getZeitintervallURL(zeitintervallID)).then((responseJSON) => {
+      // We always get an array of ZeitintervallBO.fromJSON, but only need one object
       let responseZeitintervallBO = ZeitintervallBO.fromJSON(responseJSON)[0];
       // console.info(responseZeitintervallBOs);
       return new Promise(function (resolve) {
@@ -433,7 +574,12 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Adds a zeitintervall and returns a Promise, which resolves to a new ZeitintervallBO object with the
+   *
+   * @param {ZeitintervallBO} zeitintervallID to be added. The ID of the new Zeitintervall is set by the backend
+   * @public
+   */
   addZeitIntervall(zeitintervallID) {
     return this.#fetchAdvanced(this.#addZeitintervallURL(), {
       method: "POST",
@@ -443,6 +589,7 @@ export default class ZeiterfassungAPI {
       },
       body: JSON.stringify(zeitintervallID)
     }).then((responseJSON) => {
+      // We always get an array of ZeitintervallBO.fromJSON, but only need one object
       let responseZeitintervallBO = ZeitintervallBO.fromJSON(responseJSON)[0];
       // console.info(ZeitintervallBOs);
       return new Promise(function (resolve) {
@@ -451,7 +598,12 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Updates a zeitintervall and returns a Promise, which resolves to a zeitintervallBO.
+   *
+   * @param {ZeitintervallBO} zeitintervallBO to be updated
+   * @public
+   */
   updateZeitIntervall(zeitintervallBO) {
     return this.#fetchAdvanced(this.#updateZeitintervallURL(zeitintervallBO.getID()), {
       method: "PUT",
@@ -461,6 +613,7 @@ export default class ZeiterfassungAPI {
       },
       body: JSON.stringify(zeitintervallBO)
     }).then((responseJSON) => {
+      // We always get an array of ZeitintervallBO.fromJSON
       let responseZeitintervallBO = ZeitintervallBO.fromJSON(responseJSON)[0];
       // console.info(ZeitintervallBOs);
       return new Promise(function (resolve) {
@@ -469,11 +622,17 @@ export default class ZeiterfassungAPI {
     })
   }
 
-
+  /**
+   * Returns a Promise, which resolves to an Array of ZeitintervallBO
+   *
+   * @param {Number} ZeitintervallID to be deleted
+   * @public
+   */
   deleteZeitIntervall(ZeitintervallID) {
     return this.#fetchAdvanced(this.#deleteZeitintervallURL(ZeitintervallID), {
       method: "DELETE"
     }).then((responseJSON) => {
+      // We always get an array of ZeitintervallBO.fromJSON
       let responseaZeitintervallBO = ZeitintervallBO.fromJSON(responseJSON)[0];
       // console.info(ZeitintervallBOs);
       return new Promise(function (resolve) {
