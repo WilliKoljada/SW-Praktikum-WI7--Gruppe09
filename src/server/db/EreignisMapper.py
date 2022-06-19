@@ -163,13 +163,13 @@ class EreignisMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, ereignis):
+    def delete(self, id):
         """Löschen der Daten eines Projekt-Objekts aus der Datenbank.
         :param ereignis das aus der DB zu löschende "Objekt"
         """
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM ereignis WHERE id={}".format(ereignis.get_id())
+        command = "DELETE FROM ereignis WHERE id={}".format(id)
         cursor.execute(command)
         self._cnx.commit()
         cursor.close()
