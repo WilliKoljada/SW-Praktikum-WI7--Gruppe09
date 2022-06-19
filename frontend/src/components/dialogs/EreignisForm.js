@@ -26,3 +26,20 @@ class EreignisForm extends Component {
       name = props.ereignis.getName();
       bezeichung = props.ereignis.getBezeichnung();
     }
+
+    // Init the state
+    this.state = {
+      name: name,
+      nameValidationFailed: false,
+      nameameEdited: false,
+      bezeichung: bezeichung,
+      bezeichungValidationFailed: false,
+      bezeichungEdited: false,
+      addingInProgress: false,
+      updatingInProgress: false,
+      addingError: null,
+      updatingError: null
+    };
+    // save this state for canceling
+    this.baseState = this.state;
+  }
