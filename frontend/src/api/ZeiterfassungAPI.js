@@ -75,7 +75,7 @@ export default class ZeiterfassungAPI {
    * @public
    */
   static getAPI() {
-    if (this.#api == null) {
+    if(this.#api == null) {
       this.#api = new ZeiterfassungAPI();
     }
     return this.#api;
@@ -94,31 +94,16 @@ export default class ZeiterfassungAPI {
       }
       return res.json();
     }
-    )
-
-  /**
-   * Returns a formatter to format currencys of the transactions
-   *
-   * @public
-   */
-
-
-  /**
-   * Returns the code for the currency
-   *
-   * @public
-   */
-
+  )
 
   /**
    * Returns a Promise, which resolves to an Array of CustomerBOs
    *
    * @public
    */
-  getAktivitaeten() {
+  getAktivitaets() {
     return this.#fetchAdvanced(this.#getAllAktivitaetURL()).then((responseJSON) => {
       let aktivitaetBOs = AktivitaetBO.fromJSON(responseJSON);
-      // console.info(customerBOs);
       return new Promise(function (resolve) {
         resolve(aktivitaetBOs);
       })
@@ -128,6 +113,7 @@ export default class ZeiterfassungAPI {
 
   getAktivitaet(AktivitaetID) {
     return this.#fetchAdvanced(this.#getAktivitaetURL(AktivitaetID)).then((responseJSON) => {
+      // We always get an array of AktivitaetBOs.fromJSON, but only need one object
       let responseAktivitaetID = AktivitaetID.fromJSON(responseJSON)[0];
       // console.info(responseAktivitaetBO);
       return new Promise(function (resolve) {
@@ -146,6 +132,7 @@ export default class ZeiterfassungAPI {
       },
       body: JSON.stringify(aktivitaetBO)
     }).then((responseJSON) => {
+      // We always get an array of AktivitaetBOs.fromJSON, but only need one object
       let responseaktivitaetBO = aktivitaetBO.fromJSON(responseJSON)[0];
       // console.info(aktivitaetBOs);
       return new Promise(function (resolve) {
@@ -186,6 +173,7 @@ export default class ZeiterfassungAPI {
       })
     })
   }
+
 
   /**
    * Returns a Promise, which resolves to an Array of AccountBOs
