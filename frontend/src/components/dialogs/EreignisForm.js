@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
+import ZeiterfassungAPI from "../../api/ZeiterfassungAPI";
+import EreignisBO from "../../api/EreignisBO";
 
 
 /**
@@ -43,3 +47,59 @@ class EreignisForm extends Component {
     // save this state for canceling
     this.baseState = this.state;
   }
+
+  /** Adds the ereignis */
+  addEreignis = () => {
+    let newEreignis = new EreignisBO(
+        this.state.name,
+        this.state.bezeichung
+    );
+    ZeiterfassungAPI.getAPI().addEreignis(newEreignis).then(ereignis => {
+      // Backend call sucessfull
+      // reinit the dialogs state for a new empty ereignis
+      this.setState(this.baseState);
+      this.props.onClose(ereignis); // call the parent with the ereignis object from backend
+    }).catch(e =>
+      this.setState({
+        updatingInProgress: false,    // disable loading indicator
+        updatingError: e              // show error message
+      })
+    );
+
+    // set loading to true
+    this.setState({
+      updatingInProgress: true,       // show loading indicator
+      updatingError: null             // disable error message
+    });
+  }
+
+  /** Updates the ereignis */
+  updateEreignis = () => {
+    // clone the original ereignis, in case the backend call fails
+    let updatedEreignis = Object.assign(new EreignisBO(), this.props.ereignis);
+    // set the new attributes from our dialog
+    updatedEreignis.setName(this.state.name);
+	updatedEreignis.setBezeichnung(this.state.bezeichung);
+    ZeiterfassungAPI.getAPI().updateEreignis(updatedEreignis).then(ereignis => {
+      this.setState({
+        updatingInProgress: false,              // disable loading indicator
+        updatingError: null                     // no error message
+      });
+      // keep the new state as base state
+      this.baseState.name = this.state.name;
+      this.baseState.bezeichung = this.state.bezeichung;
+      this.props.onClose(updatedEreignis);      // call the parent with the new ereignis
+    }).catch(e =>
+      this.setState({
+        updatingInProgress: false,              // disable loading indicator
+        updatingError: e                        // show error message
+      })
+    );
+
+    // set loading to true
+    this.setState({
+      updatingInProgress: true,                 // show loading indicator
+      updatingError: null                       // disable error message
+    });
+  }
+
