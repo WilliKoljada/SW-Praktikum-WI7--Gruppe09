@@ -570,30 +570,46 @@ updateBuchung(buchungID) {
    * @param {Number} projektID to be retrieved
    * @public
    */
+   /**
+   * Returns a Promise, which resolves to an Array of ProjektBOs
+   *
+   * @public
+   */
+   getProjekts() {
+    return this.#fetchAdvanced(this.#getAllProjektsURL())
+      .then((responseJSON) => {
+        let projektBOs = ProjektBO.fromJSON(responseJSON);
+        return new Promise(function (resolve) {
+          resolve(projektBOs);
+        })
+      })
+  }
+
+  /**
+   * Returns a Promise, which resolves to a ProjektBO
+   *
+   * @param {Number} projektID to be retrieved
+   * @public
+   */
    getProjekt(projektID) {
-    return this.#fetchAdvanced(this.#getAllProjektsURL(projektID)).then((responseJSON) => {
+    return this.#fetchAdvanced(this.#getProjektByIdURL(projektID))
+      .then((responseJSON) => {
       // We always get an array of ProjektBOs.fromJSON, but only need one object
       let responseProjektBO = ProjektBO.fromJSON(responseJSON)[0];
-      // console.info(responseCProjektBO);
+      // console.info(responseProjektBO);
       return new Promise(function (resolve) {
         resolve(responseProjektBO);
       })
     })
   }
 
-  /**
-   * Adds a customer and returns a Promise, which resolves to a new ProjektBO object with the 
-   * firstName and lastName of the parameter ProjektBO object.
-   * 
-   * @param {ProjektBO} projektBO to be added. The ID of the new Projekt is set by the backend
-   * @public
-   */
+
   addProjekt(projektBO) {
-    return this.#fetchAdvanced(this.#addProjektByIdURL(), {
-      method: 'POST',
+    return this.#fetchAdvanced(this.#addProjektURL(), {
+      method: "POST",
       headers: {
-        'Accept': 'application/json, text/plain',
-        'Content-type': 'application/json',
+        "Accept": "application/json, text/plain",
+        "Content-type": "application/json",
       },
       body: JSON.stringify(projektBO)
     }).then((responseJSON) => {
@@ -606,34 +622,13 @@ updateBuchung(buchungID) {
     })
   }
 
-  /**
-   * Returns a Promise, which resolves to a ProjektBO
-   * 
-   * @param {Number} projektID to be retrieved
-   * @public
-   */
-   getProjektById(projektID) {
-    return this.#fetchAdvanced(this.#getProjektByIdURL(projektID)).then((responseJSON) => {
-      // We always get an array of ProjektBO.fromJSON, but only need one object
-      let responseProjektBO = ProjektBO.fromJSON(responseJSON)[0];
-      // console.info(responseProjektBO);
-      return new Promise(function (resolve) {
-        resolve(responseProjektBO);
-      })
-    })
-  }
-  /**
-   * Updates a projects and returns a Promise, which resolves to a ProjektBO.
-   * 
-   * @param {ProjektBO} projektBO to be updated
-   * @public
-   */
+
   updateProjekt(projektBO) {
-    return this.#fetchAdvanced(this.#updateProjektByURL(projektBO.getID()), {
-      method: 'PUT',
+    return this.#fetchAdvanced(this.#updateProjektURL(projektBO.getID()), {
+      method: "PUT",
       headers: {
-        'Accept': 'application/json, text/plain',
-        'Content-type': 'application/json',
+        "Accept": "application/json, text/plain",
+        "Content-type": "application/json",
       },
       body: JSON.stringify(projektBO)
     }).then((responseJSON) => {
@@ -648,13 +643,13 @@ updateBuchung(buchungID) {
 
   /**
    * Returns a Promise, which resolves to an Array of projektIDs
-   * 
+   *
    * @param {Number} projektID to be deleted
    * @public
    */
   deleteProjekt(projektID) {
-    return this.#fetchAdvanced(this.#deleteProjektByIdURL(projektID), {
-      method: 'DELETE'
+    return this.#fetchAdvanced(this.#deleteProjektURL(projektID), {
+      method: "DELETE"
     }).then((responseJSON) => {
       // We always get an array of ProjektBO.fromJSON
       let responseProjektBO = ProjektBO.fromJSON(responseJSON)[0];
