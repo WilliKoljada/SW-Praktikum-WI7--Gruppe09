@@ -170,7 +170,6 @@ class EreignisMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "DELETE FROM ereignis WHERE id={}".format(id)
-        cursor.execute(command)
         self._cnx.commit()
         cursor.close()
 
