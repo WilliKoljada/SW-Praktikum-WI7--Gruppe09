@@ -4,6 +4,8 @@ import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, Dia
 import CloseIcon from "@material-ui/icons/Close";
 import ZeiterfassungAPI from "../../api/ZeiterfassungAPI";
 import EreignisBO from "../../api/EreignisBO";
+import ContextErrorMessage from "./ContextErrorMessage";
+import LoadingProgress from "./LoadingProgress";
 
 
 /**
@@ -102,4 +104,84 @@ class EreignisForm extends Component {
       updatingError: null                       // disable error message
     });
   }
+
+  /** Handles value changes of the forms textfields and validates them */
+  textFieldValueChange = (event) => {
+    const value = event.target.value;
+
+    let error = false;
+    if (value.trim().length === 0) {
+      error = true;
+    }
+
+    this.setState({
+      [event.target.id]: event.target.value,
+      [event.target.id + "ValidationFailed"]: error,
+      [event.target.id + "Edited"]: true
+    });
+  }
+
+  /** Handles the close / cancel button click event */
+  handleClose = () => {
+    // Reset the state
+    this.setState(this.baseState);
+    this.props.onClose(null);
+  }
+
+  /** Renders the component */
+  render() {
+    const { classes, ereignis, show } = this.props;
+    const { name, nameValidationFailed, nameEdited, bezeichung, bezeichungValidationFailed,
+			bezeichungEdited,addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
+
+    let title = "";
+    let header = "";
+
+    if(ereignis) {
+      // ereignis defindet, so ist an edit dialog
+      title = "Update a ereignis";
+      header = `Ereignis ID: ${ereignis.getID()}`;
+    } else {
+      title = "Create a new ereignis";
+      header = "Enter ereignis data";
+    }
+
+    return (
+      show ?
+        <Dialog open={show} onClose={this.handleClose} maxWidth="xs">
+          <DialogTitle id="form-dialog-title">{title}
+            <IconButton className={classes.closeButton} onClick={this.handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {header}
+            </DialogContentText>
+            <form className={classes.root} noValidate autoComplete="off">
+              <TextField
+								autoFocus
+								type="text"
+								required
+								fullWidth
+								margin="normal"
+								id="name"
+								label="Name:"
+								value={name}
+                onChange={this.textFieldValueChange}
+								error={nameValidationFailed}
+                helperText={nameValidationFailed ? "The name must contain at least one character" : " "}
+							/>
+              <TextField
+								type="text"
+								required
+								fullWidth
+								margin="normal"
+								id="bezeichung"
+								label="Bezeichung:"
+								value={bezeichung}
+                onChange={this.textFieldValueChange}
+								error={bezeichungValidationFailed}
+                helperText={bezeichungValidationFailed ? "The Bezeichnung must contain at least one character" : " "}
+							/>
 
