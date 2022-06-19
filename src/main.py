@@ -98,7 +98,7 @@ person = api.inherit("Person", bo, {
 projekt = api.inherit("Projekt", bo, {
     "name": fields.String(attribute="_name", description="name des Projekt"),
     "beschreibung": fields.String(attribute="_beschreibung", description="die Beschreibung des Projekts"),
-    "personID": fields.Integer(attribute= "personID", description="ID des Erstellers vom Projekt(auftraggeber)")
+    "personID": fields.Integer(attribute= "_personID", description="ID des Erstellers vom Projekt(auftraggeber)")
 })
 
 zeitintervall = api.inherit("Zeitintervall", bo, {
