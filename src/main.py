@@ -103,18 +103,18 @@ projekt = api.inherit("Projekt", bo, {
 
 zeitintervall = api.inherit("Zeitintervall", bo, {
     "datum": fields.Date(attribute="_datum", description="Datum des Zeitintervall"),
-    "startzeit": fields.DateTime(attribute="_startzeit", description="Begin Zeit des Zeitintervall"),
-    "endzeit": fields.DateTime(attribute="_endzeit", description="End Zeit des Zeitintervall"),
+    "startzeit": fields.Time(attribute="_startzeit", description="Begin Zeit des Zeitintervall"),
+    "endzeit": fields.Time(attribute="_endzeit", description="End Zeit des Zeitintervall"),
     "aktivitaetID": fields.Integer(attribute= "aktivitaetID", description="aktivitaet ID des Zeitintervall"),
-    "personID": fields.Integer(attribute= "personID", description="ID des Erstellers vom Zeitintervall")
+    "personID": fields.Integer(attribute= "_personID", description="ID des Erstellers vom Zeitintervall")
 })
 
 ereignis = api.inherit("Ereignis", bo, {
     "type": fields.String(attribute= "_type", description="Type des Ereignis"),
     "datum": fields.Date(attribute="_datum", description="Datum des Ereignis"),
-    "startzeit": fields.DateTime(attribute="_startzeit", description="Begin Zeit des Ereignis"),
-    "endzeit": fields.DateTime(attribute="_endzeit", description="End Zeit des Ereignis"),
-    "personID": fields.Integer(attribute= "personID", description="person ID des Ereignis")
+    "startzeit": fields.Time(attribute="_startzeit", description="Begin Zeit des Ereignis"),
+    "endzeit": fields.Time(attribute="_endzeit", description="End Zeit des Ereignis"),
+    "personID": fields.Integer(attribute= "_personID", description="person ID des Ereignis")
 })
 # Alle weiteren bo´s wie bei Aktivitaet erstellen
 
