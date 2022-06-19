@@ -175,34 +175,12 @@ export default class ZeiterfassungAPI {
   }
 
 
-  /**
-   * Returns a Promise, which resolves to an Array of AccountBOs
-   *
-   * @param {Number} customerID to be deleted
-   * @public
-   */
-//   searchCustomer(customerName) {
-//     return this.#fetchAdvanced(this.#searchCustomerURL(customerName)).then((responseJSON) => {
-//       let customerBOs = CustomerBO.fromJSON(responseJSON);
-//       // console.info(customerBOs);
-//       return new Promise(function (resolve) {
-//         resolve(customerBOs);
-//       })
-//     })
-//   }
 
-
-  /**
-   * Returns a Promise, which resolves to an Array of AccountBOs
-   *
-   * @param {Number} personID for which the the accounts should be retrieved
-   * @public
-   */
-  getAllPerson() {
+  getPersons() {
     return this.#fetchAdvanced(this.#getAllPersonURL())
       .then((responseJSON) => {
         let personBos = PersonBO.fromJSON(responseJSON);
-        // console.info(accountBOs);
+        // console.info(personBOs);
         return new Promise(function (resolve) {
           resolve(personBos);
         })
@@ -210,17 +188,11 @@ export default class ZeiterfassungAPI {
   }
 
 
-  /**
-   * Returns a Promise, which resolves to an Array of AccountBOs
-   *
-   * @param {Number} PersonID for which the the accounts should be retrieved
-   * @public
-   */
   getPersonByID(PersonID) {
     return this.#fetchAdvanced(this.#getPersonByIdURL(PersonID))
       .then((responseJSON) => {
         let PersonID = PersonBO.fromJSON(responseJSON);
-        // console.info(accountBOs);
+        // console.info(personBOs);
         return new Promise(function (resolve) {
           resolve(PersonID);
         })
@@ -228,63 +200,51 @@ export default class ZeiterfassungAPI {
   }
 
 
- /**
-   * Returns a Promise, which resolves to an Array of AccountBOs
-   *
-   * @param {Number} PersonID for which the the accounts should be retrieved
-   * @public
-   */
-  getPersonByMail(PersonID) {
-    return this.#fetchAdvanced(this.#getPersonByEmailURL(PersonID))
+  getPersonByMail(PersonEmail) {
+    return this.#fetchAdvanced(this.#getPersonByEmailURL(PersonEmail))
       .then((responseJSON) => {
-        let PersonID = PersonBO.fromJSON(responseJSON);
-        // console.info(accountBOs);
+        let Person = PersonBO.fromJSON(responseJSON);
+        // console.info(personBOs);
         return new Promise(function (resolve) {
-          resolve(PersonID);
+          resolve(Person);
         })
       })
   }
 
 
- /**
-   * Returns a Promise, which resolves to an AccountBOs
-   *
-   * @param {Number} personID for which the the accounts should be added to
-   * @public
-   */
-  addPerson(personID) {
-    return this.#fetchAdvanced(this.#addPersonURL(personID), {
-      method: 'POST'
-    })
-      .then((responseJSON) => {
-        // We always get an array of AccountBO.fromJSON, but only need one object
-        let personBO = PersonBO.fromJSON(responseJSON)[0];
-        // console.info(accountBO);
-        return new Promise(function (resolve) {
-          // We expect only one new account
-          resolve(personBO);
-        })
-      })
-  }
 
-/**
-   * Updates a customer and returns a Promise, which resolves to a CustomerBO.
-   *
-   * @param {PersonBO} personID to be updated
-   * @public
-   */
-updatePeson(personID) {
-    return this.#fetchAdvanced(this.#updatePersonByIdgURL(personID.getID()), {
-      method: 'PUT',
+  addPerson(personBO) {
+    return this.#fetchAdvanced(this.#addPersonURL(), {
+      method: "POST",
       headers: {
-        'Accept': 'application/json, text/plain',
-        'Content-type': 'application/json',
+        "Accept": "application/json, text/plain",
+        "Content-type": "application/json",
       },
-      body: JSON.stringify(personID)
+      body: JSON.stringify(personBO)
     }).then((responseJSON) => {
-      // We always get an array of CustomerBOs.fromJSON
+      // We always get an array of PersonBO.fromJSON, but only need one object
+      let responsePersonBO = PersonBO.fromJSON(responseJSON)[0];
+      // console.info(personBO);
+      return new Promise(function (resolve) {
+        // We expect only one new person
+        resolve(responsePersonBO);
+      })
+    })
+  }
+
+
+  updatePerson(personBO) {
+    return this.#fetchAdvanced(this.#updatePersonURL(personBO.getID()), {
+      method: "PUT",
+      headers: {
+        "Accept": "application/json, text/plain",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(personBO)
+    }).then((responseJSON) => {
+      // We always get an array of PersonBOs.fromJSON
       let responsePersonID = PersonBO.fromJSON(responseJSON)[0];
-      // console.info(accountBOs);
+      // console.info(personBOs);
       return new Promise(function (resolve) {
         resolve(responsePersonID);
       })
@@ -292,39 +252,19 @@ updatePeson(personID) {
   }
 
 
-  /**
-   * Deletes the given Person and returns a Promise, which resolves to an PersonBO
-   *
-   * @param personID to be deleted
-   * @public
-   */
-  deletePerson (personID) {
-    return this.#fetchAdvanced(this.#deletePersonByIdURL(personID), {
-      method: 'DELETE'
-    })
-      .then((responseJSON) => {
-        // We always get an array of AccountBO.fromJSON, but only need one object
-        let personBO = PersonBO.fromJSON(responseJSON)[0];
-        // console.info(accountBOs);
-        return new Promise(function (resolve) {
-          resolve(personBO);
-        })
-      })
-  }
 
-        /**
-   * Returns a Promise, which resolves to a UserBO
-   * @param {googleID} Email of the user to be retrieved
-   * @public
-   */
-         getUserByGoogleId(googleID){
-          return this.#fetchAdvanced(this.#getUserByGoogleIdURL(googleID)).then((responseJSON) => {
-            let userBOs = UserBO.fromJSON(responseJSON)[0];
-            return new Promise(function (resolve) {
-              resolve(userBOs);
-          })
-        })
-        }
+  deletePerson(personID) {
+    return this.#fetchAdvanced(this.#deletePersonURL(personID), {
+      method: "DELETE"
+    }).then((responseJSON) => {
+      // We always get an array of PersonBO.fromJSON, but only need one object
+      let responsePersonBO = PersonBO.fromJSON(responseJSON)[0];
+      // console.info(personBOs);
+      return new Promise(function (resolve) {
+        resolve(responsePersonBO);
+      })
+    })
+  }
 
 
   /**
