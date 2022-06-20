@@ -97,7 +97,7 @@ class EreignisListEntry extends Component {
             expandIcon={<ExpandMoreIcon />}
             id={`ereignis${ereignis.getID()}ereignispanel-header`}
           >
-            <Grid container spacing={1} justify="flex-start" alignItem="center">
+            <Grid container spacing={1} justify="flex-start" alignItems="center">
               <Grid item>
                 <Typography variant="body1" className={classes.heading}>
                     {ereignis.getName()}, {ereignis.getBezeichnung()}
@@ -109,6 +109,7 @@ class EreignisListEntry extends Component {
                     edit
                   </Button>
                   <Button color="secondary" onClick={this.deleteEreignisButtonClicked}>
+                  delete
                   </Button>
                 </ButtonGroup>
               </Grid>
@@ -128,4 +129,10 @@ class EreignisListEntry extends Component {
     );
   }
 }
+/** Component specific styles */
+const styles = theme => ({
+  root: {
+    width: "100%",
+  }
+});
 
