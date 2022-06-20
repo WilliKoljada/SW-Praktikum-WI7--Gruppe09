@@ -137,3 +137,25 @@ const styles = theme => ({
 });
 
 
+/** PropTypes */
+EreignisListEntry.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** The EreignisBO to be rendered */
+  ereignis: PropTypes.object.isRequired,
+  /** The state of this EreignisListEntry. If true the ereignis is shown with its accounts */
+  expandedState: PropTypes.bool.isRequired,
+  /** The handler responsible for handle expanded state changes (exanding/collapsing) of this EreignisListEntry
+   *
+   * Signature: onExpandedStateChange(EreignisBO ereignis)
+   */
+  onExpandedStateChange: PropTypes.func.isRequired,
+  /**
+   *  Event Handler function which is called after a sucessfull delete of this ereignis.
+   *
+   * Signature: onEreignisDelete(EreignisBO ereignis)
+   */
+  onEreignisDeleted: PropTypes.func.isRequired
+}
+
+export default withStyles(styles)(EreignisListEntry);
