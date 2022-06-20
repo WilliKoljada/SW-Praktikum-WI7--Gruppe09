@@ -184,4 +184,65 @@ class EreignisForm extends Component {
 								error={bezeichungValidationFailed}
                 helperText={bezeichungValidationFailed ? "The Bezeichnung must contain at least one character" : " "}
 							/>
+            </form>
+            <LoadingProgress show={addingInProgress || updatingInProgress} />
+            {
+              // Show error message in dependency of ereignis prop
+              ereignis ?
+                <ContextErrorMessage error={updatingError} contextErrorMsg={`The ereignis ${ereignis.getID()} could not be updated.`} onReload={this.updateEreignis} />
+                :
+                <ContextErrorMessage error={addingError} contextErrorMsg={`The ereignis could not be added.`} onReload={this.addEreignis} />
+            }
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="secondary">
+              Cancel
+            </Button>
+            {
+              // If a ereignis is given, show an update button, else an add button
+              ereignis ?
+                <Button disabled={nameValidationFailed || bezeichungValidationFailed} variant="contained" onClick={this.updateEreignis} color="primary">
+                  Update
+              </Button>
+                : <Button disabled={nameValidationFailed || !nameEdited || bezeichungValidationFailed || !bezeichungEdited} variant="contained" onClick={this.addEreignis} color="primary">
+                  Add
+             </Button>
+            }
+          </DialogActions>
+        </Dialog>
+        : null
+    );
+  }
+}
 
+/** Component specific styles */
+const styles = theme => ({
+  root: {
+    width: "100%",
+  },
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+});
+
+/** PropTypes */
+EreignisForm.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** The EreignisBO to be edited */
+  ereignis: PropTypes.object,
+  /** If true, the form is rendered */
+  show: PropTypes.bool.isRequired,
+  /**
+   * Handler function which is called, when the dialog is closed.
+   * Sends the edited or created EreignisBO as parameter or null, if cancel was pressed.
+   *
+   * Signature: onClose(EreignisBO ereignis);
+   */
+  onClose: PropTypes.func.isRequired,
+}
+
+export default withStyles(styles)(EreignisForm);
