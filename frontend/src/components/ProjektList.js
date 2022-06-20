@@ -35,7 +35,7 @@ class ProjektList extends Component {
   }
 
   /** Fetches ProjektBOs for the current person */
-  getProjekte = () => {
+  getProjekts = () => {
     ZeiterfassungAPI.getAPI().getProjekte()
       .then(projektBOs =>
         this.setState({  // Set new state when ProjektBOs have been fetched
