@@ -64,3 +64,23 @@ class EreignisListEntry extends Component {
       });
     }
   }
+   /** Handles the onClick event of the delete ereignis button */
+  deleteEreignisButtonClicked = (event) => {
+    event.stopPropagation();
+    this.setState({
+      showEreignisDeleteDialog: true
+    });
+  }
+
+  /** Handles the onClose event of the EreignisDeleteDialog */
+  deleteEreignisDialogClosed = (ereignis) => {
+    // if ereignis is not null, delete it
+    if(ereignis) {
+      this.props.onEreignisDeleted(ereignis);
+    };
+
+    // Don´t show the dialog
+    this.setState({
+      showEreignisDeleteDialog: false
+    });
+  }
