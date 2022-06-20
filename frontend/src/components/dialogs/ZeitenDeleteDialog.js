@@ -98,4 +98,4 @@ const styles = theme => ({
   }
 });
 
-export default ZeitenDeleteDialog;
+export default withStyles(styles)(ZeitenDeleteDialog);
