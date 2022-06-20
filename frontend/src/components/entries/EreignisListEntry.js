@@ -84,3 +84,8 @@ class EreignisListEntry extends Component {
       showEreignisDeleteDialog: false
     });
   }
+ /** Renders the component */
+  render() {
+    const { classes, expandedState } = this.props;
+    // Use the states ereignis
+    const { ereignis, showEreignisForm, showEreignisDeleteDialog } = this.state;
