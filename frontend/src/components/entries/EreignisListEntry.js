@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import EreignisForm from "../dialogs/EreignisForm";
 import EreignisDeleteDialog from "../dialogs/EreignisDeleteDialog";
 import EreignisList from "../EreignisList";
-
-
+import { Button, ButtonGroup } from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 
 
@@ -28,4 +28,39 @@ class EreignisListEntry extends Component {
       showEreignisForm: false,
       showEreignisDeleteDialog: false,
     };
+  }
+ /** Handles onChange events of the underlying ExpansionPanel */
+  expansionPanelStateChanged = () => {
+    this.props.onExpandedStateChange(this.props.ereignis);
+  }
+
+  /** Handles onEreignisDelete events from an EreignisListEntry  */
+  deleteEreignisHandler = (deletedEreignis) => {
+    // console.log(deletedEreignis.getID());
+    this.setState({
+      ereigniss: this.state.ereigniss.filter(ereignis => ereignis.getID() !== deletedEreignis.getID())
+    })
+  }
+
+  /** Handles the onClick event of the edit ereignis button */
+  editEreignisButtonClicked = (event) => {
+    event.stopPropagation();
+    this.setState({
+      showEreignisForm: true
+    });
+  }
+
+  /** Handles the onClose event of the EreignisForm */
+  ereignisFormClosed = (ereignis) => {
+    // ereignis is not null and therefor changed
+    if(ereignis) {
+      this.setState({
+        ereignis: ereignis,
+        showEreignisForm: false
+      });
+    } else {
+      this.setState({
+        showEreignisForm: false
+      });
+    }
   }
