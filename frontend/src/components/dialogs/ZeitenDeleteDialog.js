@@ -98,4 +98,21 @@ const styles = theme => ({
   }
 });
 
+/** PropTypes */
+ZeitenDeleteDialog.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** The ZeitIntervallBO to be deleted */
+  zeit: PropTypes.object.isRequired,
+  /** If true, the dialog is rendered */
+  show: PropTypes.bool.isRequired,
+  /**
+   * Handler function which is called, when the dialog is closed.
+   * Sends the deleted ZeitIntervallBO as parameter or null, if cancel was pressed.
+   *
+   * Signature: onClose(ZeitIntervallBO zeit);
+   */
+  onClose: PropTypes.func.isRequired,
+}
+
 export default withStyles(styles)(ZeitenDeleteDialog);
