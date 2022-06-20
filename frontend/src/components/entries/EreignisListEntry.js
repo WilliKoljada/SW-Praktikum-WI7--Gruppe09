@@ -5,7 +5,7 @@ import EreignisDeleteDialog from "../dialogs/EreignisDeleteDialog";
 import EreignisList from "../EreignisList";
 import { Button, ButtonGroup } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-
+import { withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, Grid } from "@material-ui/core";
 
 
 
@@ -89,3 +89,43 @@ class EreignisListEntry extends Component {
     const { classes, expandedState } = this.props;
     // Use the states ereignis
     const { ereignis, showEreignisForm, showEreignisDeleteDialog } = this.state;
+ // console.log(this.state);
+    return (
+      <div>
+        <Accordion defaultExpanded={false} expanded={expandedState} onChange={this.expansionPanelStateChanged}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            id={`ereignis${ereignis.getID()}ereignispanel-header`}
+          >
+            <Grid container spacing={1} justify="flex-start" alignItem="center">
+              <Grid item>
+                <Typography variant="body1" className={classes.heading}>
+                    {ereignis.getName()}, {ereignis.getBezeichnung()}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <ButtonGroup variant="text" size="small">
+                  <Button color="primary" onClick={this.editEreignisButtonClicked}>
+                    edit
+                  </Button>
+                  <Button color="secondary" onClick={this.deleteEreignisButtonClicked}>
+                  </Button>
+                </ButtonGroup>
+              </Grid>
+              <Grid item xs />
+              <Grid item>
+                <Typography variant="body2" color={"textSecondary"}>List of ereignis</Typography>
+              </Grid>
+            </Grid>
+          </AccordionSummary>
+          <AccordionDetails>
+            <EreignisList show={expandedState} ereignis={ereignis} />
+          </AccordionDetails>
+        </Accordion>
+        <EreignisForm show={showEreignisForm} ereignis={ereignis} onClose={this.ereignisFormClosed} />
+        <EreignisDeleteDialog show={showEreignisDeleteDialog} ereignis={ereignis} onClose={this.deleteEreignisDialogClosed} />
+      </div>
+    );
+  }
+}
+
