@@ -42,6 +42,7 @@ B. Konventionen für dieses Module:
 """
 
 """Unser Service basiert auf Flask"""
+from inspect import Attribute
 from flask import Flask
 """Auf Flask aufbauend nutzen wir RestX"""
 from flask_restx import Api, Resource, fields
@@ -76,8 +77,8 @@ BusinessObject dient als Basisklasse."""
 
 bo = api.model("BusinessObject", {
     "id": fields.Integer(attribute="_id", description="Der Unique Identifier eines Business Object"),
-    #"creation_date": fields.DateTime(attribute="_creation_date", description="Das Erstellungsdatum eines bo",
-    #                                 dt_format="iso8601")
+    "creation_date": fields.DateTime(attribute="_creation_date", description="Das Erstellungsdatum eines bo",
+                                     dt_format="iso8601")
 })
 
 aktivitaet = api.inherit("Aktivitaet", bo, {
@@ -96,24 +97,25 @@ person = api.inherit("Person", bo, {
 })
 
 projekt = api.inherit("Projekt", bo, {
-    "name": fields.String(attribute="_name", description="name des Projekt"),
+    "name": fields.String(attribute="_name", description="Name des Projekt"),
+    "auftraggeber": fields.String(attribute="_auftraggeber", description="Auftraggeber des Projekt"),
     "beschreibung": fields.String(attribute="_beschreibung", description="die Beschreibung des Projekts"),
     "personID": fields.Integer(attribute= "_personID", description="ID des Erstellers vom Projekt(auftraggeber)")
 })
 
 zeitintervall = api.inherit("Zeitintervall", bo, {
-    "datum": fields.Date(attribute="_datum", description="Datum des Zeitintervall"),
-    "startzeit": fields.DateTime(attribute="_startzeit", description="Begin Zeit des Zeitintervall"),
-    "endzeit": fields.DateTime(attribute="_endzeit", description="End Zeit des Zeitintervall"),
+    "datum": fields.String(attribute="_datum", description="Datum des Zeitintervall"),
+    "startzeit": fields.String(attribute="_startzeit", description="Begin Zeit des Zeitintervall"),
+    "endzeit": fields.String(attribute="_endzeit", description="End Zeit des Zeitintervall"),
     "aktivitaetID": fields.Integer(attribute= "aktivitaetID", description="aktivitaet ID des Zeitintervall"),
     "personID": fields.Integer(attribute= "_personID", description="ID des Erstellers vom Zeitintervall")
 })
 
 ereignis = api.inherit("Ereignis", bo, {
     "type": fields.String(attribute= "_type", description="Type des Ereignis"),
-    "datum": fields.Date(attribute="_datum", description="Datum des Ereignis"),
-    "startzeit": fields.DateTime(attribute="_startzeit", description="Begin Zeit des Ereignis"),
-    "endzeit": fields.DateTime(attribute="_endzeit", description="End Zeit des Ereignis"),
+    "datum": fields.String(attribute="_datum", description="Datum des Ereignis"),
+    "startzeit": fields.String(attribute="_startzeit", description="Begin Zeit des Ereignis"),
+    "endzeit": fields.String(attribute="_endzeit", description="End Zeit des Ereignis"),
     "personID": fields.Integer(attribute= "_personID", description="person ID des Ereignis")
 })
 # Alle weiteren bo´s wie bei Aktivitaet erstellen
@@ -256,13 +258,13 @@ class PersonOperations(Resource):
         return "", 200
 
     @zeiterfassungapp.marshal_with(person)
-    @zeiterfassungapp.expect(person, validate=True)
+    @zeiterfassungapp.expect(person)
     def put(self, id):
         """Update einer bestimmten Person.
         """
         adm = Administration()
         p = Person.from_dict(api.payload)
-
+        print(p)
         if p is not None:
             p.set_id(id)
             adm.update_person(p)
@@ -271,7 +273,22 @@ class PersonOperations(Resource):
             return "", 500
 
 
-@zeiterfassungapp.route("/person/<string:email>")
+@zeiterfassungapp.route("/person-by-google-id/<string:google_id>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("google_id", "Die Google Id des Person-Objekts")
+class PersonGoogleIdOperations(Resource):
+    @zeiterfassungapp.marshal_with(person)
+    #@secured zwecks Testung vom Backend deaktiviert
+    def get(self, google_id):
+        """Auslesen einer bestimmten Person-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        person = adm.get_user_by_google_user_id(google_id)
+        return person
+
+
+@zeiterfassungapp.route("/person-by-email/<string:email>")
 @zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
 @zeiterfassungapp.param("email", "Die Email des Person-Objekts")
 class PersonEmailOperations(Resource):
@@ -284,6 +301,8 @@ class PersonEmailOperations(Resource):
         adm = Administration()
         person = adm.get_person_by_email(email)
         return person
+
+
 
 @zeiterfassungapp.route("/ereignis")
 @zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
