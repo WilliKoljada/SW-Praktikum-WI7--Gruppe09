@@ -128,14 +128,25 @@ class App extends React.Component {
 							// Is a user signed in?
 							currentUser ?
 								<>
-									<Redirect from="/" to="About" />
+									<Redirect from="/" to="/persons" />
 									<Route exact path="/about">
 										<About />
 									</Route>
 
-									<Route path="/Aktivitaten" />
-									<Route exact path="/createAktivitaet">
-										<createAktivitaet />
+									<Route exact path="/persons">
+										<PersonList />
+									</Route>
+									<Route exact path="/projekte">
+										<ProjektList />
+									</Route>
+									<Route exact path="/aktivitaeten">
+										<AktivitaetList />
+									</Route>
+									<Route exact path="/ereignis">
+										<EreignisList />
+									</Route>
+									<Route exact path="/zeitintervall">
+										<ZeitenList />
 									</Route>
 								</>
 								
