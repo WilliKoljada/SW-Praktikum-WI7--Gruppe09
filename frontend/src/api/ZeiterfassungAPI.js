@@ -21,7 +21,7 @@ export default class ZeiterfassungAPI {
   #ZeiterfassungServerBaseURL = "/Zeiterfassungapp";
 
   // Local http-fake-backend
-  //#ZeiterfassungServerBaseURL = "/api/zeiterfassungapp";
+  //#ZeiterfassungServerBaseURL = "/api/Zeiterfassungapp";
 
   // Person related
   #getAllPersonURL = () => `${this.#ZeiterfassungServerBaseURL}/person`;
