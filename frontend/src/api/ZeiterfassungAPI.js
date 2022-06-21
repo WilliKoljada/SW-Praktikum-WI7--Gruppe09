@@ -26,7 +26,8 @@ export default class ZeiterfassungAPI {
   // Person related
   #getAllPersonURL = () => `${this.#ZeiterfassungServerBaseURL}/person`;
   #getPersonByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/person/${id}`;
-  #getPersonByEmailURL = (email) => `${this.#ZeiterfassungServerBaseURL}/person/${email}`;
+  #getPersonByGoogleIdURL = (google_id) => `${this.#ZeiterfassungServerBaseURL}/person-by-google-id/${google_id}`;
+  #getPersonByEmailURL = (email) => `${this.#ZeiterfassungServerBaseURL}/person-by-email/${email}`;
   #addPersonURL = () => `${this.#ZeiterfassungServerBaseURL}/person`;
   #updatePersonURL = (id) => `${this.#ZeiterfassungServerBaseURL}/person/${id}/`;
   #deletePersonURL = (id) => `${this.#ZeiterfassungServerBaseURL}/person/${id}`;
@@ -223,6 +224,25 @@ export default class ZeiterfassungAPI {
       })
   }
 
+
+  /**
+   * Returns a Promise, which resolves to an Array of PersonBOs
+   *
+   * @param {String} PersonGoogleId for which the the person should be retrieved
+   * @public
+   */
+  getPersonByGoogleID(PersonGoogleId) {
+    return this.#fetchAdvanced(this.#getPersonByGoogleIdURL(PersonGoogleId))
+      .then((responseJSON) => {
+        let Person = PersonBO.fromJSON(responseJSON);
+        // console.info(personBOs);
+        return new Promise(function (resolve) {
+          resolve(Person);
+        })
+      })
+  }
+
+
   /**
    * Returns a Promise, which resolves to an Array of PersonBOs
    *
@@ -282,6 +302,7 @@ export default class ZeiterfassungAPI {
       body: JSON.stringify(personBO)
     }).then((responseJSON) => {
       // We always get an array of PersonBOs.fromJSON
+      console.log(responseJSON);
       let responsePersonID = PersonBO.fromJSON(responseJSON)[0];
       // console.info(personBOs);
       return new Promise(function (resolve) {
