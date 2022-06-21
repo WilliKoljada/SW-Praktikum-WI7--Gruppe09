@@ -33,6 +33,7 @@ class Aktivitaet(bo.BusinessObject):
         """Umwandeln eines Python dict() in ein Rating()."""
         obj = Aktivitaet()
         obj.set_id(dictionary["id"])  # eigentlich Teil von BusinessObject !
+        obj.set_creation_date(dictionary["creation_date"])
         obj.set_name(dictionary["name"])
         obj.set_beschreibung(dictionary["beschreibung"])
         obj.set_projektID(dictionary["projektID"])

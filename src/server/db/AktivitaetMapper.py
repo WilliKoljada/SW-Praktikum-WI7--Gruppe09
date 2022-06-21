@@ -1,5 +1,6 @@
 from server.bo.Aktivitaet import Aktivitaet
 from server.db.Mapper import Mapper
+from datetime import datetime
 
 
 class AktivitaetMapper(Mapper):
@@ -18,12 +19,13 @@ class AktivitaetMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT id, name, beschreibung, projektID from aktivitaet")
+        cursor.execute("SELECT id, creation_date, name, beschreibung, projektID from aktivitaet")
         tuples = cursor.fetchall()
 
-        for (id, name, beschreibung, projektID) in tuples:
+        for (id, creation_date, name, beschreibung, projektID) in tuples:
             aktivitaet = Aktivitaet()
             aktivitaet.set_id(id)
+            aktivitaet.set_creation_date(creation_date)
             aktivitaet.set_name(name)
             aktivitaet.set_beschreibung(beschreibung)
             aktivitaet.set_projektID(projektID)
@@ -37,6 +39,7 @@ class AktivitaetMapper(Mapper):
     def find_by_key(self, key):
         """Suchen eines Kunden mit vorgegebener Kundennummer. Da diese eindeutig ist,
         wird genau ein Objekt zurückgegeben.
+
         :param key Primärschlüsselattribut (->DB)
         :return Customer-Objekt, das dem übergebenen Schlüssel entspricht, None bei
             nicht vorhandenem DB-Tupel.
@@ -44,13 +47,43 @@ class AktivitaetMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, name, beschreibung, projektID FROM aktivitaet WHERE id={}".format(key)
+        command = "SELECT id, creation_date, name, beschreibung, projektID FROM aktivitaet WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, name, beschreibung, projektID) in tuples:
+        for (id, name, creation_date, beschreibung, projektID) in tuples:
             aktivitaet = Aktivitaet()
             aktivitaet.set_id(id)
+            aktivitaet.set_creation_date(creation_date)
+            aktivitaet.set_name(name)
+            aktivitaet.set_beschreibung(beschreibung)
+            aktivitaet.set_projektID(projektID)
+            result = aktivitaet
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_by_projektID(self, projektID):
+        """Suchen eines Kunden mit vorgegebener Kundennummer. Da diese eindeutig ist,
+        wird genau ein Objekt zurückgegeben.
+
+        :param key Primärschlüsselattribut (->DB)
+        :return Customer-Objekt, das dem übergebenen Schlüssel entspricht, None bei
+            nicht vorhandenem DB-Tupel.
+        """
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT id, creation_date, name, beschreibung, projektID FROM aktivitaet WHERE projektID={}".format(projektID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for (id, name, creation_date, beschreibung, projektID) in tuples:
+            aktivitaet = Aktivitaet()
+            aktivitaet.set_id(id)
+            aktivitaet.set_creation_date(creation_date)
             aktivitaet.set_name(name)
             aktivitaet.set_beschreibung(beschreibung)
             aktivitaet.set_projektID(projektID)
@@ -65,13 +98,14 @@ class AktivitaetMapper(Mapper):
         result = []
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, name, beschreibung, projektID FROM aktivitaet WHERE name LIKE '{}'".format(key)
+        command = "SELECT id, creation_date, name, beschreibung, projektID FROM aktivitaet WHERE name LIKE '{}'".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, name, beschreibung, projektID) in tuples:
+        for (id, creation_date, name, beschreibung, projektID) in tuples:
             aktivitaet = Aktivitaet()
             aktivitaet.set_id(id)
+            aktivitaet.set_creation_date(creation_date)
             aktivitaet.set_name(name)
             aktivitaet.set_beschreibung(beschreibung)
             aktivitaet.set_projektID(projektID)
@@ -103,10 +137,10 @@ class AktivitaetMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 aktivitaet.set_id(1)
 
-        command = "INSERT INTO aktivitaet (id, name, beschreibung, projektID) VALUES (%s,%s,%s,%s)"
-        data = (aktivitaet.get_id(), aktivitaet.get_name(), aktivitaet.get_beschreibung(), aktivitaet.get_projektID())
+        creation_date = datetime.utcnow()
+        command = "INSERT INTO aktivitaet (id, creation_date, name, beschreibung, projektID) VALUES (%s,%s,%s,%s,%s)"
+        data = (aktivitaet.get_id(), creation_date, aktivitaet.get_name(), aktivitaet.get_beschreibung(), aktivitaet.get_projektID())
         cursor.execute(command, data)
-
         self._cnx.commit()
         cursor.close()
 
@@ -120,24 +154,19 @@ class AktivitaetMapper(Mapper):
 
         command = "UPDATE aktivitaet SET name=%s, beschreibung=%s, projektid=%s WHERE id=%s"
         data = (aktivitaet.get_name(), aktivitaet.get_beschreibung(), aktivitaet.get_projektID(), aktivitaet.get_id())
-
         cursor.execute(command, data)
-
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, aktivitaet):
+    def delete(self, id):
         """Löschen der Daten eines Projekt-Objekts aus der Datenbank.
         :param aktivitaet das aus der DB zu löschende "Objekt"
         """
         cursor = self._cnx.cursor()
-
-        command = "DELETE FROM aktivitaet WHERE id={}".format(aktivitaet.get_id())
+        command = "DELETE FROM aktivitaet WHERE id={}".format(id)
         cursor.execute(command)
-
         self._cnx.commit()
         cursor.close()
-
         return aktivitaet
 
 
@@ -145,11 +174,11 @@ class AktivitaetMapper(Mapper):
     # Zum Testen ausführen
 if (__name__ == "__main__"):
     with AktivitaetMapper() as mapper:
-            aktivitaet = Aktivitaet()
-            aktivitaet.set_name('sff')
-            aktivitaet.set_id(2)
-            aktivitaet.set_beschreibung("beschreibung")
-            aktivitaet.set_projektID(1)
+        aktivitaet = Aktivitaet()
+        aktivitaet.set_name('sff')
+        aktivitaet.set_id(2)
+        aktivitaet.set_creation_date("2022-06-10 00:00:00.0000")
+        aktivitaet.set_beschreibung("beschreibung")
+        aktivitaet.set_projektID(1)
 
-
-            mapper.insert(aktivitaet)
+        mapper.insert(aktivitaet)

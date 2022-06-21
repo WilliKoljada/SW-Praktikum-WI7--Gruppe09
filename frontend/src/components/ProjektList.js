@@ -36,7 +36,7 @@ class ProjektList extends Component {
 
   /** Fetches ProjektBOs for the current person */
   getProjekts = () => {
-    ZeiterfassungAPI.getAPI().getProjekte()
+    ZeiterfassungAPI.getAPI().getProjekts()
       .then(projektBOs =>
         this.setState({  // Set new state when ProjektBOs have been fetched
           projekte: projektBOs,
@@ -60,7 +60,7 @@ class ProjektList extends Component {
 
   /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
   componentDidMount() {
-    this.getProjekte();
+    this.getProjekts();
   }
 
 /**
