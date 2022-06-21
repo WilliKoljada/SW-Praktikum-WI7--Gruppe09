@@ -1,5 +1,6 @@
 from server.bo.Zeitintervall import Zeitintervall
 from server.db.Mapper import Mapper
+from datetime import datetime
 
 
 class ZeitintervallMapper(Mapper):
@@ -18,12 +19,13 @@ class ZeitintervallMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from zeitintervall")
+        cursor.execute("SELECT id, creation_date, datum, startzeit, endzeit, aktivitaetID, personID from zeitintervall")
         tuples = cursor.fetchall()
 
-        for (id, datum, startzeit, endzeit, aktivitaetID, personID) in tuples:
-            zeitintervall = Zeitintervall()
+        for (id, creation_date, datum, startzeit, endzeit, aktivitaetID, personID) in tuples:
+            zeitintervall= Zeitintervall()
             zeitintervall.set_id(id)
+            zeitintervall.set_creation_date(creation_date)
             zeitintervall.set_datum(datum)
             zeitintervall.set_startzeit(startzeit)
             zeitintervall.set_endzeit(endzeit)
@@ -46,12 +48,13 @@ class ZeitintervallMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM zeitintervall WHERE id={}".format(key)
+        command = "SELECT id, creation_date, datum, startzeit, endzeit, aktivitaetID, personID FROM zeitintervall WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, datum, startzeit, endzeit, aktivitaetID, personID) in tuples:
+        for (id, creation_date, datum, startzeit, endzeit, aktivitaetID, personID) in tuples:
             zeitintervall = Zeitintervall()
             zeitintervall.set_id(id)
+            zeitintervall.set_creation_date(creation_date)
             zeitintervall.set_datum(datum)
             zeitintervall.set_startzeit(startzeit)
             zeitintervall.set_endzeit(endzeit)
@@ -64,15 +67,71 @@ class ZeitintervallMapper(Mapper):
         cursor.close()
         return result
 
-        def find_by_personID(self, personID):
-            """Auslesen aller Zeitintervall anhand der ID,
-            da diese vorgegeben ist, wird genau ein Objekt zurückgegeben.
-            :param key Primärschlüsselattribut
-            :return Zeitintervall-Objekt, das dem übergebenen Schlüssel entspricht, None bei
-            nicht vorhandenem DB-Tupel
-            """
-            result = None
+    def find_by_personID(self, personID):
+        """Auslesen aller Zeitintervall anhand der ID,
+        da diese vorgegeben ist, wird genau ein Objekt zurückgegeben.
+        :param key Primärschlüsselattribut
+        :return Zeitintervall-Objekt, das dem übergebenen Schlüssel entspricht, None bei
+        nicht vorhandenem DB-Tupel
+        """
+        result = None
 
+        cursor = self._cnx.cursor()
+        command = "SELECT id, creation_date, datum, startzeit, endzeit, aktivitaetID, personID FROM zeitintervall WHERE personID={}".format(personID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+        for (id, creation_date, datum, startzeit, endzeit, aktivitaetID, personID) in tuples:
+            zeitintervall = Zeitintervall()
+            zeitintervall.set_id(id)
+            zeitintervall.set_creation_date(creation_date)
+            zeitintervall.set_datum(datum)
+            zeitintervall.set_startzeit(startzeit)
+            zeitintervall.set_endzeit(endzeit)
+            zeitintervall.set_aktivitaetID(aktivitaetID)
+            zeitintervall.set_personID(personID)
+
+            result = zeitintervall
+
+        self._cnx.commit()
+        cursor.close()
+        return result
+
+    def find_by_aktivitaetID(self, aktivitaetID):
+        """Auslesen aller Zeitintervall anhand der ID,
+        da diese vorgegeben ist, wird genau ein Objekt zurückgegeben.
+        :param key Primärschlüsselattribut
+        :return Zeitintervall-Objekt, das dem übergebenen Schlüssel entspricht, None bei
+        nicht vorhandenem DB-Tupel
+        """
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT id, creation_date, datum, startzeit, endzeit, aktivitaetID, personID FROM zeitintervall WHERE aktivitaetID={}".format(aktivitaetID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+        for (id, creation_date, datum, startzeit, endzeit, aktivitaetID, personID) in tuples:
+            zeitintervall = Zeitintervall()
+            zeitintervall.set_id(id)
+            zeitintervall.set_creation_date(creation_date)
+            zeitintervall.set_datum(datum)
+            zeitintervall.set_startzeit(startzeit)
+            zeitintervall.set_endzeit(endzeit)
+            zeitintervall.set_aktivitaetID(aktivitaetID)
+            zeitintervall.set_personID(personID)
+
+            result = zeitintervall
+
+        self._cnx.commit()
+        cursor.close()
+        return result
+
+    def insert(self, zeitintervall):
+        """Einfügen eines Zeitintervall-Objekts in die Datenbank.
+        Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
+        berichtigt.
+        :param zeitintervall das zu speichernde Objekt
+        :return das bereits übergebene Objekt, jedoch mit ggf. korrigierter ID.
+        """
         cursor = self._cnx.cursor()
         cursor.execute("SELECT MAX(id) AS maxid FROM zeitintervall")
         tuples = cursor.fetchall()
@@ -87,9 +146,9 @@ class ZeitintervallMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 zeitintervall.set_id(1)
 
-        command = "INSERT INTO zeitintervall (id, creation_date, zeitintervall) VALUES (%s,%s,%s)"
-        data = (zeitintervall.get_id(), zeitintervall.get_creation_date(), zeitintervall.get_projektlaufzeit())
-
+        creation_date = datetime.utcnow()
+        command = "INSERT INTO zeitintervall (id, creation_date, datum, startzeit, endzeit, aktivitaetID, personID) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        data = (zeitintervall.get_id(), creation_date, zeitintervall.get_datum(), zeitintervall.get_startzeit(), zeitintervall.get_endzeit(), zeitintervall.get_aktivitaetID(), zeitintervall.get_personID())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -103,21 +162,20 @@ class ZeitintervallMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE zeitintervall SET creation_date=%s, zeitintervall=%s WHERE id=%s"
-        data = ( zeitintervall.get_creation_date(), zeitintervall.get_projektlaufzeit(), zeitintervall.get_id())
-
+        command = "UPDATE zeitintervall SET datum=%s, startzeit=%s, endzeit=%s, aktivitaetID=%s, personID=%s WHERE id=%s"
+        data = (zeitintervall.get_datum(), zeitintervall.get_startzeit(), zeitintervall.get_endzeit(), zeitintervall.get_aktivitaetID(), zeitintervall.get_personID(), zeitintervall.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, zeitintervall):
+    def delete(self, id):
         """Löschen der Daten eines Projekt-Objekts aus der Datenbank.
         :param zeitintervall das aus der DB zu löschende "Objekt"
         """
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM zeitintervall WHERE id={}".format(zeitintervall.get_id())
+        command = "DELETE FROM zeitintervall WHERE id={}".format(id)
         cursor.execute(command)
 
         self._cnx.commit()
@@ -129,7 +187,13 @@ class ZeitintervallMapper(Mapper):
     # Zum Testen ausführen
 if (__name__ == "__main__"):
     with ZeitintervallMapper() as mapper:
-            zeitintervall = Zeitintervall()
-            zeitintervall.set_id(2)
+        zeitintervall = Zeitintervall()
+        zeitintervall.set_id(2)
+        zeitintervall.set_creation_date("2022-06-09 00:00:00.0000")
+        zeitintervall.set_datum("2022-06-14")
+        zeitintervall.set_startzeit("07:00:30")
+        zeitintervall.set_endzeit("16:00:00")
+        zeitintervall.set_aktivitaetID(1)
+        zeitintervall.set_personID(1)
 
-            mapper.insert(zeitintervall)
+        mapper.insert(zeitintervall)
