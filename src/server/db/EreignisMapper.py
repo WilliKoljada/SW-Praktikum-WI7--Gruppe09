@@ -1,5 +1,6 @@
 from server.bo.Ereignis import Ereignis
 from server.db.Mapper import Mapper
+from datetime import datetime
 
 
 class EreignisMapper(Mapper):
@@ -18,12 +19,13 @@ class EreignisMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT id, type, datum, startzeit, endzeit, personID from ereignis")
+        cursor.execute("SELECT id, creation_date, type, datum, startzeit, endzeit, personID from ereignis")
         tuples = cursor.fetchall()
 
-        for (id, type, datum, startzeit, endzeit, personID) in tuples:
+        for (id, creation_date, type, datum, startzeit, endzeit, personID) in tuples:
             ereignis= Ereignis()
             ereignis.set_id(id)
+            ereignis.set_creation_date(creation_date)
             ereignis.set_type(type)
             ereignis.set_datum(datum)
             ereignis.set_startzeit(startzeit)
@@ -46,12 +48,13 @@ class EreignisMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, type, datum, startzeit, endzeit, personID FROM ereignis WHERE id={}".format(key)
+        command = "SELECT id, creation_date, type, datum, startzeit, endzeit, personID FROM ereignis WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, type, datum, startzeit, endzeit, personID) in tuples:
+        for (id, creation_date, type, datum, startzeit, endzeit, personID) in tuples:
             ereignis= Ereignis()
             ereignis.set_id(id)
+            ereignis.set_creation_date(creation_date)
             ereignis.set_type(type)
             ereignis.set_datum(datum)
             ereignis.set_startzeit(startzeit)
@@ -74,12 +77,13 @@ class EreignisMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, type, datum, startzeit, endzeit, personID FROM ereignis WHERE type LIKE '{}'".format(value)
+        command = "SELECT id, creation_date, type, datum, startzeit, endzeit, personID FROM ereignis WHERE type LIKE '{}'".format(value)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, type, datum, startzeit, endzeit, personID) in tuples:
+        for (id, creation_date, type, datum, startzeit, endzeit, personID) in tuples:
             ereignis= Ereignis()
             ereignis.set_id(id)
+            ereignis.set_creation_date(creation_date)
             ereignis.set_type(type)
             ereignis.set_datum(datum)
             ereignis.set_startzeit(startzeit)
@@ -102,12 +106,13 @@ class EreignisMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, type, datum, startzeit, endzeit, personID FROM ereignis WHERE personID={}".format(personID)
+        command = "SELECT id, creation_date, type, datum, startzeit, endzeit, personID FROM ereignis WHERE personID={}".format(personID)
         cursor.execute(command)
         tuples = cursor.fetchall()
-        for (id, type, datum, startzeit, endzeit, personID) in tuples:
+        for (id, creation_date, type, datum, startzeit, endzeit, personID) in tuples:
             ereignis= Ereignis()
             ereignis.set_id(id)
+            ereignis.set_creation_date(creation_date)
             ereignis.set_type(type)
             ereignis.set_datum(datum)
             ereignis.set_startzeit(startzeit)
@@ -141,8 +146,9 @@ class EreignisMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 ereignis.set_id(1)
 
-        command = "INSERT INTO ereignis (id, type, datum, startzeit, endzeit, personID) VALUES (%s,%s,%s,%s,%s,%s)"
-        data = (ereignis.get_id(), ereignis.get_type(), ereignis.datum(), ereignis.get_startzeit(), ereignis.get_endzeit(), ereignis.get_personID())
+        creation_date = datetime.utcnow()
+        command = "INSERT INTO ereignis (id, creation_date, type, datum, startzeit, endzeit, personID) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        data = (ereignis.get_id(), creation_date, ereignis.get_type(), ereignis.datum(), ereignis.get_startzeit(), ereignis.get_endzeit(), ereignis.get_personID())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -170,6 +176,7 @@ class EreignisMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "DELETE FROM ereignis WHERE id={}".format(id)
+        cursor.execute(command)
         self._cnx.commit()
         cursor.close()
 
@@ -181,6 +188,7 @@ if (__name__ == "__main__"):
     with EreignisMapper() as mapper:
         ereignis = Ereignis()
         ereignis.set_id(12)
+        ereignis.set_creation_date("2022-06-20 00:00:00.0000")
         ereignis.set_type("Urlaub")
         ereignis.set_datum("2022-06-13")
         ereignis.set_startzeit("07:30:00")

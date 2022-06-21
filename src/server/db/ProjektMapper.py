@@ -1,5 +1,6 @@
 from server.bo.Projekt import Projekt
 from server.db.Mapper import Mapper
+from datetime import datetime
 
 
 class ProjektMapper(Mapper):
@@ -18,12 +19,13 @@ class ProjektMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT id, name, beschreibung, personID from projekt")
+        cursor.execute("SELECT id, creation_date, name, beschreibung, personID from projekt")
         tuples = cursor.fetchall()
 
-        for (id, name, beschreibung, personID) in tuples:
+        for (id, creation_date, name, beschreibung, personID) in tuples:
             projekt= Projekt()
             projekt.set_id(id)
+            projekt.set_creation_date(creation_date)
             projekt.set_name(name)
             projekt.set_beschreibung(beschreibung)
             projekt.set_personID(personID)
@@ -44,13 +46,13 @@ class ProjektMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, name, beschreibung, personID FROM projekt WHERE id={}".format(key)
+        command = "SELECT id, creation_date, name, beschreibung, personID FROM projekt WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
-
-        for (id, name, beschreibung, personID) in tuples:
-            projekt = Projekt()
+        for (id, creation_date, name, beschreibung, personID) in tuples:
+            projekt= Projekt()
             projekt.set_id(id)
+            projekt.set_creation_date(creation_date)
             projekt.set_name(name)
             projekt.set_beschreibung(beschreibung)
             projekt.set_personID(personID)
@@ -62,17 +64,37 @@ class ProjektMapper(Mapper):
         return result
 
     def find_by_name(self, name):
-
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, name, beschreibung, personID FROM projekt WHERE name LIKE '{}'".format(name)
-
+        command = "SELECT id, creation_date, name, beschreibung, personID FROM projekt WHERE name LIKE '{}'".format(name)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, name, beschreibung, personID) in tuples:
-            projekt = Projekt()
+        for (id, creation_date, name, beschreibung, personID) in tuples:
+            projekt= Projekt()
             projekt.set_id(id)
+            projekt.set_creation_date(creation_date)
+            projekt.set_name(name)
+            projekt.set_beschreibung(beschreibung)
+            projekt.set_personID(personID)
+            result.append(projekt)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_by_personID(self, personID):
+        result = []
+        cursor = self._cnx.cursor()
+        command = "SELECT id, creation_date, name, beschreibung, personID FROM projekt WHERE personID={}".format(personID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for (id, creation_date, name, beschreibung, personID) in tuples:
+            projekt= Projekt()
+            projekt.set_id(id)
+            projekt.set_creation_date(creation_date)
             projekt.set_name(name)
             projekt.set_beschreibung(beschreibung)
             projekt.set_personID(personID)
@@ -104,11 +126,10 @@ class ProjektMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 projekt.set_id(1)
 
-        command = "INSERT INTO projekt (id, name, beschreibung, personID) VALUES (%s,%s,%s,%s)"
-        data = (projekt.get_id(), projekt.get_name(), projekt.get_beschreibung(), projekt.get_personID())
-
+        creation_date = datetime.utcnow()
+        command = "INSERT INTO projekt (id, creation_date, name, beschreibung, personID) VALUES (%s,%s,%s,%s,%s)"
+        data = (projekt.get_id(), creation_date, projekt.get_name(), projekt.get_beschreibung(), projekt.get_personID())
         cursor.execute(command, data)
-
         self._cnx.commit()
         cursor.close()
 
@@ -120,21 +141,20 @@ class ProjektMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE projekt SET Auftraggeber=%s, Bezeichnung=%s, creation_date=%s, ersteller_ID=%s WHERE id=%s"
-        data = (projekt.get_auftraggeber(), projekt.get_bezeichnung(), projekt.get_creation_date(), projekt.get_id(), projekt.get_ersteller_ID())
-
+        command = "UPDATE projekt SET name=%s, beschreibung=%s, personID=%s WHERE id=%s"
+        data = (projekt.get_name(), projekt.get_beschreibung(), projekt.get_personID(), projekt.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, projekt):
+    def delete(self, id):
         """Löschen der Daten eines Projekt-Objekts aus der Datenbank.
         :param projekt das aus der DB zu löschende "Objekt"
         """
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM projekt WHERE id={}".format(projekt.get_id())
+        command = "DELETE FROM projekt WHERE id={}".format(id)
         cursor.execute(command)
 
         self._cnx.commit()
@@ -151,5 +171,6 @@ if (__name__ == "__main__"):
         projekt.set_beschreibung("beschreibung")
         projekt.set_personID(1)
         projekt.set_id(1)
+        projekt.set_creation_date("2022-06-04 00:00:00.000")
 
         mapper.insert(projekt)
