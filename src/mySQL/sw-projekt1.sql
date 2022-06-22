@@ -24,14 +24,17 @@ USE `sw-projekt1`;
 
 DROP TABLE IF EXISTS `aktivitaet`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `aktivitaet` (
-  `id` int NOT NULL,
-  `Bezeichnung` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `Kapazität_in_Personentagen` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `creation_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `creation_date` datetime DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `beschreibung` text,
+  `projektID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `projektID` (`projektID`),
+  CONSTRAINT `aktivitaet_ibfk_1` FOREIGN KEY (`projektID`) REFERENCES `projekt` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,55 +43,8 @@ CREATE TABLE `aktivitaet` (
 
 LOCK TABLES `aktivitaet` WRITE;
 /*!40000 ALTER TABLE `aktivitaet` DISABLE KEYS */;
+INSERT INTO `aktivitaet` VALUES (1,'2022-06-22 00:05:24','first akt','Beschreibung der Akt 1',1);
 /*!40000 ALTER TABLE `aktivitaet` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `arbeitszeitkonto`
---
-
-DROP TABLE IF EXISTS `arbeitszeitkonto`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `arbeitszeitkonto` (
-  `id` int NOT NULL,
-  `arbeitspensum` decimal(4,2) DEFAULT NULL,
-  `creation_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `arbeitszeitkonto`
---
-
-LOCK TABLES `arbeitszeitkonto` WRITE;
-/*!40000 ALTER TABLE `arbeitszeitkonto` DISABLE KEYS */;
-/*!40000 ALTER TABLE `arbeitszeitkonto` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `buchung`
---
-
-DROP TABLE IF EXISTS `buchung`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `buchung` (
-  `id` int NOT NULL,
-  `ersteller` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `creation_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `buchung`
---
-
-LOCK TABLES `buchung` WRITE;
-/*!40000 ALTER TABLE `buchung` DISABLE KEYS */;
-/*!40000 ALTER TABLE `buchung` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -97,13 +53,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `ereignis`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ereignis` (
-  `id` int NOT NULL,
-  `Zeitpunkt_Ereigniseintritt` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `creation_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `creation_date` datetime DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `datum` date DEFAULT NULL,
+  `startzeit` time DEFAULT NULL,
+  `endzeit` time DEFAULT NULL,
+  `personID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `personID` (`personID`),
+  CONSTRAINT `ereignis_ibfk_1` FOREIGN KEY (`personID`) REFERENCES `person` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -112,30 +74,8 @@ CREATE TABLE `ereignis` (
 
 LOCK TABLES `ereignis` WRITE;
 /*!40000 ALTER TABLE `ereignis` DISABLE KEYS */;
+INSERT INTO `ereignis` VALUES (1,'2022-06-22 02:13:42','krankheit','2022-06-22','10:00:00','18:00:00',1);
 /*!40000 ALTER TABLE `ereignis` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ereignisbuchung`
---
-
-DROP TABLE IF EXISTS `ereignisbuchung`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `ereignisbuchung` (
-  `id` int NOT NULL,
-  `creation_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ereignisbuchung`
---
-
-LOCK TABLES `ereignisbuchung` WRITE;
-/*!40000 ALTER TABLE `ereignisbuchung` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ereignisbuchung` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -144,17 +84,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `person`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `person` (
-  `id` int NOT NULL,
-  `vorname` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `nachname` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `Email` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `Benutzername` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `creation_date` datetime NOT NULL,
-  `google_id` varchar(100) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `creation_date` datetime DEFAULT NULL,
+  `vorname` varchar(255) DEFAULT NULL,
+  `nachname` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `benutzername` varchar(255) DEFAULT NULL,
+  `role` varchar(255) DEFAULT NULL,
+  `google_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -163,6 +104,7 @@ CREATE TABLE `person` (
 
 LOCK TABLES `person` WRITE;
 /*!40000 ALTER TABLE `person` DISABLE KEYS */;
+INSERT INTO `person` VALUES (1,'2022-06-20 00:00:00','test','user','testuser@app.de','test','admin','ajgDdfjavuMLv9ncZPlvLRHtL0D2');
 /*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -172,15 +114,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `projekt`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `projekt` (
-  `id` int NOT NULL,
-  `Bezeichnung` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `Auftraggeber` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `creation_date` datetime NOT NULL,
-  `ersteller_ID` int NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `creation_date` datetime DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `auftraggeber` varchar(255) DEFAULT NULL,
+  `beschreibung` text,
+  `personID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `personID` (`personID`),
+  CONSTRAINT `projekt_ibfk_1` FOREIGN KEY (`personID`) REFERENCES `person` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -189,31 +134,8 @@ CREATE TABLE `projekt` (
 
 LOCK TABLES `projekt` WRITE;
 /*!40000 ALTER TABLE `projekt` DISABLE KEYS */;
+INSERT INTO `projekt` VALUES (1,'2022-06-21 23:48:58','Projekt 1','Tesla','Beschreibung des Projekts 1',1);
 /*!40000 ALTER TABLE `projekt` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `projektarbeit`
---
-
-DROP TABLE IF EXISTS `projektarbeit`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `projektarbeit` (
-  `id` int NOT NULL,
-  `Bezeichnung` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `creation_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `projektarbeit`
---
-
-LOCK TABLES `projektarbeit` WRITE;
-/*!40000 ALTER TABLE `projektarbeit` DISABLE KEYS */;
-/*!40000 ALTER TABLE `projektarbeit` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -222,13 +144,21 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `zeitintervall`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `zeitintervall` (
-  `id` int NOT NULL,
-  `creation_date` datetime NOT NULL,
-  `zeitintervall` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `creation_date` datetime DEFAULT NULL,
+  `datum` date DEFAULT NULL,
+  `startzeit` time DEFAULT NULL,
+  `endzeit` time DEFAULT NULL,
+  `aktivitaetID` int(11) DEFAULT NULL,
+  `personID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `aktivitaetID` (`aktivitaetID`),
+  KEY `personID` (`personID`),
+  CONSTRAINT `zeitintervall_ibfk_1` FOREIGN KEY (`aktivitaetID`) REFERENCES `aktivitaet` (`id`),
+  CONSTRAINT `zeitintervall_ibfk_2` FOREIGN KEY (`personID`) REFERENCES `person` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -237,30 +167,8 @@ CREATE TABLE `zeitintervall` (
 
 LOCK TABLES `zeitintervall` WRITE;
 /*!40000 ALTER TABLE `zeitintervall` DISABLE KEYS */;
+INSERT INTO `zeitintervall` VALUES (2,'2022-06-22 03:09:41','2022-06-23','07:00:00','17:00:00',1,1);
 /*!40000 ALTER TABLE `zeitintervall` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `zeitintervallbuchung`
---
-
-DROP TABLE IF EXISTS `zeitintervallbuchung`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `zeitintervallbuchung` (
-  `id` int NOT NULL,
-  `creation_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `zeitintervallbuchung`
---
-
-LOCK TABLES `zeitintervallbuchung` WRITE;
-/*!40000 ALTER TABLE `zeitintervallbuchung` DISABLE KEYS */;
-/*!40000 ALTER TABLE `zeitintervallbuchung` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -272,4 +180,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-05 21:36:14
+-- Dump completed on 2022-06-22 15:39:49
