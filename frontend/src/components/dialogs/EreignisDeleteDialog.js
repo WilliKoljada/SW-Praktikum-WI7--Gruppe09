@@ -56,5 +56,49 @@ class EreignisDeleteDialog extends Component {
     // console.log(event);
     this.props.onClose(null);
   }
+ /** Renders the component */
+  render() {
+    const { classes, ereignis, show } = this.props;
+    const { deletingInProgress, deletingError } = this.state;
+
+    return (
+      show ?
+        <Dialog open={show} onClose={this.handleClose}>
+          <DialogTitle id="delete-dialog-title">Delete ereignis
+            <IconButton className={classes.closeButton} onClick={this.handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Really delete ereignis "{ereignis.getName()}" (ID: {ereignis.getID()})?
+            </DialogContentText>
+            <LoadingProgress show={deletingInProgress} />
+            <ContextErrorMessage error={deletingError} contextErrorMsg={`The ereignis "${ereignis.getName()}" (ID: ${ereignis.getID()}) could not be deleted.`}
+              onReload={this.deleteEreignis} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="secondary">
+              Cancel
+            </Button>
+            <Button variant="contained" onClick={this.deleteEreignis} color="primary">
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+        : null
+    );
+  }
+}
+
+/** Component specific styles */
+const styles = theme => ({
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  }
+});
 
 
