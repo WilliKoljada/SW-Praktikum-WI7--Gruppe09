@@ -411,7 +411,7 @@ class ProjektListOperations(Resource):
         proposal = Projekt.from_dict(api.payload)
 
         if proposal is not None:
-            proj = adm.create_projekt(proposal.get_name(), proposal.get_beschreibung(), proposal.get_personID())
+            proj = adm.create_projekt(proposal.get_name(), proposal.get_auftraggeber(), proposal.get_beschreibung(), proposal.get_personID())
             return proj, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
@@ -481,7 +481,8 @@ class ZeitintervallListOperations(Resource):
         proposal = Zeitintervall.from_dict(api.payload)
 
         if proposal is not None:
-            zin = adm.create_zeitintervall(proposal.get_projektlaufzeit())
+            zin = adm.create_zeitintervall(proposal.get_datum(), proposal.get_startzeit(), proposal.get_endzeit(),
+                                           proposal.get_aktivitaetID(), proposal.get_personID())
             return zin, 200
         else:
             # Wenn irgendetwas schiefgeht, dann geben wir nichts zurück und werfen einen Server-Fehler.
