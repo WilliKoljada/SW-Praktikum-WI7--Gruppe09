@@ -110,10 +110,11 @@ class Administration(object):
 
     """projekt-spezifische Methoden"""
 
-    def create_projekt(self, name, beschreibung, personID):
+    def create_projekt(self, name, auftraggeber, beschreibung, personID):
         """Ein Projekt anlegen"""
         p = Projekt()
         p.set_name(name)
+        p.set_auftraggeber(auftraggeber)
         p.set_beschreibung(beschreibung)
         p.set_personID(personID)
 
