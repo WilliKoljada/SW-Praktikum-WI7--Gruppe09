@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import ZeiterfassungAPI from "../../api/ZeiterfassungAPI";
 import ContextErrorMessage from "./ContextErrorMessage";
 import LoadingProgress from "./LoadingProgress";
+import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 
 
 
@@ -42,4 +44,17 @@ class EreignisDeleteDialog extends Component {
         deletingError: e                        // show error message
       })
     );
+  // set loading to true
+    this.setState({
+      deletingInProgress: true,                 // show loading indicator
+      deletingError: null                       // disable error message
+    });
+  }
+
+  /** Handles the close / cancel button click event */
+  handleClose = () => {
+    // console.log(event);
+    this.props.onClose(null);
+  }
+
 
