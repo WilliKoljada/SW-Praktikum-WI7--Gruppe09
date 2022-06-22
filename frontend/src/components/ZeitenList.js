@@ -83,3 +83,41 @@ class ZeitenList extends Component {
     });
   }
 
+  /**
+   * Handles onZeitenDeleted events from the ZeitenListEntry component
+   *
+   * @param {zeit} ZeitIntervallBO of the ZeitenListEntry to be deleted
+   */
+  zeitDeleted = zeit => {
+    const newZeitenList = this.state.zeiten.filter(zeitFromState => zeitFromState.getID() !== zeit.getID());
+    this.setState({
+      zeiten: newZeitenList,
+      showZeitenForm: false
+    });
+  }
+
+  /** Handles the onClick event of the add zeit button */
+  addZeitenButtonClicked = event => {
+    // Do not toggle the expanded state
+    event.stopPropagation();
+    //Show the ZeitenForm
+    this.setState({
+      showZeitenForm: true
+    });
+  }
+
+  /** Handles the onClose event of the ZeitenForm */
+  zeitFormClosed = zeit => {
+    // zeit is not null and therefore created
+    if(zeit) {
+      const newZeitenList = [...this.state.zeiten, zeit];
+      this.setState({
+        zeiten: newZeitenList,
+        showZeitenForm: false
+      });
+    } else {
+      this.setState({
+        showZeitenForm: false
+      });
+    }
+  }
