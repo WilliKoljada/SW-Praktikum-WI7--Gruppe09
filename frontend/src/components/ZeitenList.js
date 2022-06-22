@@ -55,3 +55,31 @@ class ZeitenList extends Component {
       loadingZeitenError: null
     });
   }
+
+  /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
+  componentDidMount() {
+    this.getZeiten();
+  }
+
+  /**
+   * Handles onExpandedStateChange events from the ZeitenListEntry component. Toggels the expanded state of
+   * the ZeitenListEntry of the given ZeitintervallBO.
+   *
+   * @param {zeit} ZeitintervallBO of the ZeitenListEntry to be toggeled
+   */
+   onExpandedStateChange = zeit => {
+    // console.log(zeitintervallID);
+    // Set expandend zeit entry to null by default
+    let newID = null;
+
+    // If same zeit entry is clicked, collapse it else expand a new one
+    if (zeit.getID() !== this.state.expandedZeitenID) {
+      // Expand the zeit entry with zeitintervallID
+      newID = zeit.getID();
+    }
+    // console.log(newID);
+    this.setState({
+      expandedZeitenID: newID,
+    });
+  }
+
