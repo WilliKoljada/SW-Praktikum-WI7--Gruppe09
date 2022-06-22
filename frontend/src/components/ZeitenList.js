@@ -121,3 +121,53 @@ class ZeitenList extends Component {
       });
     }
   }
+
+  /** Renders the component */
+  render() {
+    const { classes } = this.props;
+    const { zeiten, expandedZeitenID, loadingInProgress, error, showZeitenForm } = this.state;
+
+    return (
+      <div className={classes.root}>
+        <Grid className={classes.zeitFilter} container spacing={1} justify="flex-start" alignItems="center">
+          <Grid item>
+            <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={this.addZeitenButtonClicked}>
+              Buchung
+          </Button>
+          </Grid>
+        </Grid>
+        {
+          zeiten.map(zeit =>
+            <ZeitenListEntry key={zeit.getID()} zeit={zeit} expandedState={expandedZeitenID === zeit.getID()}
+              onExpandedStateChange={this.onExpandedStateChange}
+              onZeitenDeleted={this.zeitDeleted}
+            />)
+        }
+        <LoadingProgress show={loadingInProgress} />
+        <ContextErrorMessage error={error} contextErrorMsg={`The list of zeitintervall could not be loaded.`} onReload={this.getZeiten} />
+        <ZeitenForm show={showZeitenForm} onClose={this.zeitFormClosed} />
+      </div>
+    );
+  }
+}
+
+/** Component specific styles */
+const styles = theme => ({
+  root: {
+    width: '100%',
+  },
+  zeitFilter: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(1),
+  }
+});
+
+/** PropTypes */
+ZeitenList.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** @ignore */
+  location: PropTypes.object.isRequired,
+}
+
+export default withRouter(withStyles(styles)(ZeitenList));
