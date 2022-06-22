@@ -31,3 +31,27 @@ class ZeitenList extends Component {
       showZeitenForm: false
     };
   }
+
+  /** Fetches ZeitintervallBOs for the current person */
+  getZeiten = () => {
+    ZeiterfassungAPI.getAPI().getZeitIntervalls()
+      .then(zeitintervallBOs =>
+        this.setState({  // Set new state when ZeitintervallBOs have been fetched
+          zeiten: zeitintervallBOs,
+          loadingInProgress: false, // loading indicator
+          loadingZeitenError: null
+        })).catch(e =>
+          this.setState({ // Reset state with error from catch
+            zeiten: [],
+            loadingInProgress: false,
+            loadingZeitenError: e
+          }
+        )
+      );
+
+    // set loading to true
+    this.setState({
+      loadingInProgress: true,
+      loadingZeitenError: null
+    });
+  }
