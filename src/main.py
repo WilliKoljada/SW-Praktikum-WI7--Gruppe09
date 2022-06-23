@@ -42,7 +42,6 @@ B. Konventionen für dieses Module:
 """
 
 """Unser Service basiert auf Flask"""
-from inspect import Attribute
 from flask import Flask
 """Auf Flask aufbauend nutzen wir RestX"""
 from flask_restx import Api, Resource, fields
