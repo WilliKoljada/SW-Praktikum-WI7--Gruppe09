@@ -122,3 +122,33 @@ class ZeitenForm extends Component {
         updatingError: e                        // show error message
       })
     );
+
+    // set loading to true
+    this.setState({
+      updatingInProgress: true,                 // show loading indicator
+      updatingError: null                       // disable error message
+    });
+  }
+
+  /** Handles value changes of the forms textfields and validates them */
+  textFieldValueChange = (event) => {
+    const value = event.target.value;
+
+    let error = false;
+    if (value.trim().length === 0) {
+      error = true;
+    }
+
+    this.setState({
+      [event.target.id]: event.target.value,
+      [event.target.id + "ValidationFailed"]: error,
+      [event.target.id + "Edited"]: true
+    });
+  }
+
+  /** Handles the close / cancel button click event */
+  handleClose = () => {
+    // Reset the state
+    this.setState(this.baseState);
+    this.props.onClose(null);
+  }
