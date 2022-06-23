@@ -20,9 +20,6 @@ export default class ZeiterfassungAPI {
   // Local Python backend
   #ZeiterfassungServerBaseURL = "/Zeiterfassungapp";
 
-  // Local http-fake-backend
-  //#ZeiterfassungServerBaseURL = "/api/Zeiterfassungapp";
-
   // Person related
   #getAllPersonURL = () => `${this.#ZeiterfassungServerBaseURL}/person`;
   #getPersonByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/person/${id}`;
@@ -49,7 +46,7 @@ export default class ZeiterfassungAPI {
   // Ereignis related
   #getAllEreignisURL = () => `${this.#ZeiterfassungServerBaseURL}/ereignis`;
   #getEreignisByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignis/${id}`;
-  #addEreignisURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignis/${id}`;
+  #addEreignisURL = () => `${this.#ZeiterfassungServerBaseURL}/ereignis`;
   #updateEreignisURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignis/${id}`;
   #deleteEreignisURL = (id) => `${this.#ZeiterfassungServerBaseURL}/ereignis/${id}`;
 
@@ -154,7 +151,7 @@ export default class ZeiterfassungAPI {
    * @public
    */
   updateAktivitaet(aktivitaetBO) {
-    return this.#fetchAdvanced(this.#updateAktivitaetURL(aktivitaetBO.getId()), {
+    return this.#fetchAdvanced(this.#updateAktivitaetURL(aktivitaetBO.getID()), {
       method: "PUT",
       headers: {
         "Accept": "application/json, text/plain",
