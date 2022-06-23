@@ -24,3 +24,16 @@ class ZeitenListEntry extends Component {
     };
   }
 
+ /** Handles onChange events of the underlying ExpansionPanel */
+  expansionPanelStateChanged = () => {
+    this.props.onExpandedStateChange(this.props.zeit);
+  }
+
+  /** Handles onZeitenDelete events from an ZeitenListEntry  */
+  deleteZeitenHandler = (deletedZeiten) => {
+    // console.log(deletedZeiten.getID());
+    this.setState({
+      zeiten: this.state.zeiten.filter(zeit => zeit.getID() !== deletedZeiten.getID())
+    })
+  }
+
