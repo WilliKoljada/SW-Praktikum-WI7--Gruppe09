@@ -44,6 +44,7 @@ class EreignisDeleteDialog extends Component {
         deletingError: e                        // show error message
       })
     );
+
   // set loading to true
     this.setState({
       deletingInProgress: true,                 // show loading indicator
@@ -56,6 +57,7 @@ class EreignisDeleteDialog extends Component {
     // console.log(event);
     this.props.onClose(null);
   }
+
  /** Renders the component */
   render() {
     const { classes, ereignis, show } = this.props;
@@ -100,6 +102,7 @@ const styles = theme => ({
     color: theme.palette.grey[500],
   }
 });
+
 /** PropTypes */
 EreignisDeleteDialog.propTypes = {
   /** @ignore */
@@ -116,5 +119,5 @@ EreignisDeleteDialog.propTypes = {
    */
   onClose: PropTypes.func.isRequired,
 }
-
+export default withStyles(styles)(EreignisDeleteDialog);
 
