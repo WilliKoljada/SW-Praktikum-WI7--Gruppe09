@@ -48,3 +48,19 @@ class ZeitenListEntry extends Component {
       showZeitenForm: true
     });
   }
+
+ /** Handles the onClose event of the ZeitenForm */
+  zeitFormClosed = (zeit) => {
+    // zeit is not null and therefor changed
+    if(zeit) {
+      this.setState({
+        zeit: zeit,
+        showZeitenForm: false
+      });
+    } else {
+      this.setState({
+        showZeitenForm: false
+      });
+    }
+  }
+
