@@ -3,6 +3,10 @@ import PropTypes from "prop-types";
 import ZeitenForm from "../dialogs/ZeitenForm";
 import ZeitenDeleteDialog from "../dialogs/ZeitenDeleteDialog";
 import ZeitenList from "../ZeitenList";
+import { withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, Grid } from "@material-ui/core";
+import { Button, ButtonGroup } from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+
 /**
  * Renders ZeitintervallBO object within a expandable/collapsible ZeitintervallListEntry with the zeit manipulation
  * functions. If expanded, it renders a ZeitenList.
@@ -37,3 +41,10 @@ class ZeitenListEntry extends Component {
     })
   }
 
+ /** Handles the onClick event of the edit zeit button */
+  ediZeitentButtonClicked = (event) => {
+    event.stopPropagation();
+    this.setState({
+      showZeitenForm: true
+    });
+  }
