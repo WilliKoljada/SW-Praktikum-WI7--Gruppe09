@@ -152,3 +152,134 @@ class ZeitenForm extends Component {
     this.setState(this.baseState);
     this.props.onClose(null);
   }
+
+  /** Renders the component */
+  render() {
+    const { classes, zeit, show } = this.props;
+    const { datum, datumValidationFailed, datumEdited, start, startValidationFailed,startEdited, end, endValidationFailed,
+			endEdited, aktiviteatID, userID, addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
+
+    let title = "";
+    let header = "";
+
+    if(zeit) {
+      // zeit defindet, so ist an edit dialog
+      title = "Update a Zeitintervall";
+      header = `Zeitintervall ID: ${zeit.getID()}`;
+    } else {
+      title = "Buchung eines Zeitintervall";
+      header = "Enter Zeitintervall data";
+    }
+
+    return (
+      show ?
+        <Dialog open={show} onClose={this.handleClose} maxWidth="xs">
+          <DialogTitle id="form-dialog-title">{title}
+            <IconButton className={classes.closeButton} onClick={this.handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {header}
+            </DialogContentText>
+            <form className={classes.root} noValidate autoComplete="off">
+              <TextField
+								autoFocus
+								type="text"
+								required
+								fullWidth
+								margin="normal"
+								id="datum"
+								label="Datum:"
+								value={datum}
+                onChange={this.textFieldValueChange}
+								error={datumValidationFailed}
+                helperText={datumValidationFailed ? "The Datum must contain at least one character" : " "}
+							/>
+              <TextField
+								type="text"
+								required
+								fullWidth
+								margin="normal"
+								id="start"
+								label="Bezeichung:"
+								value={start}
+                onChange={this.textFieldValueChange}
+								error={startValidationFailed}
+                helperText={startValidationFailed ? "The Start must contain at least one character" : " "}
+							/>
+              <TextField
+								type="text"
+								required
+								fullWidth
+								margin="normal"
+								id="end"
+								label="End:"
+								value={end}
+                onChange={this.textFieldValueChange}
+								error={endValidationFailed}
+                helperText={endValidationFailed ? "The End must contain at least one character" : " "}
+							/>
+              <InputLabel variant="standard" htmlFor="aktivitaetID">
+								Aktivität
+							</InputLabel>
+              <NativeSelect
+								fullWidth
+								margin="normal"
+								value={aktiviteatID}
+								inputProps={{
+									name: "Aktivität",
+									id: "aktivitaetID"
+								}}
+							>
+								<option value={1}>Aktivitaet 1</option>
+								<option value={2}>Aktivitaet 2</option>
+								<option value={3}>Aktivitaet 3</option>
+							</NativeSelect>
+							<InputLabel variant="standard" htmlFor="userID">
+								User
+							</InputLabel>
+              <NativeSelect
+								fullWidth
+								margin="normal"
+								value={userID}
+								inputProps={{
+									name: "User",
+									id: "userID"
+								}}
+							>
+								<option value={1}>User 1</option>
+								<option value={2}>User 2</option>
+								<option value={3}>User 3</option>
+							</NativeSelect>
+            </form>
+            <LoadingProgress show={addingInProgress || updatingInProgress} />
+            {
+              // Show error message in dependency of zeitintervall prop
+              zeit ?
+                <ContextErrorMessage error={updatingError} contextErrorMsg={`The Zeitintervall ${zeit.getID()} could not be updated.`} onReload={this.updateZeiten} />
+                :
+                <ContextErrorMessage error={addingError} contextErrorMsg={`The Zeitintervall could not be added.`} onReload={this.addZeiten} />
+            }
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="secondary">
+              Cancel
+            </Button>
+            {
+              // If a zeitintervall is given, show an update button, else an add button
+              zeit ?
+                <Button disabled={datumValidationFailed || startValidationFailed || endValidationFailed} variant="contained" onClick={this.updateZeiten} color="primary">
+                  Update
+              </Button>
+                : <Button disabled={datumValidationFailed || !datumEdited || startValidationFailed || !startEdited || endValidationFailed || !endEdited} variant="contained" onClick={this.addZeiten} color="primary">
+                  Add
+             </Button>
+            }
+          </DialogActions>
+        </Dialog>
+        : null
+    );
+  }
+}
