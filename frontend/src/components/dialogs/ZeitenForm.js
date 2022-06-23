@@ -65,3 +65,24 @@ class ZeitenForm extends Component {
     // save this state for canceling
     this.baseState = this.state;
   }
+
+  /** Adds the zeit */
+  addZeiten = () => {
+    let newZeiten = new ZeitintervallBO(
+      this.state.datum,
+      this.state.start,
+			this.state.end,
+			this.state.aktivitaetID,
+			this.state.userID
+    );
+    ZeiterfassungAPI.getAPI().addZeitIntervall(newZeiten).then(zeit => {
+      // Backend call sucessfull
+      // reinit the dialogs state for a new empty zeit
+      this.setState(this.baseState);
+      this.props.onClose(zeit); // call the parent with the zeit object from backend
+    }).catch(e =>
+      this.setState({
+        updatingInProgress: false,    // disable loading indicator
+        updatingError: e              // show error message
+      })
+    );
