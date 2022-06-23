@@ -100,5 +100,21 @@ const styles = theme => ({
     color: theme.palette.grey[500],
   }
 });
+/** PropTypes */
+EreignisDeleteDialog.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** The EreignisBO to be deleted */
+  ereignis: PropTypes.object.isRequired,
+  /** If true, the dialog is rendered */
+  show: PropTypes.bool.isRequired,
+  /**
+   * Handler function which is called, when the dialog is closed.
+   * Sends the deleted EreignisBO as parameter or null, if cancel was pressed.
+   *
+   * Signature: onClose(EreignisBO ereignis);
+   */
+  onClose: PropTypes.func.isRequired,
+}
 
 
