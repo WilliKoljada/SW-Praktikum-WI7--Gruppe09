@@ -86,3 +86,39 @@ class ZeitenForm extends Component {
         updatingError: e              // show error message
       })
     );
+
+    // set loading to true
+    this.setState({
+      updatingInProgress: true,       // show loading indicator
+      updatingError: null             // disable error message
+    });
+  }
+
+  /** Updates the zeit */
+  updateZeiten = () => {
+    // clone the original zeit, in case the backend call fails
+    let updatedZeiten = Object.assign(new ZeitintervallBO(), this.props.zeit);
+    // set the new attributes from our dialog
+    updatedZeiten.setDatum(this.state.datum);
+		updatedZeiten.setStart(this.state.start);
+		updatedZeiten.setEnd(this.state.end);
+		updatedZeiten.setAktivitaetID(this.state.aktivitaetID);
+		updatedZeiten.setUserID(this.state.userID);
+    ZeiterfassungAPI.getAPI().updateZeitIntervall(updatedZeiten).then(zeit => {
+      this.setState({
+        updatingInProgress: false,              // disable loading indicator
+        updatingError: null                     // no error message
+      });
+      // keep the new state as base state
+      this.baseState.datum = this.state.datum;
+      this.baseState.start = this.state.start;
+      this.baseState.end = this.state.end;
+      this.baseState.aktivitaetID = this.state.aktivitaetID;
+      this.baseState.userID = this.state.userID;
+      this.props.onClose(updatedZeiten);      // call the parent with the new zeit
+    }).catch(e =>
+      this.setState({
+        updatingInProgress: false,              // disable loading indicator
+        updatingError: e                        // show error message
+      })
+    );
