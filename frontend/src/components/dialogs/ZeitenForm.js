@@ -283,3 +283,35 @@ class ZeitenForm extends Component {
     );
   }
 }
+
+/** Component specific styles */
+const styles = theme => ({
+  root: {
+    width: "100%",
+  },
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+});
+
+/** PropTypes */
+ZeitenForm.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** The ZeitintervallBO to be edited */
+  zeit: PropTypes.object,
+  /** If true, the form is rendered */
+  show: PropTypes.bool.isRequired,
+  /**
+   * Handler function which is called, when the dialog is closed.
+   * Sends the edited or created ZeitintervallBO as parameter or null, if cancel was pressed.
+   *
+   * Signature: onClose(ZeitintervallBO zeit);
+   */
+  onClose: PropTypes.func.isRequired,
+}
+
+export default withStyles(styles)(ZeitenForm);
