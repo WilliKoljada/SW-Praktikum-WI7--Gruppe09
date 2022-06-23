@@ -146,9 +146,10 @@ class EreignisMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 ereignis.set_id(1)
 
-        creation_date = datetime.utcnow()
+        creation_date = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
+        ereignis.set_creation_date(creation_date)
         command = "INSERT INTO ereignis (id, creation_date, type, datum, startzeit, endzeit, personID) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        data = (ereignis.get_id(), creation_date, ereignis.get_type(), ereignis.datum(), ereignis.get_startzeit(), ereignis.get_endzeit(), ereignis.get_personID())
+        data = (ereignis.get_id(), creation_date, ereignis.get_type(), ereignis.get_datum(), ereignis.get_startzeit(), ereignis.get_endzeit(), ereignis.get_personID())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -162,8 +163,8 @@ class EreignisMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE ereignis SET type=%s, datm=%s, startzeit=%s, endzeit=%s, personID=%s WHERE id=%s"
-        data = (ereignis.get_type(), ereignis.datum(), ereignis.get_startzeit(), ereignis.get_endzeit(), ereignis.get_personID(), ereignis.get_id())
+        command = "UPDATE ereignis SET type=%s, datum=%s, startzeit=%s, endzeit=%s, personID=%s WHERE id=%s"
+        data = (ereignis.get_type(), ereignis.get_datum(), ereignis.get_startzeit(), ereignis.get_endzeit(), ereignis.get_personID(), ereignis.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -174,6 +175,7 @@ class EreignisMapper(Mapper):
         :param ereignis das aus der DB zu löschende "Objekt"
         """
         cursor = self._cnx.cursor()
+        ereignis = self.find_by_key(id)
 
         command = "DELETE FROM ereignis WHERE id={}".format(id)
         cursor.execute(command)
