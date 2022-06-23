@@ -39,3 +39,29 @@ class ZeitenForm extends Component {
       aktivitaetID = props.zeit.getAktivitaetID();
       userID = props.zeit.getUserID();
     }
+
+    // Init the state
+    this.state = {
+      datum: datum,
+      datumValidationFailed: false,
+      datumEdited: false,
+      start: start,
+      startValidationFailed: false,
+      startEdited: false,
+      end: end,
+      endValidationFailed: false,
+      endEdited: false,
+      aktivitaetID: aktivitaetID,
+      aktivitaetIDValidationFailed: false,
+      aktivitaetIDEdited: false,
+      userID: userID,
+      userIDValidationFailed: false,
+      userIDEdited: false,
+      addingInProgress: false,
+      updatingInProgress: false,
+      addingError: null,
+      updatingError: null
+    };
+    // save this state for canceling
+    this.baseState = this.state;
+  }
