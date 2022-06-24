@@ -51,3 +51,48 @@ class PersonDeleteDialog extends Component {
     this.props.onClose(null);
   }
 
+  /** Renders the component */
+  render() {
+    const { classes, person, show } = this.props;
+    const { deletingInProgress, deletingError } = this.state;
+
+    return (
+      show ?
+        <Dialog open={show} onClose={this.handleClose}>
+          <DialogTitle id="delete-dialog-title">Delete Person
+            <IconButton className={classes.closeButton} onClick={this.handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Really delete "{person.getBenutzername()}" (ID: {person.getID()})?
+            </DialogContentText>
+            <LoadingProgress show={deletingInProgress} />
+            <ContextErrorMessage error={deletingError} contextErrorMsg={`The person "${person.getBenutzername()}" (ID: ${person.getID()}) could not be deleted.`}
+              onReload={this.deletePerson} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="secondary">
+              Cancel
+            </Button>
+            <Button variant="contained" onClick={this.deletePerson} color="primary">
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+        : null
+    );
+  }
+}
+
+/** Component specific styles */
+const styles = theme => ({
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  }
+});
+
