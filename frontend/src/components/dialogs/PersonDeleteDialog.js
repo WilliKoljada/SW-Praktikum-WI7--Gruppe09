@@ -3,6 +3,9 @@ import PropTypes from "prop-types";
 import { ZeiterfassungAPI } from "../../api";
 import ContextErrorMessage from "./ContextErrorMessage";
 import LoadingProgress from "./LoadingProgress";
+import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
+
 
 /**
  * Shows a modal delete/cancle dialog, which asks for deleting a projekt. The ProjektBO to be deleted must be given in prop projekt.
@@ -95,4 +98,23 @@ const styles = theme => ({
     color: theme.palette.grey[500],
   }
 });
+
+/** PropTypes */
+PersonDeleteDialog.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** The ProjektBO to be deleted */
+  person: PropTypes.object.isRequired,
+  /** If true, the dialog is rendered */
+  show: PropTypes.bool.isRequired,
+  /**
+   * Handler function which is called, when the dialog is closed.
+   * Sends the deleted ProjektBO as parameter or null, if cancel was pressed.
+   *
+   * Signature: onClose(ProjektBO projekt);
+   */
+  onClose: PropTypes.func.isRequired,
+}
+
+export default withStyles(styles)(PersonDeleteDialog);
 
