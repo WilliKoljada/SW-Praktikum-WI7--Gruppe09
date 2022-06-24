@@ -23,3 +23,31 @@ class PersonDeleteDialog extends Component {
     };
   }
 
+ /** Delete the projekt */
+  deletePerson = () => {
+    ZeiterfassungAPI.getAPI().deletePerson(this.props.person.getID()).then(person => {
+      this.setState({
+        deletingInProgress: false,              // disable loading indicator
+        deletingError: null                     // no error message
+      });
+      this.props.onClose(this.props.person);  // call the parent with the deleted person
+    }).catch(e =>
+      this.setState({
+        deletingInProgress: false,              // disable loading indicator
+        deletingError: e                        // show error message
+      })
+    );
+
+    // set loading to true
+    this.setState({
+      deletingInProgress: true,                 // show loading indicator
+      deletingError: null                       // disable error message
+    });
+  }
+
+  /** Handles the close / cancel button click event */
+  handleClose = () => {
+    // console.log(event);
+    this.props.onClose(null);
+  }
+
