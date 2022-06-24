@@ -37,3 +37,47 @@ class PersonForm extends Component {
       benutzername = props.person.getBenutzername();
       google_id = props.person.getGoogle_id();
     }
+
+    // Init the state
+    this.state = {
+      vorname: vorname,
+      vornameValidationFailed: false,
+      vornameameEdited: false,
+      nachname: nachname,
+      nachnameValidationFailed: false,
+      nachnameameEdited: false,
+      email: email,
+      emailValidationFailed: false,
+      emailEdited: false,
+      benutzername: benutzername,
+      benutzernameValidationFailed: false,
+      benutzernameEdited: false,
+      addingInProgress: false,
+      updatingInProgress: false,
+      addingError: null,
+      updatingError: null
+    };
+    // save this state for canceling
+    this.baseState = this.state;
+  }
+
+  /** Adds the person */
+  addPerson = () => {
+    let newPerson = new PersonBO(
+        this.state.vorname,
+        this.state.nachname,
+        this.state.email,
+		this.state.benutzername,
+		this.state.google_id
+    );
+    ZeiterfassungAPI.getAPI().addPerson(newPerson).then(person => {
+      // Backend call sucessfull
+      // reinit the dialogs state for a new empty person
+      this.setState(this.baseState);
+      this.props.onClose(person); // call the parent with the person object from backend
+    }).catch(e =>
+      this.setState({
+        updatingInProgress: false,    // disable loading indicator
+        updatingError: e              // show error message
+      })
+    );
