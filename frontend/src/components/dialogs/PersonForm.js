@@ -140,3 +140,156 @@ class PersonForm extends Component {
       [event.target.id + "Edited"]: true
     });
   }
+
+  /** Handles the close / cancel button click event */
+  handleClose = () => {
+    // Reset the state
+    this.setState(this.baseState);
+    this.props.onClose(null);
+  }
+
+  /** Renders the component */
+  render() {
+    const { classes, person, show } = this.props;
+    const { vorname, vornameValidationFailed, vornameEdited, nachname, nachnameValidationFailed, nachnameEdited,
+        email, emailValidationFailed, emailEdited, benutzername, benutzernameValidationFailed, benutzernameEdited,
+		addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
+
+    let title = "";
+    let header = "";
+
+    if (person) {
+      // person defindet, so ist an edit dialog
+      title = "Update a person";
+      header = `Person ID: ${person.getID()}`;
+    } else {
+      title = "Create a new person";
+      header = "Enter person data";
+    }
+
+    return (
+      show ?
+        <Dialog open={show} onClose={this.handleClose} maxWidth="xs">
+          <DialogTitle id="form-dialog-title">{title}
+            <IconButton className={classes.closeButton} onClick={this.handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {header}
+            </DialogContentText>
+            <form className={classes.root} noValidate autoComplete="off">
+              <TextField
+								autoFocus
+								type="text"
+								required
+								fullWidth
+								margin="normal"
+								id="vorname"
+								label="Vorname:"
+								value={vorname}
+                onChange={this.textFieldValueChange}
+								error={vornameValidationFailed}
+                helperText={vornameValidationFailed ? "The vorname must contain at least one character" : " "}
+							/>
+              <TextField
+								autoFocus
+								type="text"
+								required
+								fullWidth
+								margin="normal"
+								id="nachname"
+								label="Nachname:"
+								value={nachname}
+                onChange={this.textFieldValueChange}
+								error={nachnameValidationFailed}
+                helperText={nachnameValidationFailed ? "The nachname must contain at least one character" : " "}
+							/>
+              <TextField
+								autoFocus
+								type="text"
+								required
+								fullWidth
+								margin="normal"
+								id="email"
+								label="Email:"
+								value={email}
+                onChange={this.textFieldValueChange}
+								error={emailValidationFailed}
+                helperText={emailValidationFailed ? "The email must contain at least one character" : " "}
+							/>
+              <TextField
+								type="text"
+								required
+								fullWidth
+								margin="normal"
+								id="benutzername"
+								label="Benutzername:"
+								value={benutzername}
+                onChange={this.textFieldValueChange}
+								error={benutzernameValidationFailed}
+                helperText={benutzernameValidationFailed ? "The Benutzername must contain at least one character" : " "}
+							/>
+            </form>
+            <LoadingProgress show={addingInProgress || updatingInProgress} />
+            {
+              // Show error message in dependency of person prop
+              person ?
+                <ContextErrorMessage error={updatingError} contextErrorMsg={`The person ${person.getBenutzername()} could not be updated.`} onReload={this.updatePerson} />
+                :
+                <ContextErrorMessage error={addingError} contextErrorMsg={`The person could not be added.`} onReload={this.addPerson} />
+            }
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="secondary">
+              Cancel
+            </Button>
+            {
+              // If a person is given, show an update button, else an add button
+              person ?
+                <Button disabled={vornameValidationFailed || !vornameEdited || nachnameValidationFailed || !nachnameEdited || emailValidationFailed || !emailEdited || benutzernameValidationFailed || !benutzernameEdited} variant="contained" onClick={this.updatePerson} color="primary">
+                  Update
+              </Button>
+                : <Button disabled={vornameValidationFailed || !vornameEdited || nachnameValidationFailed || !nachnameEdited || emailValidationFailed || !emailEdited || benutzernameValidationFailed || !benutzernameEdited} variant="contained" onClick={this.addPerson} color="primary">
+                  Add
+             </Button>
+            }
+          </DialogActions>
+        </Dialog>
+        : null
+    );
+  }
+}
+
+/** Component specific styles */
+const styles = theme => ({
+  root: {
+    width: "100%",
+  },
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+});
+
+/** PropTypes */
+PersonForm.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** The PersonBO to be edited */
+  person: PropTypes.object,
+  /** If true, the form is rendered */
+  show: PropTypes.bool.isRequired,
+  /**
+   * Handler function which is called, when the dialog is closed.
+   * Sends the edited or created PersonBO as parameter or null, if cancel was pressed.
+   *
+   * Signature: onClose(PersonBO person);
+   */
+  onClose: PropTypes.func.isRequired,
+}
+
+export default withStyles(styles)(PersonForm);
