@@ -23,3 +23,51 @@ import LoadingProgress from "./LoadingProgress";
  * @author
  */
 class AktivitaetForm extends Component {
+
+  constructor(props) {
+    super(props);
+
+    let name = "";
+    let bezeichung = "";
+    let kapaz = 0;
+    if(props.aktivitaet) {
+      name = props.aktivitaet.getName();
+      bezeichung = props.aktivitaet.getBezeichnung();
+      kapaz = props.aktivitaet.getKapaz();
+    }
+
+    // Init the state
+    this.state = {
+      name: name,
+      nameValidationFailed: false,
+      nameameEdited: false,
+      bezeichung: bezeichung,
+      bezeichungValidationFailed: false,
+      bezeichungEdited: false,
+      addingInProgress: false,
+      updatingInProgress: false,
+      addingError: null,
+      updatingError: null
+    };
+    // save this state for canceling
+    this.baseState = this.state;
+  }
+
+  /** Adds the aktivitaet */
+  addAktivitaet = () => {
+    let newAktivitaet = new AktivitaetBO(
+        this.state.name,
+        this.state.bezeichung
+    );
+    ZeiterfassungAPI.getAPI().addAktivitaet(newAktivitaet).then(aktivitaet => {
+      // Backend call sucessfull
+      // reinit the dialogs state for a new empty aktivitaet
+      this.setState(this.baseState);
+      this.props.onClose(aktivitaet); // call the parent with the aktivitaet object from backend
+    }).catch(e =>
+      this.setState({
+        updatingInProgress: false,    // disable loading indicator
+        updatingError: e              // show error message
+      })
+    );
+
