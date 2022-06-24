@@ -46,3 +46,44 @@ class AktivitaetDeleteDialog extends Component {
       deletingError: null                       // disable error message
     });
   }
+
+  /** Handles the close / cancel button click event */
+  handleClose = () => {
+    // console.log(event);
+    this.props.onClose(null);
+  }
+
+  /** Renders the component */
+  render() {
+    const { classes, aktivitaet, show } = this.props;
+    const { deletingInProgress, deletingError } = this.state;
+
+    return (
+      show ?
+        <Dialog open={show} onClose={this.handleClose}>
+          <DialogTitle id="delete-dialog-title">Delete Aktivitaet
+            <IconButton className={classes.closeButton} onClick={this.handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Really delete aktivität "{aktivitaet.getName()}" (ID: {aktivitaet.getID()})?
+            </DialogContentText>
+            <LoadingProgress show={deletingInProgress} />
+            <ContextErrorMessage error={deletingError} contextErrorMsg={`The aktivität "${aktivitaet.getName()}" (ID: ${aktivitaet.getID()}) could not be deleted.`}
+              onReload={this.deleteAktivitaet} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="secondary">
+              Cancel
+            </Button>
+            <Button variant="contained" onClick={this.deleteAktivitaet} color="primary">
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+        : null
+    );
+  }
+}
