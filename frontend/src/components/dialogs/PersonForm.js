@@ -81,3 +81,62 @@ class PersonForm extends Component {
         updatingError: e              // show error message
       })
     );
+
+    // set loading to true
+    this.setState({
+      updatingInProgress: true,       // show loading indicator
+      updatingError: null             // disable error message
+    });
+  }
+
+  /** Updates the person */
+  updatePerson = () => {
+    // clone the original person, in case the backend call fails
+    let updatedPerson = Object.assign(new PersonBO(), this.props.person);
+    // set the new attributes from our dialog
+    updatedPerson.setVorname(this.state.vorname);
+    updatedPerson.setNachname(this.state.nachname);
+	updatedPerson.setEmail(this.state.email);
+	updatedPerson.setBenutzername(this.state.benutzername);
+	updatedPerson.setGoogle_id(this.state.google_id);
+    ZeiterfassungAPI.getAPI().updatePerson(updatedPerson).then(person => {
+      this.setState({
+        updatingInProgress: false,              // disable loading indicator
+        updatingError: null                     // no error message
+      });
+      // keep the new state as base state
+      this.baseState.vorname = this.state.vorname;
+      this.baseState.nachname = this.state.nachname;
+      this.baseState.email = this.state.email;
+      this.baseState.benutzername = this.state.benutzername;
+      this.baseState.google_id = this.state.google_id;
+      this.props.onClose(updatedPerson);      // call the parent with the new person
+    }).catch(e =>
+      this.setState({
+        updatingInProgress: false,              // disable loading indicator
+        updatingError: e                        // show error message
+      })
+    );
+
+    // set loading to true
+    this.setState({
+      updatingInProgress: true,                 // show loading indicator
+      updatingError: null                       // disable error message
+    });
+  }
+
+  /** Handles value changes of the forms textfields and validates them */
+  textFieldValueChange = (event) => {
+    const value = event.target.value;
+
+    let error = false;
+    if (value.trim().length === 0) {
+      error = true;
+    }
+
+    this.setState({
+      [event.target.id]: event.target.value,
+      [event.target.id + "ValidationFailed"]: error,
+      [event.target.id + "Edited"]: true
+    });
+  }
