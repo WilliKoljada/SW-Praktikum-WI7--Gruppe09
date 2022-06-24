@@ -132,3 +132,33 @@ class PersonListEntry extends Component {
     );
   }
 }
+
+/** Component specific styles */
+const styles = theme => ({
+  root: {
+    width: "100%",
+  }
+});
+
+/** PropTypes */
+PersonListEntry.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** The PersonBO to be rendered */
+  person: PropTypes.object.isRequired,
+  /** The state of this PersonListEntry. If true the person is shown with its accounts */
+  expandedState: PropTypes.bool.isRequired,
+  /** The handler responsible for handle expanded state changes (exanding/collapsing) of this PersonListEntry
+   *
+   * Signature: onExpandedStateChange(PersonBO person)
+   */
+  onExpandedStateChange: PropTypes.func.isRequired,
+  /**
+   *  Event Handler function which is called after a sucessfull delete of this person.
+   *
+   * Signature: onPersonDelete(PersonBO person)
+   */
+  onPersonDeleted: PropTypes.func.isRequired
+}
+
+export default withStyles(styles)(PersonListEntry);
