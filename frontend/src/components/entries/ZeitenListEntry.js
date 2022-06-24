@@ -132,3 +132,33 @@ class ZeitenListEntry extends Component {
   }
 }
 
+/** Component specific styles */
+const styles = theme => ({
+  root: {
+    width: "100%",
+  }
+});
+
+/** PropTypes */
+ZeitenListEntry.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** The ZeitintervallBO to be rendered */
+  zeit: PropTypes.object.isRequired,
+  /** The state of this ZeitenListEntry. If true the zeit is shown with its accounts */
+  expandedState: PropTypes.bool.isRequired,
+  /** The handler responsible for handle expanded state changes (exanding/collapsing) of this ZeitenListEntry
+   *
+   * Signature: onExpandedStateChange(ZeitintervallBO zeit)
+   */
+  onExpandedStateChange: PropTypes.func.isRequired,
+  /**
+   *  Event Handler function which is called after a sucessfull delete of this zeit.
+   *
+   * Signature: onZeitenDelete(ZeitintervallBO zeit)
+   */
+  onZeitenDeleted: PropTypes.func.isRequired
+}
+
+export default withStyles(styles)(ZeitenListEntry);
+
