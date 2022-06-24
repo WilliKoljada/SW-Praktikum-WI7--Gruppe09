@@ -7,12 +7,10 @@ from server.Administration import Administration
 
 def secured(function):
     """Decorator zur Google Firebase-basierten Authentifizierung von Benutzern
-
     Da es sich bei diesem System um eine basale Fallstudie zu Lehrzwecken handelt, wurde hier
     bewusst auf ein ausgefeiltes Berechtigungskonzept verzichtet. Vielmehr soll dieses Decorator
     einen Weg aufzeigen, wie man technisch mit vertretbarem Aufwand in eine Authentifizierung
     einsteigen kann.
-
     POLICY: Die hier demonstrierte Policy ist, dass jeder, der einen durch Firebase akzeptierten
     Account besitzt, sich an diesem System anmelden kann. Bei jeder Anmeldung werden Klarname,
     Mail-Adresse sowie die Google User ID in unserem System gespeichert bzw. geupdated. Auf diese
@@ -37,6 +35,8 @@ def secured(function):
                 claims = google.oauth2.id_token.verify_firebase_token(
                     id_token, firebase_request_adapter)
 
+                print(claims)
+
                 if claims is not None:
                     adm = Administration()
 
@@ -51,15 +51,23 @@ def secured(function):
                         Wohl aber können sich der zugehörige Klarname (name) und die
                         E-Mail-Adresse ändern. Daher werden diese beiden Daten sicherheitshalber
                         in unserem System geupdated."""
-                        user.set_name(name)
+                        user.set_vorname(name.split(" ")[0])
+                        user.set_nachname(name.split(" ")[-1])
                         user.set_email(email)
-                        adm.save_person(user)
+                        # print(user)
+                        # adm.update_person(user)
                     else:
                         """Fall: Der Benutzer war bislang noch nicht eingelogged. 
                         Wir legen daher ein neues User-Objekt an, um dieses ggf. später
                         nutzen zu können.
                         """
-                        user = adm.create_person(google_user_id, name, "", email,"")
+                        user = adm.create_person(
+                            vorname=name.split(" ")[0],
+                            nachname=name.split(" ")[-1],
+                            email=email,
+                            benutzername="",
+                            google_id=google_user_id
+                        )
 
                     print(request.method, request.path, "angefragt durch:", name, email)
 
@@ -71,9 +79,9 @@ def secured(function):
                 # This will be raised if the token is expired or any other
                 # verification checks fail.
                 error_message = str(exc)
+                print(error_message)
                 return exc, 401  # UNAUTHORIZED !!!
 
         return '', 401  # UNAUTHORIZED !!!
 
     return wrapper
-
