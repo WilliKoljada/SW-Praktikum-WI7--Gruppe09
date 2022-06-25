@@ -71,3 +71,50 @@ class AktivitaetForm extends Component {
       })
     );
 
+ // set loading to true
+    this.setState({
+      updatingInProgress: true,       // show loading indicator
+      updatingError: null             // disable error message
+    });
+  }
+
+  /** Updates the aktivitaet */
+  updateAktivitaet = () => {
+    // clone the original aktivitaet, in case the backend call fails
+    let updatedAktivitaet = Object.assign(new AktivitaetBO(), this.props.aktivitaet);
+    // set the new attributes from our dialog
+    updatedAktivitaet.setName(this.state.name);
+		updatedAktivitaet.setBezeichnung(this.state.bezeichung);
+    ZeiterfassungAPI.getAPI().updateAktivitaet(updatedAktivitaet).then(aktivitaet => {
+      this.setState({
+        updatingInProgress: false,              // disable loading indicator
+        updatingError: null                     // no error message
+      });
+      // keep the new state as base state
+      this.baseState.name = this.state.name;
+      this.baseState.bezeichung = this.state.bezeichung;
+      this.baseState.kapaz = this.state.kapaz;
+      this.props.onClose(updatedAktivitaet);      // call the parent with the new aktivitaet
+    }).catch(e =>
+      this.setState({
+        updatingInProgress: false,              // disable loading indicator
+        updatingError: e                        // show error message
+      })
+    );
+
+    // set loading to true
+    this.setState({
+      updatingInProgress: true,                 // show loading indicator
+      updatingError: null                       // disable error message
+    });
+  }
+
+  /** Handles value changes of the forms textfields and validates them */
+  textFieldValueChange = (event) => {
+    const value = event.target.value;
+
+    let error = false;
+    if (value.trim().length === 0) {
+      error = true;
+    }
+
