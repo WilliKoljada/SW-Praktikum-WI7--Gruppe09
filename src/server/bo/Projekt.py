@@ -8,7 +8,8 @@ class Projekt(bo.BusinessObject):
         self._name = ""
         self._beschreibung = ""
         self._auftraggeber = ""
-        self.personID = 0
+        self._personID = 0
+        self._kapazitaet = ""
 
     def get_beschreibung(self):
         return self._beschreibung
@@ -29,7 +30,13 @@ class Projekt(bo.BusinessObject):
         self._auftraggeber = value
 
     def get_personID(self):
-        return self.personID
+        return self._personID
+
+    def set_kapazitaet(self, kapazitaet):
+        self._kapazitaet = kapazitaet
+
+    def get_kapazitaet(self):
+        return self._kapazitaet
 
     def set_personID(self, personID):
         self._personID = personID
@@ -44,5 +51,6 @@ class Projekt(bo.BusinessObject):
         obj.set_auftraggeber((dictionary["auftraggeber"]))
         obj.set_beschreibung(dictionary["beschreibung"])
         obj.set_personID(dictionary["personID"])
+        obj.set_kapazitaet(dictionary["kapaziteat"])
 
         return obj
