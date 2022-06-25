@@ -159,4 +159,3 @@ ZeitenListEntry.propTypes = {
 }
 
 export default withStyles(styles)(ZeitenListEntry);
-
