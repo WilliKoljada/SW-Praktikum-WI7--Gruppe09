@@ -1,14 +1,15 @@
-import BusinessObject from './BusinessObject';
+import BusinessObject from "./BusinessObject";
 
 
 export default class PersonBO extends BusinessObject {
-    constructor(google_id, vorname, nachname, email, benutzername){
+    constructor(vorname, nachname, email, benutzername, google_id, role){
         super();
         this.google_id = google_id;
         this.vorname = vorname;
         this.nachname = nachname;
         this.email = email;
         this.benutzername = benutzername;
+        this.role = role
     }
     // Sets the google_id of the PersonBO */
     setGoogle_id(google_id) {
@@ -50,19 +51,27 @@ export default class PersonBO extends BusinessObject {
     getBenutzername() {
       return this.benutzername;
     }
+    // Sets the role of the PersonBO */
+    setRole(role) {
+      this.role = role;
+    }
+    /** gets the role of the PersonBO */
+    getRole() {
+      return this.role;
+    }
 
     /**
    * Returns an Array of  PersonBO from a given JSON structure
    */
-    static fromJSON(person) {
+    static fromJSON(person){
         let result = [];
 
-        if (Array.isArray(person)) {
-            person.forEach((c) => {
+        if(Array.isArray(person)){
+          person.forEach((c) => {
             Object.setPrototypeOf(c, PersonBO.prototype);
             result.push(c);
           })
-        } else {
+        }else{
           // Es handelt sich offenbar um ein singuläres Objekt
           let c = person;
           Object.setPrototypeOf(c, PersonBO.prototype);
