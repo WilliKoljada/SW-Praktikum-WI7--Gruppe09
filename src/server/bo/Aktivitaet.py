@@ -8,6 +8,7 @@ class Aktivitaet(bo.BusinessObject):
         self._name = ""
         self._beschreibung = ""
         self._projektID = 0
+        self._dauert = ""
 
     def set_name(self, name):
         self._name = name
@@ -27,6 +28,12 @@ class Aktivitaet(bo.BusinessObject):
     def get_projektID(self):
         return self._projektID
 
+    def set_dauert(self, value):
+        self._dauert = value
+
+    def get_dauert(self):
+        return self._dauert
+
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -39,4 +46,3 @@ class Aktivitaet(bo.BusinessObject):
         obj.set_projektID(dictionary["projektID"])
 
         return obj
-
