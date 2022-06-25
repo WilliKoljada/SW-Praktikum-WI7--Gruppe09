@@ -219,3 +219,35 @@ class AktivitaetForm extends Component {
   }
 }
 
+/** Component specific styles */
+const styles = theme => ({
+  root: {
+    width: "100%",
+  },
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+});
+
+/** PropTypes */
+AktivitaetForm.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** The AktivitaetBO to be edited */
+  aktivitaet: PropTypes.object,
+  /** If true, the form is rendered */
+  show: PropTypes.bool.isRequired,
+  /**
+   * Handler function which is called, when the dialog is closed.
+   * Sends the edited or created AktivitaetBO as parameter or null, if cancel was pressed.
+   *
+   * Signature: onClose(AktivitaetBO aktivitaet);
+   */
+  onClose: PropTypes.func.isRequired,
+}
+
+export default withStyles(styles)(AktivitaetForm);
+
