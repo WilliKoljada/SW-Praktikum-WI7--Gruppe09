@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles, Typography, Paper } from "@material-ui/core";
-import { BankAPI } from "../api";
-import ContextErrorMessage from "./dialogs/ContextErrorMessage";
-import LoadingProgress from "./dialogs/LoadingProgress";
+import ZeiterfassungAPI from "../../api/ZeiterfassungAPI";
+import ContextErrorMessage from "../dialogs/ContextErrorMessage";
+import LoadingProgress from "../dialogs/LoadingProgress";
 
 /**
  * Renders a AktivitaetBO object within a ListEntry and provides a delete button to delete it.
@@ -23,16 +23,20 @@ class AktivitaetDetail extends Component{
       loadingInProgress: false,
       loadingError: null,
     };
+
+    if(this.props.aktivitaet){
+      this.state.aktivitaet = this.props.aktivitaet;
+    }
   }
 
   /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
   componentDidMount() {
-    this.getAktivitaet();
+    //this.getAktivitaet();
   }
 
   /** gets the balance for this person */
   getAktivitaet = () => {
-    BankAPI.getAPI().getAktivitaet(this.props.aktivitaetID).then(aktivitaet =>
+    ZeiterfassungAPI.getAPI().getAktivitaet(this.props.aktivitaet.getID()).then(aktivitaet =>
       this.setState({
         aktivitaet: aktivitaet,
         loadingInProgress: false,
@@ -54,20 +58,28 @@ class AktivitaetDetail extends Component{
 
   /** Renders the component */
   render() {
-    const { classes, aktivitaetID } = this.props;
+    const { classes } = this.props;
     const { aktivitaet, loadingInProgress, loadingError } = this.state;
 
     return (
       <Paper variant="outlined" className={classes.root}>
         {
           aktivitaet ?
+          (<div>
             <Typography>
-              Aktivitaet: {aktivitaet.getName()}
+              Name: <strong>{aktivitaet.getName()}</strong>
             </Typography>
+            <Typography>
+              Beschreibung: <strong>{aktivitaet.getBeschreibung()}</strong>
+            </Typography>
+            <Typography>
+              Dauert: <strong>{aktivitaet.getDauert()}</strong>
+            </Typography>
+          </div>)
             : null
         }
         <LoadingProgress show={loadingInProgress} />
-        <ContextErrorMessage error={loadingError} contextErrorMsg={`The data of aktivitaet id ${aktivitaetID} could not be loaded.`} onReload={this.getAktivitaet} />
+        <ContextErrorMessage error={loadingError} contextErrorMsg={`The data of aktivitaet id ${aktivitaet.getID()} could not be loaded.`} onReload={this.getAktivitaet} />
       </Paper>
     );
   }
@@ -86,8 +98,8 @@ const styles = theme => ({
 AktivitaetDetail.propTypes = {
   /** @ignore */
   classes: PropTypes.object.isRequired,
-  /** The aktivitaetID to be rendered */
-  aktivitaetID: PropTypes.string.isRequired,
+  /** The aktivitaet to be rendered */
+  aktivitaet: PropTypes.object.isRequired,
 }
 
 export default withStyles(styles)(AktivitaetDetail);
