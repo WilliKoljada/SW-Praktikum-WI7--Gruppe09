@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ZeitenForm from "../dialogs/ZeitenForm";
-import ZeitenDeleteDialog from "../dialogs/ZeitenDeleteDialog";
-import ZeitenList from "../ZeitenList";
 import { withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, Grid } from "@material-ui/core";
 import { Button, ButtonGroup } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ZeitenForm from "../dialogs/ZeitenForm";
+import ZeitenDeleteDialog from "../dialogs/ZeitenDeleteDialog";
+import ZeitenDetail from "../details/ZeitenDetail";
 
 /**
  * Renders ZeitintervallBO object within a expandable/collapsible ZeitintervallListEntry with the zeit manipulation
@@ -28,7 +28,7 @@ class ZeitenListEntry extends Component {
     };
   }
 
- /** Handles onChange events of the underlying ExpansionPanel */
+  /** Handles onChange events of the underlying ExpansionPanel */
   expansionPanelStateChanged = () => {
     this.props.onExpandedStateChange(this.props.zeit);
   }
@@ -41,7 +41,7 @@ class ZeitenListEntry extends Component {
     })
   }
 
- /** Handles the onClick event of the edit zeit button */
+  /** Handles the onClick event of the edit zeit button */
   ediZeitentButtonClicked = (event) => {
     event.stopPropagation();
     this.setState({
@@ -49,7 +49,7 @@ class ZeitenListEntry extends Component {
     });
   }
 
- /** Handles the onClose event of the ZeitenForm */
+  /** Handles the onClose event of the ZeitenForm */
   zeitFormClosed = (zeit) => {
     // zeit is not null and therefor changed
     if(zeit) {
@@ -64,7 +64,7 @@ class ZeitenListEntry extends Component {
     }
   }
 
- /** Handles the onClick event of the delete zeit button */
+  /** Handles the onClick event of the delete zeit button */
   deleteZeitenButtonClicked = (event) => {
     event.stopPropagation();
     this.setState({
@@ -87,7 +87,7 @@ class ZeitenListEntry extends Component {
 
   /** Renders the component */
   render() {
-    const { classes, expandedState } = this.props;
+    const { classes, expandedState, user } = this.props;
     // Use the szeit
     const { zeit, showZeitenForm, showZeitenDeleteDialog } = this.state;
 
@@ -99,12 +99,17 @@ class ZeitenListEntry extends Component {
             expandIcon={<ExpandMoreIcon />}
             id={`zeit${zeit.getID()}zeitpanel-header`}
           >
-            <Grid container spacing={1} justify="flex-start" alignItems="center">
+            <Grid container spacing={1} justifyContent="flex-start" alignItems="center">
               <Grid item>
                 <Typography variant="body1" className={classes.heading}>
-                    {zeit.getID()},
+                    {zeit.getID()} - {zeit.getDatum()}
                 </Typography>
               </Grid>
+            </Grid>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Grid container spacing={1} justifyContent="flex-start" alignItems="center">
+              <ZeitenDetail zeit={zeit} />
               <Grid item>
                 <ButtonGroup variant="text" size="small">
                   <Button color="primary" onClick={this.ediZeitentButtonClicked}>
@@ -115,17 +120,10 @@ class ZeitenListEntry extends Component {
                   </Button>
                 </ButtonGroup>
               </Grid>
-              <Grid item xs />
-              <Grid item>
-                <Typography variant="body2" color={"textSecondary"}>List of Zeitintervall</Typography>
-              </Grid>
             </Grid>
-          </AccordionSummary>
-          <AccordionDetails>
-            <ZeitenList show={expandedState} zeit={zeit} />
           </AccordionDetails>
         </Accordion>
-        <ZeitenForm show={showZeitenForm} zeit={zeit} onClose={this.zeitFormClosed} />
+        <ZeitenForm show={showZeitenForm} zeit={zeit} user={user} onClose={this.zeitFormClosed} />
         <ZeitenDeleteDialog show={showZeitenDeleteDialog} zeit={zeit} onClose={this.deleteZeitenDialogClosed} />
       </div>
     );
