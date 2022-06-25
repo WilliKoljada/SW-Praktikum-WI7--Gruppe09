@@ -44,3 +44,50 @@ class AktivitaetDetail extends Component{
           loadingError: e
         })
       );
+
+    // set loading to true
+    this.setState({
+      loadingInProgress: true,
+      loadingError: null
+    });
+  }
+
+  /** Renders the component */
+  render() {
+    const { classes, aktivitaetID } = this.props;
+    const { aktivitaet, loadingInProgress, loadingError } = this.state;
+
+    return (
+      <Paper variant="outlined" className={classes.root}>
+        {
+          aktivitaet ?
+            <Typography>
+              Aktivitaet: {aktivitaet.getName()}
+            </Typography>
+            : null
+        }
+        <LoadingProgress show={loadingInProgress} />
+        <ContextErrorMessage error={loadingError} contextErrorMsg={`The data of aktivitaet id ${aktivitaetID} could not be loaded.`} onReload={this.getAktivitaet} />
+      </Paper>
+    );
+  }
+}
+
+/** Component specific styles */
+const styles = theme => ({
+  root: {
+    width: "100%",
+    padding: theme.spacing(1),
+    marginTop: theme.spacing(1)
+  }
+});
+
+/** PropTypes */
+AktivitaetDetail.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** The aktivitaetID to be rendered */
+  aktivitaetID: PropTypes.string.isRequired,
+}
+
+export default withStyles(styles)(AktivitaetDetail);
