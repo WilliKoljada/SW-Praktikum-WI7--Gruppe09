@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField } from "@material-ui/core";
+import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent,
+  DialogContentText, DialogActions, TextField, InputLabel, NativeSelect } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import ZeiterfassungAPI from "../../api/ZeiterfassungAPI";
 import EreignisBO from "../../api/EreignisBO";
@@ -26,21 +27,32 @@ class EreignisForm extends Component {
   constructor(props) {
     super(props);
 
-    let name = "";
-    let bezeichung = "";
+    let type = "urlaub";
+    let datum = "";
+    let startzeit = "";
+    let endzeit = "";
+    let personID = 0;
     if (props.ereignis) {
-      name = props.ereignis.getName();
-      bezeichung = props.ereignis.getBezeichnung();
+      type = props.ereignis.getType();
+      datum = props.ereignis.getDatum();
+      startzeit = props.ereignis.getStartzeit();
+      endzeit = props.ereignis.getEndzeit();
+      personID = props.ereignis.getPersonID();
     }
 
     // Init the state
     this.state = {
-      name: name,
-      nameValidationFailed: false,
-      nameameEdited: false,
-      bezeichung: bezeichung,
-      bezeichungValidationFailed: false,
-      bezeichungEdited: false,
+      type: type,
+      datum: datum,
+      datumValidationFailed: false,
+      datumEdited: false,
+      startzeit: startzeit,
+      startzeitValidationFailed: false,
+      startzeitEdited: false,
+      endzeit: endzeit,
+      endzeitValidationFailed: false,
+      endzeitEdited: false,
+      personID: personID,
       addingInProgress: false,
       updatingInProgress: false,
       addingError: null,
@@ -50,11 +62,15 @@ class EreignisForm extends Component {
     this.baseState = this.state;
   }
 
+
   /** Adds the ereignis */
   addEreignis = () => {
     let newEreignis = new EreignisBO(
-        this.state.name,
-        this.state.bezeichung
+        this.state.type,
+        this.state.datum,
+        this.state.startzeit,
+        this.state.endzeit,
+        this.state.personID
     );
     ZeiterfassungAPI.getAPI().addEreignis(newEreignis).then(ereignis => {
       // Backend call sucessfull
@@ -80,16 +96,22 @@ class EreignisForm extends Component {
     // clone the original ereignis, in case the backend call fails
     let updatedEreignis = Object.assign(new EreignisBO(), this.props.ereignis);
     // set the new attributes from our dialog
-    updatedEreignis.setName(this.state.name);
-	updatedEreignis.setBezeichnung(this.state.bezeichung);
+    updatedEreignis.setType(this.state.type);
+	  updatedEreignis.setDatum(this.state.datum);
+	  updatedEreignis.setStartzeit(this.state.startzeit);
+	  updatedEreignis.setEndzeit(this.state.endzeit);
+	  updatedEreignis.setPersonID(this.state.personID);
     ZeiterfassungAPI.getAPI().updateEreignis(updatedEreignis).then(ereignis => {
       this.setState({
         updatingInProgress: false,              // disable loading indicator
         updatingError: null                     // no error message
       });
       // keep the new state as base state
-      this.baseState.name = this.state.name;
-      this.baseState.bezeichung = this.state.bezeichung;
+      this.baseState.type = this.state.type;
+      this.baseState.datum = this.state.datum;
+      this.baseState.startzeit = this.state.startzeit;
+      this.baseState.endzeit = this.state.endzeit;
+      this.baseState.personID = this.state.personID;
       this.props.onClose(updatedEreignis);      // call the parent with the new ereignis
     }).catch(e =>
       this.setState({
@@ -121,6 +143,12 @@ class EreignisForm extends Component {
     });
   }
 
+  handleSelectType = (event) => {
+    this.setState({
+      [event.target.id]: event.target.value
+    })
+  };
+
   /** Handles the close / cancel button click event */
   handleClose = () => {
     // Reset the state
@@ -131,8 +159,9 @@ class EreignisForm extends Component {
   /** Renders the component */
   render() {
     const { classes, ereignis, show } = this.props;
-    const { name, nameValidationFailed, nameEdited, bezeichung, bezeichungValidationFailed,
-			bezeichungEdited,addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
+    const { type, startzeit, startzeitValidationFailed, datum, datumValidationFailed, datumEdited,
+      startzeitEdited, endzeit, endzeitValidationFailed, endzeitEdited, personID,
+			addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
 
     let title = "";
     let header = "";
@@ -159,30 +188,57 @@ class EreignisForm extends Component {
               {header}
             </DialogContentText>
             <form className={classes.root} noValidate autoComplete="off">
+            <InputLabel variant="standard" htmlFor="type">
+								Type
+							</InputLabel>
+              <NativeSelect
+								fullWidth
+                value={type}
+                onChange={this.handleSelectType}
+								inputProps={{
+									name: "type",
+									id: "type"
+								}}
+							>
+								<option value={"urlaub"}>Urlaub</option>
+								<option value={"krankheit"}>krankheit</option>
+							</NativeSelect>
               <TextField
 								autoFocus
-								type="text"
+								type="date"
 								required
 								fullWidth
 								margin="normal"
-								id="name"
-								label="Name:"
-								value={name}
+								id="datum"
+								label="Datum:"
+								value={datum}
                 onChange={this.textFieldValueChange}
-								error={nameValidationFailed}
-                helperText={nameValidationFailed ? "The name must contain at least one character" : " "}
+								error={datumValidationFailed}
+                helperText={datumValidationFailed ? "The Datum must mus be set" : " "}
 							/>
               <TextField
-								type="text"
-								required
+								type="time"
 								fullWidth
+                required
 								margin="normal"
-								id="bezeichung"
-								label="Bezeichung:"
-								value={bezeichung}
+								id="startzeit"
+								label="startzeit:"
+								value={startzeit}
                 onChange={this.textFieldValueChange}
-								error={bezeichungValidationFailed}
-                helperText={bezeichungValidationFailed ? "The Bezeichnung must contain at least one character" : " "}
+								error={startzeitValidationFailed}
+                helperText={startzeitValidationFailed ? "The Startzeit must be set" : " "}
+							/>
+              <TextField
+								type="timee"
+								fullWidth
+                required
+								margin="normal"
+								id="endzeit"
+								label="Endzeit:"
+								value={endzeit}
+                onChange={this.textFieldValueChange}
+								error={endzeitValidationFailed}
+                helperText={endzeitValidationFailed ? "The Endzeit must be set" : " "}
 							/>
             </form>
             <LoadingProgress show={addingInProgress || updatingInProgress} />
@@ -201,10 +257,10 @@ class EreignisForm extends Component {
             {
               // If a ereignis is given, show an update button, else an add button
               ereignis ?
-                <Button disabled={nameValidationFailed || bezeichungValidationFailed} variant="contained" onClick={this.updateEreignis} color="primary">
+                <Button disabled={datumValidationFailed} variant="contained" onClick={this.updateEreignis} color="primary">
                   Update
               </Button>
-                : <Button disabled={nameValidationFailed || !nameEdited || bezeichungValidationFailed || !bezeichungEdited} variant="contained" onClick={this.addEreignis} color="primary">
+                : <Button disabled={datumValidationFailed || !datumEdited} variant="contained" onClick={this.addEreignis} color="primary">
                   Add
              </Button>
             }
@@ -234,6 +290,7 @@ EreignisForm.propTypes = {
   classes: PropTypes.object.isRequired,
   /** The EreignisBO to be edited */
   ereignis: PropTypes.object,
+  user: PropTypes.object.isRequired,
   /** If true, the form is rendered */
   show: PropTypes.bool.isRequired,
   /**

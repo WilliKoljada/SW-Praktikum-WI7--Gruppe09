@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { withStyles, Button, TextField, InputAdornment, IconButton, Grid, Typography } from "@material-ui/core";
+import { withStyles, Button, Grid, Typography } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import ClearIcon from "@material-ui/icons/Clear"
+// import ClearIcon from "@material-ui/icons/Clear"
 import { withRouter } from "react-router-dom";
 import ZeiterfassungAPI from "../api/ZeiterfassungAPI";
 import ContextErrorMessage from "./dialogs/ContextErrorMessage";
@@ -34,8 +34,7 @@ class ZeitenList extends Component {
 
   /** Fetches ZeitintervallBOs for the current person */
   getZeiten = () => {
-    ZeiterfassungAPI.getAPI().getZeitIntervalls()
-      .then(zeitintervallBOs =>
+    ZeiterfassungAPI.getAPI().getZeitIntervalls().then(zeitintervallBOs =>
         this.setState({  // Set new state when ZeitintervallBOs have been fetched
           zeiten: zeitintervallBOs,
           loadingInProgress: false, // loading indicator
@@ -124,28 +123,37 @@ class ZeitenList extends Component {
 
   /** Renders the component */
   render() {
-    const { classes } = this.props;
+    const { classes, user } = this.props;
     const { zeiten, expandedZeitenID, loadingInProgress, error, showZeitenForm } = this.state;
 
     return (
       <div className={classes.root}>
-        <Grid className={classes.zeitFilter} container spacing={1} justify="flex-start" alignItems="center">
+        <Grid className={classes.zeitFilter} container spacing={1} justifyContent="flex-start" alignItems="center">
           <Grid item>
             <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={this.addZeitenButtonClicked}>
               Buchung
           </Button>
           </Grid>
         </Grid>
+        <Grid item xs />
+        <Grid item>
+          <Typography variant="body2" color={"textSecondary"}>List of Zeitintervall</Typography>
+        </Grid>
         {
           zeiten.map(zeit =>
-            <ZeitenListEntry key={zeit.getID()} zeit={zeit} expandedState={expandedZeitenID === zeit.getID()}
-              onExpandedStateChange={this.onExpandedStateChange}
-              onZeitenDeleted={this.zeitDeleted}
-            />)
+            (<div key={zeit.getID()}>
+              <ZeitenListEntry key={zeit.getID()} zeit={zeit} user={user} expandedState={expandedZeitenID === zeit.getID()}
+                onExpandedStateChange={this.onExpandedStateChange}
+                onZeitenDeleted={this.zeitDeleted}
+              />
+              <br />
+              <Grid item xs />
+            </div>)
+          )
         }
         <LoadingProgress show={loadingInProgress} />
         <ContextErrorMessage error={error} contextErrorMsg={`The list of zeitintervall could not be loaded.`} onReload={this.getZeiten} />
-        <ZeitenForm show={showZeitenForm} onClose={this.zeitFormClosed} />
+        <ZeitenForm show={showZeitenForm} user={user} onClose={this.zeitFormClosed} />
       </div>
     );
   }

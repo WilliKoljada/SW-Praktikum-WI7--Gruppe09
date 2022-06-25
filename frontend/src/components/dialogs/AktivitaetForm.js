@@ -28,22 +28,26 @@ class AktivitaetForm extends Component {
     super(props);
 
     let name = "";
-    let bezeichung = "";
+    let beschreibung = "";
     let kapaz = 0;
+    let projektID = 0;
     if(props.aktivitaet) {
       name = props.aktivitaet.getName();
-      bezeichung = props.aktivitaet.getBezeichnung();
+      beschreibung = props.aktivitaet.getBeschreibung();
       kapaz = props.aktivitaet.getKapaz();
+      projektID = props.aktivitaet.getProjektID();
     }
 
     // Init the state
     this.state = {
+      projekts: [],
       name: name,
       nameValidationFailed: false,
-      nameameEdited: false,
-      bezeichung: bezeichung,
-      bezeichungValidationFailed: false,
-      bezeichungEdited: false,
+      nameEdited: false,
+      beschreibung: beschreibung,
+      beschreibungValidationFailed: false,
+      beschreibungEdited: false,
+      projektID: projektID,
       addingInProgress: false,
       updatingInProgress: false,
       addingError: null,
@@ -53,11 +57,29 @@ class AktivitaetForm extends Component {
     this.baseState = this.state;
   }
 
+  getProjekts = () => {
+    ZeiterfassungAPI.getAPI().getProjekts().then(projektBOs =>
+      this.setState({
+        projekts: projektBOs,
+        projektID: projektBOs[0].getID()
+      })).catch(e =>
+        this.setState({
+          projekts: []
+        }
+      )
+    );
+  }
+
+  componentDidMount() {
+    this.getProjekts();
+  }
+
   /** Adds the aktivitaet */
   addAktivitaet = () => {
     let newAktivitaet = new AktivitaetBO(
         this.state.name,
-        this.state.bezeichung
+        this.state.beschreibung,
+        this.state.projektID
     );
     ZeiterfassungAPI.getAPI().addAktivitaet(newAktivitaet).then(aktivitaet => {
       // Backend call sucessfull
@@ -71,7 +93,7 @@ class AktivitaetForm extends Component {
       })
     );
 
- // set loading to true
+    // set loading to true
     this.setState({
       updatingInProgress: true,       // show loading indicator
       updatingError: null             // disable error message
@@ -84,7 +106,8 @@ class AktivitaetForm extends Component {
     let updatedAktivitaet = Object.assign(new AktivitaetBO(), this.props.aktivitaet);
     // set the new attributes from our dialog
     updatedAktivitaet.setName(this.state.name);
-		updatedAktivitaet.setBezeichnung(this.state.bezeichung);
+		updatedAktivitaet.setBeschreibung(this.state.beschreibung);
+    updatedAktivitaet.setProjektID(this.state.projektID);
     ZeiterfassungAPI.getAPI().updateAktivitaet(updatedAktivitaet).then(aktivitaet => {
       this.setState({
         updatingInProgress: false,              // disable loading indicator
@@ -94,6 +117,7 @@ class AktivitaetForm extends Component {
       this.baseState.name = this.state.name;
       this.baseState.bezeichung = this.state.bezeichung;
       this.baseState.kapaz = this.state.kapaz;
+      this.baseState.projektID = this.state.projektID;
       this.props.onClose(updatedAktivitaet);      // call the parent with the new aktivitaet
     }).catch(e =>
       this.setState({
@@ -118,25 +142,34 @@ class AktivitaetForm extends Component {
       error = true;
     }
 
-   this.setState({
+    this.setState({
       [event.target.id]: event.target.value,
       [event.target.id + "ValidationFailed"]: error,
       [event.target.id + "Edited"]: true
     });
   }
 
+  handleSelect = (event) => {
+    console.log("value", event.target.value);
+    console.log("id", event.target.id);
+    this.setState({
+      [event.target.id]: event.target.value
+    })
+    console.log("state", this.state.projektID);
+  };
+
   /** Handles the close / cancel button click event */
   handleClose = () => {
     // Reset the state
     this.setState(this.baseState);
     this.props.onClose(null);
-  }
+  };
 
   /** Renders the component */
   render() {
     const { classes, aktivitaet, show } = this.props;
-    const { name, nameValidationFailed, nameEdited, bezeichung, bezeichungValidationFailed,
-			bezeichungEdited, addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
+    const { name, nameValidationFailed, nameEdited, beschreibung, beschreibungValidationFailed,
+			projektID, addingInProgress, addingError, updatingInProgress, updatingError, projekts } = this.state;
 
     let title = "";
     let header = "";
@@ -174,20 +207,40 @@ class AktivitaetForm extends Component {
 								value={name}
                 onChange={this.textFieldValueChange}
 								error={nameValidationFailed}
-                helperText={nameValidationFailed ? "The name must contain at least one character" : " "}
+                helperText={nameValidationFailed ? "The Name must contain at least one character" : " "}
 							/>
               <TextField
 								type="text"
-								required
 								fullWidth
+                multiline
+                minRows={4}
+                maxRows={10}
 								margin="normal"
-								id="bezeichung"
-								label="Bezeichung:"
-								value={bezeichung}
+								id="beschreibung"
+								label="Beschreibung:"
+								value={beschreibung}
                 onChange={this.textFieldValueChange}
-								error={bezeichungValidationFailed}
-                helperText={bezeichungValidationFailed ? "The Bezeichnung must contain at least one character" : " "}
+								error={beschreibungValidationFailed}
+                helperText={beschreibungValidationFailed ? "The Bezeichnung must contain at least one character" : " "}
 							/>
+              <InputLabel variant="standard" htmlFor="projektID">
+								Projekt ID
+							</InputLabel>
+              <NativeSelect
+								fullWidth
+                onChange={this.handleSelect}
+								value={projektID}
+								inputProps={{
+									name: "ProjektID",
+									id: "projektID"
+								}}
+							>
+                {
+                  projekts.map(projekt =>
+                    <option key={projekt.getID()} value={projekt.getID()}>{projekt.getName()}</option>
+                  )
+                }
+							</NativeSelect>
             </form>
             <LoadingProgress show={addingInProgress || updatingInProgress} />
             {
@@ -205,10 +258,10 @@ class AktivitaetForm extends Component {
             {
               // If a aktivitaet is given, show an update button, else an add button
               aktivitaet ?
-                <Button disabled={nameValidationFailed || bezeichungValidationFailed} variant="contained" onClick={this.updateAktivitaet} color="primary">
+                <Button disabled={nameValidationFailed} variant="contained" onClick={this.updateAktivitaet} color="primary">
                   Update
               </Button>
-                : <Button disabled={nameValidationFailed || !nameEdited || bezeichungValidationFailed || !bezeichungEdited} variant="contained" onClick={this.addAktivitaet} color="primary">
+                : <Button disabled={nameValidationFailed || !nameEdited} variant="contained" onClick={this.addAktivitaet} color="primary">
                   Add
              </Button>
             }
@@ -238,6 +291,7 @@ AktivitaetForm.propTypes = {
   classes: PropTypes.object.isRequired,
   /** The AktivitaetBO to be edited */
   aktivitaet: PropTypes.object,
+  user: PropTypes.object.isRequired,
   /** If true, the form is rendered */
   show: PropTypes.bool.isRequired,
   /**
@@ -250,4 +304,3 @@ AktivitaetForm.propTypes = {
 }
 
 export default withStyles(styles)(AktivitaetForm);
-

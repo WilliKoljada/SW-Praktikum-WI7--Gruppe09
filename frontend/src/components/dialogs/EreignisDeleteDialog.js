@@ -1,15 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import ZeiterfassungAPI from "../../api/ZeiterfassungAPI";
 import ContextErrorMessage from "./ContextErrorMessage";
 import LoadingProgress from "./LoadingProgress";
-import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-
-
-
-
-
 
 /**
  * Shows a modal delete/cancle dialog, which asks for deleting a ereignis. The EreignisBO to be deleted must be given in prop ereignis.
@@ -45,7 +40,7 @@ class EreignisDeleteDialog extends Component {
       })
     );
 
-  // set loading to true
+    // set loading to true
     this.setState({
       deletingInProgress: true,                 // show loading indicator
       deletingError: null                       // disable error message
@@ -58,7 +53,7 @@ class EreignisDeleteDialog extends Component {
     this.props.onClose(null);
   }
 
- /** Renders the component */
+  /** Renders the component */
   render() {
     const { classes, ereignis, show } = this.props;
     const { deletingInProgress, deletingError } = this.state;
@@ -73,10 +68,10 @@ class EreignisDeleteDialog extends Component {
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Really delete ereignis "{ereignis.getName()}" (ID: {ereignis.getID()})?
+              Really delete ereignis "{ereignis.getType()}" (ID: {ereignis.getID()})?
             </DialogContentText>
             <LoadingProgress show={deletingInProgress} />
-            <ContextErrorMessage error={deletingError} contextErrorMsg={`The ereignis "${ereignis.getName()}" (ID: ${ereignis.getID()}) could not be deleted.`}
+            <ContextErrorMessage error={deletingError} contextErrorMsg={`The ereignis "${ereignis.getType()}" (ID: ${ereignis.getID()}) could not be deleted.`}
               onReload={this.deleteEreignis} />
           </DialogContent>
           <DialogActions>
@@ -119,5 +114,5 @@ EreignisDeleteDialog.propTypes = {
    */
   onClose: PropTypes.func.isRequired,
 }
-export default withStyles(styles)(EreignisDeleteDialog);
 
+export default withStyles(styles)(EreignisDeleteDialog);

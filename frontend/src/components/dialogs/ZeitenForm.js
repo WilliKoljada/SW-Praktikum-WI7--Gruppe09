@@ -27,36 +27,37 @@ class ZeitenForm extends Component {
   constructor(props) {
     super(props);
 
-    let datum = null;
-    let start = null;
-    let end = null;
-    let aktivitaetID = null;
-    let userID = null;
-    if(props.zeit) {
+    let datum = "";
+    let startzeit = "";
+    let endzeit = "";
+    let aktivitaetID = 1;
+    let personID = 0;
+    if(props.zeit){
       datum = props.zeit.getDatum();
-      start = props.zeit.getStart();
-      end = props.zeit.getEnd();
+      startzeit = props.zeit.getStartzeit();
+      endzeit = props.zeit.getEndzeit();
       aktivitaetID = props.zeit.getAktivitaetID();
-      userID = props.zeit.getUserID();
+      personID = props.zeit.getPersonID();
     }
 
     // Init the state
     this.state = {
+      aktivitaets: [],
       datum: datum,
       datumValidationFailed: false,
       datumEdited: false,
-      start: start,
-      startValidationFailed: false,
-      startEdited: false,
-      end: end,
-      endValidationFailed: false,
-      endEdited: false,
+      startzeit: startzeit,
+      startzeitValidationFailed: false,
+      startzeitEdited: false,
+      endzeit: endzeit,
+      endzeitValidationFailed: false,
+      endzeitEdited: false,
       aktivitaetID: aktivitaetID,
       aktivitaetIDValidationFailed: false,
       aktivitaetIDEdited: false,
-      userID: userID,
-      userIDValidationFailed: false,
-      userIDEdited: false,
+      personID: personID,
+      personIDValidationFailed: false,
+      personIDEdited: false,
       addingInProgress: false,
       updatingInProgress: false,
       addingError: null,
@@ -66,19 +67,56 @@ class ZeitenForm extends Component {
     this.baseState = this.state;
   }
 
+  getPersonByGoogleID = () => {
+    ZeiterfassungAPI.getAPI().getPersonByGoogleID(this.props.user.uid).then(person => {
+      this.setState({
+        personID: person[0].getID()
+      })
+    }).catch(e =>
+      this.setState({
+        updatingInProgress: false,    // disable loading indicator
+        updatingError: e              // show error message
+      })
+    );
+  }
+
+  /** Fetches AktivitaetBOs for the current person */
+  getAktivitaets = () => {
+    ZeiterfassungAPI.getAPI().getAktivitaets().then(aktivitaetBOs =>
+      this.setState({  // Set new state when AktivitaetBOs have been fetched
+        aktivitaets: aktivitaetBOs,
+        aktivitaetID: aktivitaetBOs[0].getID()
+      })).catch(e =>
+        this.setState({ // Reset state with error from catch
+          aktivitaets: [],
+        }
+      )
+    );
+  }
+
+  componentDidMount() {
+    this.getAktivitaets();
+    this.getPersonByGoogleID();
+  }
+
   /** Adds the zeit */
   addZeiten = () => {
     let newZeiten = new ZeitintervallBO(
       this.state.datum,
-      this.state.start,
-			this.state.end,
+      this.state.startzeit,
+			this.state.endzeit,
 			this.state.aktivitaetID,
-			this.state.userID
+			this.state.personID
     );
     ZeiterfassungAPI.getAPI().addZeitIntervall(newZeiten).then(zeit => {
       // Backend call sucessfull
       // reinit the dialogs state for a new empty zeit
-      this.setState(this.baseState);
+      this.setState({
+        datum: "",
+        startzeit: "",
+        endzeit: "",
+        aktivitaetID: 1
+      });
       this.props.onClose(zeit); // call the parent with the zeit object from backend
     }).catch(e =>
       this.setState({
@@ -100,10 +138,10 @@ class ZeitenForm extends Component {
     let updatedZeiten = Object.assign(new ZeitintervallBO(), this.props.zeit);
     // set the new attributes from our dialog
     updatedZeiten.setDatum(this.state.datum);
-		updatedZeiten.setStart(this.state.start);
-		updatedZeiten.setEnd(this.state.end);
+		updatedZeiten.setStartzeit(this.state.startzeit);
+		updatedZeiten.setEndzeit(this.state.endzeit);
 		updatedZeiten.setAktivitaetID(this.state.aktivitaetID);
-		updatedZeiten.setUserID(this.state.userID);
+		updatedZeiten.setPersonID(this.state.personID);
     ZeiterfassungAPI.getAPI().updateZeitIntervall(updatedZeiten).then(zeit => {
       this.setState({
         updatingInProgress: false,              // disable loading indicator
@@ -111,10 +149,10 @@ class ZeitenForm extends Component {
       });
       // keep the new state as base state
       this.baseState.datum = this.state.datum;
-      this.baseState.start = this.state.start;
-      this.baseState.end = this.state.end;
+      this.baseState.startzeit = this.state.startzeit;
+      this.baseState.endzeit = this.state.endzeit;
       this.baseState.aktivitaetID = this.state.aktivitaetID;
-      this.baseState.userID = this.state.userID;
+      this.baseState.personID = this.state.personID;
       this.props.onClose(updatedZeiten);      // call the parent with the new zeit
     }).catch(e =>
       this.setState({
@@ -146,6 +184,12 @@ class ZeitenForm extends Component {
     });
   }
 
+  handleSelectAkt = (event) => {
+    this.setState({
+      [event.target.id]: event.target.value
+    });
+  };
+
   /** Handles the close / cancel button click event */
   handleClose = () => {
     // Reset the state
@@ -156,8 +200,8 @@ class ZeitenForm extends Component {
   /** Renders the component */
   render() {
     const { classes, zeit, show } = this.props;
-    const { datum, datumValidationFailed, datumEdited, start, startValidationFailed,startEdited, end, endValidationFailed,
-			endEdited, aktiviteatID, userID, addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
+    const { datum, datumValidationFailed, datumEdited, startzeit, startzeitValidationFailed, startzeitEdited, endzeit, endzeitValidationFailed,
+			endzeitEdited, aktiviteatID, addingInProgress, addingError, updatingInProgress, updatingError, aktivitaets } = this.state;
 
     let title = "";
     let header = "";
@@ -186,7 +230,7 @@ class ZeitenForm extends Component {
             <form className={classes.root} noValidate autoComplete="off">
               <TextField
 								autoFocus
-								type="text"
+								type="date"
 								required
 								fullWidth
 								margin="normal"
@@ -198,60 +242,46 @@ class ZeitenForm extends Component {
                 helperText={datumValidationFailed ? "The Datum must contain at least one character" : " "}
 							/>
               <TextField
-								type="text"
+								type="time"
 								required
 								fullWidth
 								margin="normal"
-								id="start"
-								label="Bezeichung:"
-								value={start}
+								id="startzeit"
+								label="Startzeit:"
+								value={startzeit}
                 onChange={this.textFieldValueChange}
-								error={startValidationFailed}
-                helperText={startValidationFailed ? "The Start must contain at least one character" : " "}
+								error={startzeitValidationFailed}
+                helperText={startzeitValidationFailed ? "The Startzeit must contain at least one character" : " "}
 							/>
               <TextField
-								type="text"
+								type="time"
 								required
 								fullWidth
 								margin="normal"
-								id="end"
-								label="End:"
-								value={end}
+								id="endzeit"
+								label="Endzeit:"
+								value={endzeit}
                 onChange={this.textFieldValueChange}
-								error={endValidationFailed}
-                helperText={endValidationFailed ? "The End must contain at least one character" : " "}
+								error={endzeitValidationFailed}
+                helperText={endzeitValidationFailed ? "The Endzeit must contain at least one character" : " "}
 							/>
               <InputLabel variant="standard" htmlFor="aktivitaetID">
 								Aktivität
 							</InputLabel>
               <NativeSelect
 								fullWidth
-								margin="normal"
 								value={aktiviteatID}
+                onChange={this.handleSelectAkt}
 								inputProps={{
-									name: "Aktivität",
+									name: "AktivitaetID",
 									id: "aktivitaetID"
 								}}
 							>
-								<option value={1}>Aktivitaet 1</option>
-								<option value={2}>Aktivitaet 2</option>
-								<option value={3}>Aktivitaet 3</option>
-							</NativeSelect>
-							<InputLabel variant="standard" htmlFor="userID">
-								User
-							</InputLabel>
-              <NativeSelect
-								fullWidth
-								margin="normal"
-								value={userID}
-								inputProps={{
-									name: "User",
-									id: "userID"
-								}}
-							>
-								<option value={1}>User 1</option>
-								<option value={2}>User 2</option>
-								<option value={3}>User 3</option>
+                {
+                  aktivitaets.map(aktivitaet =>
+                    <option key={aktivitaet.getID()} value={aktivitaet.getID()}>{aktivitaet.getName()}</option>
+                  )
+                }
 							</NativeSelect>
             </form>
             <LoadingProgress show={addingInProgress || updatingInProgress} />
@@ -270,10 +300,10 @@ class ZeitenForm extends Component {
             {
               // If a zeitintervall is given, show an update button, else an add button
               zeit ?
-                <Button disabled={datumValidationFailed || startValidationFailed || endValidationFailed} variant="contained" onClick={this.updateZeiten} color="primary">
+                <Button disabled={datumValidationFailed || startzeitValidationFailed || endzeitValidationFailed} variant="contained" onClick={this.updateZeiten} color="primary">
                   Update
               </Button>
-                : <Button disabled={datumValidationFailed || !datumEdited || startValidationFailed || !startEdited || endValidationFailed || !endEdited} variant="contained" onClick={this.addZeiten} color="primary">
+                : <Button disabled={datumValidationFailed || !datumEdited || startzeitValidationFailed || !startzeitEdited || endzeitValidationFailed || !endzeitEdited} variant="contained" onClick={this.addZeiten} color="primary">
                   Add
              </Button>
             }
@@ -303,6 +333,7 @@ ZeitenForm.propTypes = {
   classes: PropTypes.object.isRequired,
   /** The ZeitintervallBO to be edited */
   zeit: PropTypes.object,
+  user: PropTypes.object.isRequired,
   /** If true, the form is rendered */
   show: PropTypes.bool.isRequired,
   /**

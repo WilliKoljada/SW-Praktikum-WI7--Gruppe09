@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, Grid } from "@material-ui/core";
+import { Button, ButtonGroup } from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import EreignisForm from "../dialogs/EreignisForm";
 import EreignisDeleteDialog from "../dialogs/EreignisDeleteDialog";
 import EreignisList from "../EreignisList";
-import { Button, ButtonGroup } from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, Grid } from "@material-ui/core";
-
-
+import EreignisDetail from "../details/EreignisDetail";
 
 /**
  * Renders EreignisBO object within a expandable/collapsible EreignisListEntry with the ereignis manipulation
@@ -29,7 +28,8 @@ class EreignisListEntry extends Component {
       showEreignisDeleteDialog: false,
     };
   }
- /** Handles onChange events of the underlying ExpansionPanel */
+
+  /** Handles onChange events of the underlying ExpansionPanel */
   expansionPanelStateChanged = () => {
     this.props.onExpandedStateChange(this.props.ereignis);
   }
@@ -64,7 +64,8 @@ class EreignisListEntry extends Component {
       });
     }
   }
-   /** Handles the onClick event of the delete ereignis button */
+
+  /** Handles the onClick event of the delete ereignis button */
   deleteEreignisButtonClicked = (event) => {
     event.stopPropagation();
     this.setState({
@@ -84,12 +85,14 @@ class EreignisListEntry extends Component {
       showEreignisDeleteDialog: false
     });
   }
- /** Renders the component */
+
+  /** Renders the component */
   render() {
-    const { classes, expandedState } = this.props;
+    const { classes, expandedState, user } = this.props;
     // Use the states ereignis
     const { ereignis, showEreignisForm, showEreignisDeleteDialog } = this.state;
- // console.log(this.state);
+
+    // console.log(this.state);
     return (
       <div>
         <Accordion defaultExpanded={false} expanded={expandedState} onChange={this.expansionPanelStateChanged}>
@@ -97,45 +100,43 @@ class EreignisListEntry extends Component {
             expandIcon={<ExpandMoreIcon />}
             id={`ereignis${ereignis.getID()}ereignispanel-header`}
           >
-            <Grid container spacing={1} justify="flex-start" alignItems="center">
+            <Grid container spacing={1} justifyContent="flex-start" alignItems="center">
               <Grid item>
                 <Typography variant="body1" className={classes.heading}>
-                    {ereignis.getName()}, {ereignis.getBezeichnung()}
+                    {ereignis.getID()} - {ereignis.getType()} am {ereignis.getDatum()}
                 </Typography>
               </Grid>
+            </Grid>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Grid container spacing={1} justifyContent="flex-start" alignItems="center">
+              <EreignisDetail ereignis={ereignis} />
               <Grid item>
                 <ButtonGroup variant="text" size="small">
                   <Button color="primary" onClick={this.editEreignisButtonClicked}>
                     edit
                   </Button>
                   <Button color="secondary" onClick={this.deleteEreignisButtonClicked}>
-                  delete
+                    delete
                   </Button>
                 </ButtonGroup>
               </Grid>
-              <Grid item xs />
-              <Grid item>
-                <Typography variant="body2" color={"textSecondary"}>List of ereignis</Typography>
-              </Grid>
             </Grid>
-          </AccordionSummary>
-          <AccordionDetails>
-            <EreignisList show={expandedState} ereignis={ereignis} />
           </AccordionDetails>
         </Accordion>
-        <EreignisForm show={showEreignisForm} ereignis={ereignis} onClose={this.ereignisFormClosed} />
+        <EreignisForm show={showEreignisForm} ereignis={ereignis} user={user} onClose={this.ereignisFormClosed} />
         <EreignisDeleteDialog show={showEreignisDeleteDialog} ereignis={ereignis} onClose={this.deleteEreignisDialogClosed} />
       </div>
     );
   }
 }
+
 /** Component specific styles */
 const styles = theme => ({
   root: {
     width: "100%",
   }
 });
-
 
 /** PropTypes */
 EreignisListEntry.propTypes = {

@@ -1,5 +1,7 @@
+from requests import delete
 from server.bo.Arbeitszeitkonto import Arbeitszeitkonto
 from server.db.Mapper import Mapper
+from datetime import datetime, timedelta
 
 
 class ArbeitszeitkontoMapper(Mapper):
@@ -12,116 +14,116 @@ class ArbeitszeitkontoMapper(Mapper):
     def __init__(self):
         super().__init__()
 
-    def find_all(self):
-        """Auslesen aller Arbeitszeitkonto.
-        :return Eine Sammlung mit Arbeitszeitkonto-Objekten, die sämtliche Arbeitszeitkonto repräsentieren.
-        """
-        result = []
+    def _rechne_urlaub(self, personID):
+        zeiten = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from arbeitszeitkonto")
-        tuples = cursor.fetchall()
-
-        for (id, arbeitspensum, creation_time) in tuples:
-            arbeitszeitkonto= Arbeitszeitkonto()
-            arbeitszeitkonto.set_id(id)
-            arbeitszeitkonto.set_creation_date(creation_time)
-            arbeitszeitkonto.set_arbeitspensum(arbeitspensum)
-            result.append(arbeitszeitkonto)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
-    def find_by_key(self, key):
-        """Auslesen aller Arbeitszeitkonto anhand der ID,
-        da diese vorgegeben ist, wird genau ein Objekt zurückgegeben.
-        :param key Primärschlüsselattribut
-        :return Arbeitszeitkonto-Objekt, das dem übergebenen Schlüssel entspricht, None bei
-        nicht vorhandenem DB-Tupel
-        """
-        result = None
-
-        cursor = self._cnx.cursor()
-        command = "SELECT * FROM arbeitszeitkonto WHERE id={}".format(key)
+        command = "SELECT datum, startzeit, endzeit from ereignis WHERE type='urlaub' AND personID={}".format(personID)
         cursor.execute(command)
-        tuples = cursor.fetchall()
-        for (id, arbeitspensum, creation_date) in tuples:
-            arbeitszeitkonto = Arbeitszeitkonto()
-            arbeitszeitkonto.set_id(id)
-            arbeitszeitkonto.set_creation_date(creation_date)
-            arbeitszeitkonto.set_arbeitspensum(arbeitspensum)
+        zeiten = cursor.fetchall()
+        dauert = timedelta(0)
+        for (datum, startzeit, endzeit) in zeiten:
+            begin_time = datetime.strptime(str(startzeit), "%H:%M:%S").time()
+            end_time = datetime.strptime(str(endzeit), "%H:%M:%S").time()
+            begin = datetime.combine(datum, begin_time)
+            end = datetime.combine(datum, end_time)
 
-        result = arbeitszeitkonto
-
-        self._cnx.commit()
-        cursor.close()
-        return result
-
-    def insert(self, arbeitszeitkonto):
-        """Einfügen eines Arbeitszeitkonto-Objekts in die Datenbank.
-        Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
-        berichtigt.
-        :param arbeitszeitkonto das zu speichernde Objekt
-        :return das bereits übergebene Objekt, jedoch mit ggf. korrigierter ID.
-        """
-        cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM arbeitszeitkonto ")
-        tuples = cursor.fetchall()
-
-        for (maxid) in tuples:
-            if maxid[0] is not None:
-                """Wenn wir eine maximale ID festellen konnten, zählen wir diese
-                um 1 hoch und weisen diesen Wert als ID dem User-Objekt zu."""
-                arbeitszeitkonto.set_id(maxid[0] + 1)
+            if end > begin:
+                dauert += (end - begin)
             else:
-                """Wenn wir keine maximale ID feststellen konnten, dann gehen wir
-                davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
-                arbeitszeitkonto.set_id(1)
+                dauert += timedelta(0)
 
-        command = "INSERT INTO arbeitszeitkonto (id, arbeitspensum, creation_date) VALUES (%s,%s,%s)"
-        data = (arbeitszeitkonto.get_id(), arbeitszeitkonto.get_arbeitspensum(), arbeitszeitkonto.get_creation_date())
-
-        cursor.execute(command, data)
-
-        self._cnx.commit()
         cursor.close()
+        return str(dauert)
 
-        return arbeitszeitkonto
-
-    def update(self, arbeitszeitkonto):
-        """Wiederholtes Schreiben eines Objekts in die Datenbank.
-        :param Arbeitszeitkonto das Objekt, das in die DB geschrieben werden soll
-        """
+    def _rechne_krankheit(self, personID):
+        zeiten = []
         cursor = self._cnx.cursor()
-
-        command = "UPDATE arbeitszeitkonto SET WHERE id=%s, arbeitspensum=%s creation_date=%s"
-        data = (arbeitszeitkonto.get_id(), arbeitszeitkonto.get_arbeitspensum(), arbeitszeitkonto.get_creation_date())
-
-        cursor.execute(command, data)
-
-        self._cnx.commit()
-        cursor.close()
-
-    def delete(self, arbeitszeitkonto):
-        """Löschen der Daten eines Projekt-Objekts aus der Datenbank.
-        :param Arbeitszeitkonto das aus der DB zu löschende "Objekt"
-        """
-        cursor = self._cnx.cursor()
-
-        command = "DELETE FROM arbeitszeitkonto WHERE id={}".format(arbeitszeitkonto.get_id())
+        command = "SELECT datum, startzeit, endzeit from ereignis WHERE type='krankheit' AND personID={}".format(
+            personID)
         cursor.execute(command)
+        zeiten = cursor.fetchall()
+        dauert = timedelta(0)
+        for (datum, startzeit, endzeit) in zeiten:
+            begin_time = datetime.strptime(str(startzeit), "%H:%M:%S").time()
+            end_time = datetime.strptime(str(endzeit), "%H:%M:%S").time()
+            begin = datetime.combine(datum, begin_time)
+            end = datetime.combine(datum, end_time)
+
+            if end > begin:
+                dauert += (end - begin)
+            else:
+                dauert += timedelta(0)
+
+        cursor.close()
+        return str(dauert)
+
+    def _rechne_arbeit(self, personID):
+        zeiten = []
+        cursor = self._cnx.cursor()
+        command = "SELECT datum, startzeit, endzeit from zeitintervall WHERE personID={}".format(personID)
+        cursor.execute(command)
+        zeiten = cursor.fetchall()
+        dauert = timedelta(0)
+        for (datum, startzeit, endzeit) in zeiten:
+            begin_time = datetime.strptime(str(startzeit), "%H:%M:%S").time()
+            end_time = datetime.strptime(str(endzeit), "%H:%M:%S").time()
+            begin = datetime.combine(datum, begin_time)
+            end = datetime.combine(datum, end_time)
+
+            if end > begin:
+                dauert += (end - begin)
+            else:
+                dauert += timedelta(0)
+
+        cursor.close()
+        return str(dauert)
+
+    def _get_creation_date(self, key):
+        result = ""
+        cursor = self._cnx.cursor()
+        command = "SELECT creation_date FROM person WHERE id={}".format(key)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+        for (creation_date) in tuples:
+            result = creation_date
 
         self._cnx.commit()
         cursor.close()
+        return result
 
-        return arbeitszeitkonto
+    def find_arbeit_konto_by_key(self, key):
+        konto = Arbeitszeitkonto()
+        konto.set_id(key)
+        # konto.set_creation_date(self._get_creation_date(key))
+        konto.set_arbeit(self._rechne_arbeit(key))
+        konto.set_urlaub(self._rechne_urlaub(key))
+        konto.set_krankheit(self._rechne_krankheit(key))
 
+        return konto
+
+    def find_all(self):
+        return super().find_all()
+
+    def find_by_key(self, id):
+        return super().find_by_key(id)
+
+    def insert(self):
+        return super().insert()
+
+    def update(self):
+        return super().update()
+
+    def delete(self):
+        return super().delete()
 
     # Zum Testen ausführen
+
+
 if (__name__ == "__main__"):
     with ArbeitszeitkontoMapper() as mapper:
-            arbeitszeitkonto = Arbeitszeitkonto()
-            arbeitszeitkonto.set_id(2)
-
-            mapper.insert(arbeitszeitkonto)
+        aktivitaet = Arbeitszeitkonto()
+        aktivitaet.set_arbeit("48:55:00")
+        aktivitaet.set_id(2)
+        aktivitaet.set_creation_date("2022-06-10 00:00:00.0000")
+        aktivitaet.set_urlaub("43:55:0")
+        aktivitaet.set_krankheit("20:20:00")
