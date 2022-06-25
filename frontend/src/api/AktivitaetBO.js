@@ -7,12 +7,13 @@ export default class AktivitaetBO extends BusinessObject {
   /**
   * Constructs a new aktivitaet
   */
-  constructor(name, beschreibung, projektID) {
+  constructor(name, beschreibung, projektID, dauert) {
     super();
     this.name = name;
     this.kapaz = 0;
     this.beschreibung = beschreibung;
     this.projektID = projektID;
+    this.dauert = dauert;
   }
 	/** Sets the name of the aktivitaetBO */
   setName(name){
@@ -45,6 +46,14 @@ export default class AktivitaetBO extends BusinessObject {
   /** gets the projektID of the aktivitaetBO */
   getProjektID() {
     return this.projektID;
+  }
+	/** Sets the dauert of the aktivitaetBO */
+  setDauert(dauert) {
+    this.dauert = dauert;
+  }
+  /** gets the dauert of the aktivitaetBO */
+  getDauert() {
+    return this.dauert;
   }
 
   /**
