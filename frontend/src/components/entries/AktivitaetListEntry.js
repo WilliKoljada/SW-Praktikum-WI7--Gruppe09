@@ -5,8 +5,7 @@ import { Button, ButtonGroup } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AktivitaetForm from "../dialogs/AktivitaetForm";
 import AktivitaetDeleteDialog from "../dialogs/AktivitaetDeleteDialog";
-import AktivitaetList from "../AktivitaetList";
-
+import AktivitaetDetail from "../details/AktivitaetDetail";
 
 /**
  * Renders a AktivitaetBO object within a expandable/collapsible AktivitaetListEntry with the aktivitaet manipulation
@@ -18,7 +17,7 @@ import AktivitaetList from "../AktivitaetList";
  */
 class AktivitaetListEntry extends Component {
 
-constructor(props) {
+  constructor(props) {
     super(props);
 
     // Init the state
@@ -53,7 +52,7 @@ constructor(props) {
   /** Handles the onClose event of the AktivitaetForm */
   aktivitaetFormClosed = (aktivitaet) => {
     // aktivitaet is not null and therefor changed
-    if (aktivitaet) {
+    if(aktivitaet){
       this.setState({
         aktivitaet: aktivitaet,
         showAktivitaetForm: false
@@ -88,7 +87,7 @@ constructor(props) {
 
   /** Renders the component */
   render() {
-    const { classes, expandedState } = this.props;
+    const { classes, expandedState, user } = this.props;
     // Use the states aktivitaet
     const { aktivitaet, showAktivitaetForm, showAktivitaetDeleteDialog } = this.state;
 
@@ -103,9 +102,14 @@ constructor(props) {
             <Grid container spacing={1} justifyContent="flex-start" alignItems="center">
               <Grid item>
                 <Typography variant="body1" className={classes.heading}>
-                    {aktivitaet.getName()}, {aktivitaet.getBezeichnung()}
+                    {aktivitaet.getID()} - {aktivitaet.getName()}
                 </Typography>
               </Grid>
+            </Grid>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Grid container spacing={1} justifyContent="flex-start" alignItems="center">
+              <AktivitaetDetail aktivitaet={aktivitaet} />
               <Grid item>
                 <ButtonGroup variant="text" size="small">
                   <Button color="primary" onClick={this.editAktivitaetButtonClicked}>
@@ -116,17 +120,10 @@ constructor(props) {
                   </Button>
                 </ButtonGroup>
               </Grid>
-              <Grid item xs />
-              <Grid item>
-                <Typography variant="body2" color={"textSecondary"}>List of aktivitäten</Typography>
-              </Grid>
             </Grid>
-          </AccordionSummary>
-          <AccordionDetails>
-            <AktivitaetList show={expandedState} aktivitaet={aktivitaet} />
           </AccordionDetails>
         </Accordion>
-        <AktivitaetForm show={showAktivitaetForm} aktivitaet={aktivitaet} onClose={this.aktivitaetFormClosed} />
+        <AktivitaetForm show={showAktivitaetForm} user={user} aktivitaet={aktivitaet} onClose={this.aktivitaetFormClosed} />
         <AktivitaetDeleteDialog show={showAktivitaetDeleteDialog} aktivitaet={aktivitaet} onClose={this.deleteAktivitaetDialogClosed} />
       </div>
     );
