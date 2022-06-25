@@ -100,6 +100,7 @@ projekt = api.inherit("Projekt", bo, {
     "name": fields.String(attribute="_name", description="Name des Projekt"),
     "auftraggeber": fields.String(attribute="_auftraggeber", description="Auftraggeber des Projekt"),
     "beschreibung": fields.String(attribute="_beschreibung", description="die Beschreibung des Projekts"),
+    "kapazitaet": fields.String(attribute="_kapazitaet", description="die Kapazitaet des Projekts"),
     "personID": fields.Integer(attribute= "_personID", description="ID des Erstellers vom Projekt(auftraggeber)")
 })
 
@@ -527,7 +528,7 @@ class ZeitintervallOperations(Resource):
 
         if zi is not None:
             zi.set_id(id)
-            adm.save_zeitintervall(zi)
+            adm.update_zeitintervall(zi)
             return zi, 200
         else:
             return "", 500
