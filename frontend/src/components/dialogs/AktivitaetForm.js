@@ -118,3 +118,104 @@ class AktivitaetForm extends Component {
       error = true;
     }
 
+   this.setState({
+      [event.target.id]: event.target.value,
+      [event.target.id + "ValidationFailed"]: error,
+      [event.target.id + "Edited"]: true
+    });
+  }
+
+  /** Handles the close / cancel button click event */
+  handleClose = () => {
+    // Reset the state
+    this.setState(this.baseState);
+    this.props.onClose(null);
+  }
+
+  /** Renders the component */
+  render() {
+    const { classes, aktivitaet, show } = this.props;
+    const { name, nameValidationFailed, nameEdited, bezeichung, bezeichungValidationFailed,
+			bezeichungEdited, addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
+
+    let title = "";
+    let header = "";
+
+    if (aktivitaet) {
+      // aktivitaet defindet, so ist an edit dialog
+      title = "Update a aktivitaet";
+      header = `Aktivität ID: ${aktivitaet.getID()}`;
+    } else {
+      title = "Create a new aktivität";
+      header = "Enter aktivität data";
+    }
+
+    return (
+      show ?
+        <Dialog open={show} onClose={this.handleClose} maxWidth="xs">
+          <DialogTitle id="form-dialog-title">{title}
+            <IconButton className={classes.closeButton} onClick={this.handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {header}
+            </DialogContentText>
+            <form className={classes.root} noValidate autoComplete="off">
+              <TextField
+								autoFocus
+								type="text"
+								required
+								fullWidth
+								margin="normal"
+								id="name"
+								label="Name:"
+								value={name}
+                onChange={this.textFieldValueChange}
+								error={nameValidationFailed}
+                helperText={nameValidationFailed ? "The name must contain at least one character" : " "}
+							/>
+              <TextField
+								type="text"
+								required
+								fullWidth
+								margin="normal"
+								id="bezeichung"
+								label="Bezeichung:"
+								value={bezeichung}
+                onChange={this.textFieldValueChange}
+								error={bezeichungValidationFailed}
+                helperText={bezeichungValidationFailed ? "The Bezeichnung must contain at least one character" : " "}
+							/>
+            </form>
+            <LoadingProgress show={addingInProgress || updatingInProgress} />
+            {
+              // Show error message in dependency of aktivitaet prop
+              aktivitaet ?
+                <ContextErrorMessage error={updatingError} contextErrorMsg={`The aktivität ${aktivitaet.getID()} could not be updated.`} onReload={this.updateAktivitaet} />
+                :
+                <ContextErrorMessage error={addingError} contextErrorMsg={`The aktivität could not be added.`} onReload={this.addAktivitaet} />
+            }
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="secondary">
+              Cancel
+            </Button>
+            {
+              // If a aktivitaet is given, show an update button, else an add button
+              aktivitaet ?
+                <Button disabled={nameValidationFailed || bezeichungValidationFailed} variant="contained" onClick={this.updateAktivitaet} color="primary">
+                  Update
+              </Button>
+                : <Button disabled={nameValidationFailed || !nameEdited || bezeichungValidationFailed || !bezeichungEdited} variant="contained" onClick={this.addAktivitaet} color="primary">
+                  Add
+             </Button>
+            }
+          </DialogActions>
+        </Dialog>
+        : null
+    );
+  }
+}
+
