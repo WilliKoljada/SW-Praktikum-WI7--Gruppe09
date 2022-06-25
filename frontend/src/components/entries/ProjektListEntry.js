@@ -5,7 +5,7 @@ import { Button, ButtonGroup } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ProjektForm from "../dialogs/ProjektForm";
 import ProjektDeleteDialog from "../dialogs/ProjektDeleteDialog";
-import ProjektList from "../ProjektList";
+import ProjektDetail from "../details/ProjektDetail";
 
 
 /**
@@ -87,7 +87,7 @@ class ProjektListEntry extends Component {
 
   /** Renders the component */
   render() {
-    const { classes, expandedState } = this.props;
+    const { classes, expandedState, user } = this.props;
     // Use the states projekt
     const { projekt, showProjektForm, showProjektDeleteDialog } = this.state;
 
@@ -102,12 +102,17 @@ class ProjektListEntry extends Component {
             <Grid container spacing={1} justifyContent="flex-start" alignItems="center">
               <Grid item>
                 <Typography variant="body1" className={classes.heading}>
-                    {projekt.getName()}, {projekt.getBezeichnung()}
+                    {projekt.getID()} - {projekt.getName()}
                 </Typography>
               </Grid>
+            </Grid>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Grid container justifyContent="flex-start" alignItems="center">
+              <ProjektDetail projekt={projekt} />
               <Grid item>
                 <ButtonGroup variant="text" size="small">
-                  <Button color="secondary" onClick={this.editProjektButtonClicked}>
+                  <Button color="primary" onClick={this.editProjektButtonClicked}>
                     edit
                   </Button>
                   <Button color="secondary" onClick={this.deleteProjektButtonClicked}>
@@ -115,17 +120,10 @@ class ProjektListEntry extends Component {
                   </Button>
                 </ButtonGroup>
               </Grid>
-              <Grid item xs />
-              <Grid item>
-                <Typography variant="body2" color={"textSecondary"}>List of projekte</Typography>
-              </Grid>
             </Grid>
-          </AccordionSummary>
-          <AccordionDetails>
-            <ProjektList show={expandedState} projekt={projekt} />
           </AccordionDetails>
         </Accordion>
-        <ProjektForm show={showProjektForm} projekt={projekt} onClose={this.projektFormClosed} />
+        <ProjektForm show={showProjektForm} projekt={projekt} user={user} onClose={this.projektFormClosed} />
         <ProjektDeleteDialog show={showProjektDeleteDialog} projekt={projekt} onClose={this.deleteProjektDialogClosed} />
       </div>
     );
@@ -147,13 +145,13 @@ ProjektListEntry.propTypes = {
   projekt: PropTypes.object.isRequired,
   /** The state of this ProjektListEntry. If true the projekt is shown with its accounts */
   expandedState: PropTypes.bool.isRequired,
-  /** The handler responsible for handle expanded state changes (expanding/collapsing) of this ProjektListEntry
+  /** The handler responsible for handle expanded state changes (exanding/collapsing) of this ProjektListEntry
    *
    * Signature: onExpandedStateChange(ProjektBO projekt)
    */
   onExpandedStateChange: PropTypes.func.isRequired,
   /**
-   *  Event Handler function which is called after a successful delete of this projekt.
+   *  Event Handler function which is called after a sucessfull delete of this projekt.
    *
    * Signature: onProjektDelete(ProjektBO projekt)
    */

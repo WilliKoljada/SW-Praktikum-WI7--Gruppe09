@@ -2,11 +2,13 @@ import BusinessObject from "./BusinessObject";
 
 
 export default class ProjektBO extends BusinessObject {
-  constructor(name, beschreibung, personID){
+  constructor(name, auftraggeber, beschreibung, personID, kapazitaet){
     super();
     this.name = name;
+    this.auftraggeber = auftraggeber;
     this.beschreibung = beschreibung;
     this.personID = personID;
+    this.kapazitaet = kapazitaet;
   }
   /** Sets the name of the projekt */
   setName(name) {
@@ -15,6 +17,14 @@ export default class ProjektBO extends BusinessObject {
   /** gets the name of the projekt */
   getName() {
     return this.name;
+  }
+  /** Sets the auftraggeber of the projekt */
+  setAuftraggeber(auftraggeber) {
+    this.auftraggeber = auftraggeber;
+  }
+  /** gets the auftraggeber of the projekt */
+  getAuftraggeber() {
+    return this.auftraggeber;
   }
   /** Sets the beschreibung of the projekt */
   setBeschreibung(beschreibung) {
@@ -31,6 +41,14 @@ export default class ProjektBO extends BusinessObject {
   /** gets the PersonID of the projekt */
   getPersonID() {
     return this.personID;
+  }
+  /** Sets the Kapazitaet of the projekt */
+  setKapazitaet(kapazitaet) {
+    this.kapazitaet = kapazitaet;
+  }
+  /** gets the Kapazitaet of the projekt */
+  getKapazitaet() {
+    return this.kapazitaet;
   }
 
   /**

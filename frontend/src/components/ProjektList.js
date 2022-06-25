@@ -4,18 +4,17 @@ import { withStyles, Button, TextField, InputAdornment, IconButton, Grid, Typogr
 import AddIcon from "@material-ui/icons/Add";
 import ClearIcon from "@material-ui/icons/Clear"
 import { withRouter } from "react-router-dom";
-import { ZeiterfassungAPI } from "../api";
+import ZeiterfassungAPI from "../api/ZeiterfassungAPI";
 import ContextErrorMessage from "./dialogs/ContextErrorMessage";
 import LoadingProgress from "./dialogs/LoadingProgress";
 import ProjektForm from "./dialogs/ProjektForm";
 import ProjektListEntry from "./entries/ProjektListEntry";
 
 class ProjektList extends Component {
-
   constructor(props) {
     super(props);
 
-     // console.log(props);
+    // console.log(props);
     let expandedID = null;
 
     if (this.props.location.expandProjekt) {
@@ -40,6 +39,7 @@ class ProjektList extends Component {
       .then(projektBOs =>
         this.setState({  // Set new state when ProjektBOs have been fetched
           projekte: projektBOs,
+          filteredProjekte: projektBOs,
           loadingInProgress: false, // loading indicator
           loadingProjektError: null
         })).catch(e =>
@@ -63,7 +63,7 @@ class ProjektList extends Component {
     this.getProjekts();
   }
 
-/**
+  /**
    * Handles onExpandedStateChange events from the ProjektListEntry component. Toggels the expanded state of
    * the ProjektListEntry of the given ProjektBO.
    *
@@ -105,11 +105,11 @@ class ProjektList extends Component {
     event.stopPropagation();
     //Show the ProjektForm
     this.setState({
-    showProjektForm: true
+      showProjektForm: true
     });
   }
 
-/** Handles the onClose event of the ProjektForm */
+  /** Handles the onClose event of the ProjektForm */
   projektFormClosed = projekt => {
     // projekt is not null and therefore created
     if (projekt) {
@@ -132,22 +132,29 @@ class ProjektList extends Component {
     this.setState({
       filteredProjekte: this.state.projekte.filter(projekt => {
         let nameContainsValue = projekt.getName().toLowerCase().includes(value);
-        let bezeichungContainsValue = projekt.getBezeichung().toLowerCase().includes(value);
-        let auftraggeberContainsValue = projekt.getAuftraggeber().toLowerCase().includes(value);
-        return nameContainsValue || bezeichungContainsValue || auftraggeberContainsValue;
+        return nameContainsValue;
       }),
       projektFilter: value
     });
   }
 
+  /** Handles the onClose event of the clear filter button */
+  clearFilterFieldButtonClicked = () => {
+    // Reset the filter
+    this.setState({
+      filteredProjekte: [...this.state.projekte],
+      projektFilter: ""
+    });
+  }
+
   /** Renders the component */
   render() {
-    const { classes } = this.props;
+    const { classes, user } = this.props;
     const { filteredProjekte, projektFilter, expandedProjektID, loadingInProgress, error, showProjektForm } = this.state;
 
     return (
       <div className={classes.root}>
-        <Grid className={classes.projektFilter} container spacing={1} justify="flex-start" alignItems="center">
+        <Grid className={classes.projektFilter} container spacing={1} justifyContent="flex-start" alignItems="center">
           <Grid item>
             <Typography>
               Filter projekt list by name:
@@ -177,18 +184,27 @@ class ProjektList extends Component {
           </Button>
           </Grid>
         </Grid>
+        <Grid item xs />
+        <Grid item>
+          <Typography variant="body2" color={"textSecondary"}>List of Projekt</Typography>
+        </Grid>
         {
           // Show the list of ProjektListEntry components
           // Do not use strict comparison, since expandedProjektID maybe a string if given from the URL parameters
           filteredProjekte.map(projekt =>
-            <ProjektListEntry key={projekt.getID()} projekt={projekt} expandedState={expandedProjektID === projekt.getID()}
-              onExpandedStateChange={this.onExpandedStateChange}
-              onProjektDeleted={this.projektDeleted}
-            />)
+            (<div key={projekt.getID()}>
+              <ProjektListEntry key={projekt.getID()} user={user} projekt={projekt} expandedState={expandedProjektID === projekt.getID()}
+                onExpandedStateChange={this.onExpandedStateChange}
+                onProjektDeleted={this.projektDeleted}
+              />
+              <br />
+              <Grid item xs />
+            </div>)
+          )
         }
         <LoadingProgress show={loadingInProgress} />
         <ContextErrorMessage error={error} contextErrorMsg={`The list of projekte could not be loaded.`} onReload={this.getProjekte} />
-        <ProjektForm show={showProjektForm} onClose={this.projektFormClosed} />
+        <ProjektForm user={user} show={showProjektForm} onClose={this.projektFormClosed} />
       </div>
     );
   }
