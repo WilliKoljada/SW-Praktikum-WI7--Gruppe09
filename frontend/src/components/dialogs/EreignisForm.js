@@ -31,11 +31,13 @@ class EreignisForm extends Component {
     let datum = "";
     let startzeit = "";
     let endzeit = "";
+    let personID = 0;
     if (props.ereignis) {
       type = props.ereignis.getType();
       datum = props.ereignis.getDatum();
       startzeit = props.ereignis.getStartzeit();
       endzeit = props.ereignis.getEndzeit();
+      personID = props.ereignis.getPersonID();
     }
 
     // Init the state
@@ -50,6 +52,7 @@ class EreignisForm extends Component {
       endzeit: endzeit,
       endzeitValidationFailed: false,
       endzeitEdited: false,
+      personID: personID,
       addingInProgress: false,
       updatingInProgress: false,
       addingError: null,
@@ -59,6 +62,7 @@ class EreignisForm extends Component {
     this.baseState = this.state;
   }
 
+
   /** Adds the ereignis */
   addEreignis = () => {
     let newEreignis = new EreignisBO(
@@ -66,6 +70,7 @@ class EreignisForm extends Component {
         this.state.datum,
         this.state.startzeit,
         this.state.endzeit,
+        this.state.personID
     );
     ZeiterfassungAPI.getAPI().addEreignis(newEreignis).then(ereignis => {
       // Backend call sucessfull
@@ -95,6 +100,7 @@ class EreignisForm extends Component {
 	  updatedEreignis.setDatum(this.state.datum);
 	  updatedEreignis.setStartzeit(this.state.startzeit);
 	  updatedEreignis.setEndzeit(this.state.endzeit);
+	  updatedEreignis.setPersonID(this.state.personID);
     ZeiterfassungAPI.getAPI().updateEreignis(updatedEreignis).then(ereignis => {
       this.setState({
         updatingInProgress: false,              // disable loading indicator
@@ -105,6 +111,7 @@ class EreignisForm extends Component {
       this.baseState.datum = this.state.datum;
       this.baseState.startzeit = this.state.startzeit;
       this.baseState.endzeit = this.state.endzeit;
+      this.baseState.personID = this.state.personID;
       this.props.onClose(updatedEreignis);      // call the parent with the new ereignis
     }).catch(e =>
       this.setState({
@@ -153,8 +160,8 @@ class EreignisForm extends Component {
   render() {
     const { classes, ereignis, show } = this.props;
     const { type, startzeit, startzeitValidationFailed, datum, datumValidationFailed, datumEdited,
-      startzeitEdited, endzeit, endzeitValidationFailed, endzeitEdited, ,
-			addingInProgress, addingError } = this.state;
+      startzeitEdited, endzeit, endzeitValidationFailed, endzeitEdited, personID,
+			addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
 
     let title = "";
     let header = "";
@@ -180,7 +187,7 @@ class EreignisForm extends Component {
             <DialogContentText>
               {header}
             </DialogContentText>
-            <form className={classes.} noValidate autoComplete="off">
+            <form className={classes.root} noValidate autoComplete="off">
             <InputLabel variant="standard" htmlFor="type">
 								Type
 							</InputLabel>
@@ -222,12 +229,12 @@ class EreignisForm extends Component {
                 helperText={startzeitValidationFailed ? "The Startzeit must be set" : " "}
 							/>
               <TextField
-								type="timme"
+								type="timee"
 								fullWidth
                 required
 								margin="normal"
 								id="endzeit"
-								label="Endzeit-:"
+								label="Endzeit:"
 								value={endzeit}
                 onChange={this.textFieldValueChange}
 								error={endzeitValidationFailed}
