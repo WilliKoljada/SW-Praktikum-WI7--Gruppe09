@@ -6,43 +6,42 @@ import ContextErrorMessage from "../dialogs/ContextErrorMessage";
 import LoadingProgress from "../dialogs/LoadingProgress";
 
 /**
- * Renders a PersonBO object within a ListEntry and provides a delete button to delete it.
+ * Renders a EreignisBO object within a ListEntry and provides a delete button to delete it.
  *
  * @see See Material-UIs [Lists](https://material-ui.com/components/lists/)
  * @see See Material-UIs [ListItem](https://material-ui.com/api/list-item/)
  *
  * @author
  */
-class PersonDetail extends Component {
+class ArbeitszeitkontoDetail extends Component{
   constructor(props) {
     super(props);
 
     // Init state
     this.state = {
-      person: null,
+      arbeitszeitkonto: null,
       loadingInProgress: false,
       loadingError: null,
     };
-    if(this.props.person){
-      this.state.person = this.props.person;
+
+    if(this.props.Arbeitszeitkonto){
+      this.state.arbeitszeitkonto = this.props.arbeitszeitkonto;
     }
   }
 
-  /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
   componentDidMount() {
-    // this.getPerson();
+    //this.getArbeitszeitkonto();
   }
 
-  /** gets the balance for this person */
-  getPerson = () => {
-    ZeiterfassungAPI.getAPI().getPerson(this.props.person.getID()).then(person =>
+  getArbeitszeitkonto = () => {
+    ZeiterfassungAPI.getAPI().getArbeitszeitkonto(this.props.arbeitszeitkonto.getID()).then(arbeitszeitkonto =>
       this.setState({
-        person: person,
+        arbeitszeitkonto: arbeitszeitkonto[0],
         loadingInProgress: false,
         loadingError: null
       })).catch(e =>
         this.setState({ // Reset state with error from catch
-          person: null,
+          arbeitszeitkonto: null,
           loadingInProgress: false,
           loadingError: e
         })
@@ -58,27 +57,27 @@ class PersonDetail extends Component {
   /** Renders the component */
   render() {
     const { classes } = this.props;
-    const { person, loadingInProgress, loadingError } = this.state;
+    const { arbeitszeitkonto, loadingInProgress, loadingError } = this.state;
 
     return (
       <Paper variant="outlined" className={classes.root}>
         {
-          person ?
+          arbeitszeitkonto ?
           (<div>
             <Typography>
-              Vorname: <strong>{person.getVorname()}</strong>
+              Arbeit zeit: <strong>{arbeitszeitkonto.getArbeit()}</strong>
             </Typography>
             <Typography>
-              Nachname: <strong>{person.getNachname()}</strong>
+              krankheit zeit: <strong>{arbeitszeitkonto.getKrankheit()}</strong>
             </Typography>
             <Typography>
-              Email: <strong>{person.getEmail()}</strong>
+              Urlaub zeit: <strong>{arbeitszeitkonto.getUrlaub()}</strong>
             </Typography>
           </div>)
             : null
         }
         <LoadingProgress show={loadingInProgress} />
-        <ContextErrorMessage error={loadingError} contextErrorMsg={`The data of person id ${person.getID()} could not be loaded.`} onReload={this.getPerson} />
+        <ContextErrorMessage error={loadingError} contextErrorMsg={`The data of arbeit konto id ${arbeitszeitkonto.getID()} could not be loaded.`} onReload={this.getArbeitszeitkonto} />
       </Paper>
     );
   }
@@ -94,11 +93,11 @@ const styles = theme => ({
 });
 
 /** PropTypes */
-PersonDetail.propTypes = {
+ArbeitszeitkontoDetail.propTypes = {
   /** @ignore */
   classes: PropTypes.object.isRequired,
-  /** The personID to be rendered */
-  person: PropTypes.object.isRequired,
+  /** The ereignis to be rendered */
+  arbeitszeitkonto: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(PersonDetail);
+export default withStyles(styles)(ArbeitszeitkontoDetail);

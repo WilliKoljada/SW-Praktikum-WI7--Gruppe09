@@ -53,7 +53,7 @@ class Header extends Component {
               <Tab label="Aktivitaten" component={RouterLink} to={`/aktivitaeten`} />
               <Tab label="Ereignisse" component={RouterLink} to={`/ereignis`} />
               <Tab label="Zeitintervall" component={RouterLink} to={`/zeitintervall`} />
-              <Tab label="Arbeitzeitkonto" component={RouterLink} to={`/arbeitzeit`} />
+              <Tab label="Arbeitzeitkonto" component={RouterLink} to={`/arbeitzeitkonto`} />
               <Tab label="About" component={RouterLink} to={`/about`} />
             </Tabs>
             </AppBar>
