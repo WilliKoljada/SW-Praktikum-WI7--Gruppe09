@@ -51,7 +51,7 @@ class Arbeitszeitkonto extends Component {
         loadingInProgress: false,
         loadingError: null
       });
-      console.log("after", this.state.arbeitszeitkonto);
+
     }).catch(e =>
         this.setState({ // Reset state with error from catch
           arbeitszeitkonto: null,
