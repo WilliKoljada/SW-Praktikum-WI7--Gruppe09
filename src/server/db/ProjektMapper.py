@@ -181,7 +181,6 @@ class ProjektMapper(Mapper):
         command = "UPDATE projekt SET name=%s, auftraggeber=%s, beschreibung=%s, personID=%s WHERE id=%s"
         data = (projekt.get_name(), projekt.get_auftraggeber(), projekt.get_beschreibung(), projekt.get_personID(),
                 projekt.get_id())
-        print(data)
         cursor.execute(command, data)
 
         self._cnx.commit()

@@ -56,7 +56,6 @@ class AktivitaetMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
-        print(result)
         return result
 
     def find_by_key(self, key):
