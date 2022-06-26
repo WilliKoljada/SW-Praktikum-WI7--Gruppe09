@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField } from "@material-ui/core";
+import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText,
+  DialogActions, TextField, NativeSelect, InputLabel } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { ZeiterfassungAPI, PersonBO } from "../../api";
+import ZeiterfassungAPI from "../../api/ZeiterfassungAPI";
+import PersonBO from "../../api/PersonBO";
 import ContextErrorMessage from "./ContextErrorMessage";
 import LoadingProgress from "./LoadingProgress";
-
+import firebase from "firebase/app";
 
 /**
  * Shows a modal form dialog for a PersonBO in prop person. If the person is set, the dialog is configured
@@ -30,28 +32,35 @@ class PersonForm extends Component {
     let email = "";
     let benutzername = "";
     let google_id = "";
-    if (props.person) {
-      vorname = props.person.getVorame();
+    let role = "admin";
+    if(props.person){
+      vorname = props.person.getVorname();
       nachname = props.person.getNachname();
       email = props.person.getEmail();
       benutzername = props.person.getBenutzername();
+      role = props.person.getRole();
       google_id = props.person.getGoogle_id();
+    }
+
+    if(props.user){
+      google_id = props.user.uid;
+      console.log("user", props.user)
     }
 
     // Init the state
     this.state = {
       vorname: vorname,
       vornameValidationFailed: false,
-      vornameameEdited: false,
       nachname: nachname,
       nachnameValidationFailed: false,
-      nachnameameEdited: false,
       email: email,
       emailValidationFailed: false,
       emailEdited: false,
       benutzername: benutzername,
       benutzernameValidationFailed: false,
       benutzernameEdited: false,
+      role: role,
+      google_id: google_id,
       addingInProgress: false,
       updatingInProgress: false,
       addingError: null,
@@ -64,12 +73,14 @@ class PersonForm extends Component {
   /** Adds the person */
   addPerson = () => {
     let newPerson = new PersonBO(
-        this.state.vorname,
-        this.state.nachname,
-        this.state.email,
-		this.state.benutzername,
-		this.state.google_id
+      this.state.vorname,
+      this.state.nachname,
+      this.state.email,
+		  this.state.benutzername,
+		  this.state.google_id,
+      this.state.role
     );
+    console.log(JSON.stringify(newPerson));
     ZeiterfassungAPI.getAPI().addPerson(newPerson).then(person => {
       // Backend call sucessfull
       // reinit the dialogs state for a new empty person
@@ -96,9 +107,11 @@ class PersonForm extends Component {
     // set the new attributes from our dialog
     updatedPerson.setVorname(this.state.vorname);
     updatedPerson.setNachname(this.state.nachname);
-	updatedPerson.setEmail(this.state.email);
-	updatedPerson.setBenutzername(this.state.benutzername);
-	updatedPerson.setGoogle_id(this.state.google_id);
+	  updatedPerson.setEmail(this.state.email);
+	  updatedPerson.setBenutzername(this.state.benutzername);
+	  updatedPerson.setGoogle_id(this.state.google_id);
+    updatedPerson.setRole(this.state.role);
+    console.log(updatedPerson);
     ZeiterfassungAPI.getAPI().updatePerson(updatedPerson).then(person => {
       this.setState({
         updatingInProgress: false,              // disable loading indicator
@@ -110,6 +123,7 @@ class PersonForm extends Component {
       this.baseState.email = this.state.email;
       this.baseState.benutzername = this.state.benutzername;
       this.baseState.google_id = this.state.google_id;
+      this.baseState.role = this.state.role;
       this.props.onClose(updatedPerson);      // call the parent with the new person
     }).catch(e =>
       this.setState({
@@ -141,6 +155,12 @@ class PersonForm extends Component {
     });
   }
 
+  handleSelectRole = (event) => {
+    this.setState({
+      [event.target.id]: event.target.value
+    })
+  };
+
   /** Handles the close / cancel button click event */
   handleClose = () => {
     // Reset the state
@@ -151,9 +171,8 @@ class PersonForm extends Component {
   /** Renders the component */
   render() {
     const { classes, person, show } = this.props;
-    const { vorname, vornameValidationFailed, vornameEdited, nachname, nachnameValidationFailed, nachnameEdited,
-        email, emailValidationFailed, emailEdited, benutzername, benutzernameValidationFailed, benutzernameEdited,
-		addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
+    const { vorname, nachname, role, email, emailValidationFailed, emailEdited, benutzername, benutzernameValidationFailed,
+      benutzernameEdited, addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
 
     let title = "";
     let header = "";
@@ -183,28 +202,22 @@ class PersonForm extends Component {
               <TextField
 								autoFocus
 								type="text"
-								required
 								fullWidth
 								margin="normal"
 								id="vorname"
 								label="Vorname:"
 								value={vorname}
                 onChange={this.textFieldValueChange}
-								error={vornameValidationFailed}
-                helperText={vornameValidationFailed ? "The vorname must contain at least one character" : " "}
 							/>
               <TextField
 								autoFocus
 								type="text"
-								required
 								fullWidth
 								margin="normal"
 								id="nachname"
 								label="Nachname:"
 								value={nachname}
                 onChange={this.textFieldValueChange}
-								error={nachnameValidationFailed}
-                helperText={nachnameValidationFailed ? "The nachname must contain at least one character" : " "}
 							/>
               <TextField
 								autoFocus
@@ -231,6 +244,21 @@ class PersonForm extends Component {
 								error={benutzernameValidationFailed}
                 helperText={benutzernameValidationFailed ? "The Benutzername must contain at least one character" : " "}
 							/>
+              <InputLabel variant="standard" htmlFor="role">
+								Role
+							</InputLabel>
+              <NativeSelect
+								fullWidth
+                value={role}
+                onChange={this.handleSelectRole}
+								inputProps={{
+									name: "role",
+									id: "role"
+								}}
+							>
+								<option value={"admin"}>admin</option>
+								<option value={"mitarbeiter"}>Mitarbeiter</option>
+							</NativeSelect>
             </form>
             <LoadingProgress show={addingInProgress || updatingInProgress} />
             {
@@ -248,10 +276,10 @@ class PersonForm extends Component {
             {
               // If a person is given, show an update button, else an add button
               person ?
-                <Button disabled={vornameValidationFailed || !vornameEdited || nachnameValidationFailed || !nachnameEdited || emailValidationFailed || !emailEdited || benutzernameValidationFailed || !benutzernameEdited} variant="contained" onClick={this.updatePerson} color="primary">
+                <Button disabled={emailValidationFailed || benutzernameValidationFailed} variant="contained" onClick={this.updatePerson} color="primary">
                   Update
               </Button>
-                : <Button disabled={vornameValidationFailed || !vornameEdited || nachnameValidationFailed || !nachnameEdited || emailValidationFailed || !emailEdited || benutzernameValidationFailed || !benutzernameEdited} variant="contained" onClick={this.addPerson} color="primary">
+                : <Button disabled={emailValidationFailed || !emailEdited || benutzernameValidationFailed || !benutzernameEdited} variant="contained" onClick={this.addPerson} color="primary">
                   Add
              </Button>
             }
