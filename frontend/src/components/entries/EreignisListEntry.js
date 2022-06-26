@@ -5,7 +5,6 @@ import { Button, ButtonGroup } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import EreignisForm from "../dialogs/EreignisForm";
 import EreignisDeleteDialog from "../dialogs/EreignisDeleteDialog";
-import EreignisList from "../EreignisList";
 import EreignisDetail from "../details/EreignisDetail";
 
 /**

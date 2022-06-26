@@ -176,7 +176,7 @@ class EreignisForm extends Component {
   render() {
     const { classes, ereignis, show } = this.props;
     const { type, startzeit, startzeitValidationFailed, datum, datumValidationFailed, datumEdited,
-      startzeitEdited, endzeit, endzeitValidationFailed, endzeitEdited, personID,
+      startzeitEdited, endzeit, endzeitValidationFailed, endzeitEdited,
 			addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
 
     let title = "";
@@ -273,10 +273,10 @@ class EreignisForm extends Component {
             {
               // If a ereignis is given, show an update button, else an add button
               ereignis ?
-                <Button disabled={datumValidationFailed} variant="contained" onClick={this.updateEreignis} color="primary">
+                <Button disabled={datumValidationFailed || startzeitValidationFailed || endzeitValidationFailed} variant="contained" onClick={this.updateEreignis} color="primary">
                   Update
               </Button>
-                : <Button disabled={datumValidationFailed || !datumEdited} variant="contained" onClick={this.addEreignis} color="primary">
+                : <Button disabled={datumValidationFailed || !datumEdited || startzeitValidationFailed || !startzeitEdited || endzeitValidationFailed || !endzeitEdited} variant="contained" onClick={this.addEreignis} color="primary">
                   Add
              </Button>
             }
