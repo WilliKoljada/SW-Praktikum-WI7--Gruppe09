@@ -62,6 +62,22 @@ class EreignisForm extends Component {
     this.baseState = this.state;
   }
 
+  componentDidMount() {
+    this.getPersonByGoogleID();
+  }
+
+  getPersonByGoogleID = () => {
+    ZeiterfassungAPI.getAPI().getPersonByGoogleID(this.props.user.uid).then(person => {
+      this.setState({
+        personID: person[0].getID()
+      })
+    }).catch(e =>
+      this.setState({
+        updatingInProgress: false,    // disable loading indicator
+        updatingError: e              // show error message
+      })
+    );
+  }
 
   /** Adds the ereignis */
   addEreignis = () => {
@@ -229,7 +245,7 @@ class EreignisForm extends Component {
                 helperText={startzeitValidationFailed ? "The Startzeit must be set" : " "}
 							/>
               <TextField
-								type="timee"
+								type="time"
 								fullWidth
                 required
 								margin="normal"
