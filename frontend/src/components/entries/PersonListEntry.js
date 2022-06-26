@@ -5,7 +5,7 @@ import { Button, ButtonGroup } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import PersonForm from "../dialogs/PersonForm";
 import PersonDeleteDialog from "../dialogs/PersonDeleteDialog";
-import PersonList from "../PersonList";
+import PersonDetail from "../details/PersonDetail";
 
 
 /**
@@ -82,13 +82,13 @@ class PersonListEntry extends Component {
 
     // Don´t show the dialog
     this.setState({
-      showProjektDeleteDialog: false
+      showPersonDeleteDialog: false
     });
   }
 
   /** Renders the component */
   render() {
-    const { classes, expandedState } = this.props;
+    const { classes, user, expandedState } = this.props;
     // Use the states person
     const { person, showPersonForm, showPersonDeleteDialog } = this.state;
 
@@ -100,12 +100,17 @@ class PersonListEntry extends Component {
             expandIcon={<ExpandMoreIcon />}
             id={`person${person.getID()}personpanel-header`}
           >
-            <Grid container spacing={1} justify="flex-start" alignItems="center">
+            <Grid container spacing={1} justifyContent="flex-start" alignItems="center">
               <Grid item>
                 <Typography variant="body1" className={classes.heading}>
-                    {person.getVorname()}, {person.getNachname()}
+                    {person.getID()} - {person.getBenutzername()}
                 </Typography>
               </Grid>
+            </Grid>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Grid container justifyContent="flex-start" alignItems="center">
+              <PersonDetail person={person} />
               <Grid item>
                 <ButtonGroup variant="text" size="small">
                   <Button color="primary" onClick={this.editPersonButtonClicked}>
@@ -116,17 +121,10 @@ class PersonListEntry extends Component {
                   </Button>
                 </ButtonGroup>
               </Grid>
-              <Grid item xs />
-              <Grid item>
-                <Typography variant="body2" color={"textSecondary"}>List of persons</Typography>
-              </Grid>
             </Grid>
-          </AccordionSummary>
-          <AccordionDetails>
-            <PersonList show={expandedState} person={person} />
           </AccordionDetails>
         </Accordion>
-        <PersonForm show={showPersonForm} person={person} onClose={this.personFormClosed} />
+        <PersonForm show={showPersonForm} user={user} person={person} onClose={this.personFormClosed} />
         <PersonDeleteDialog show={showPersonDeleteDialog} person={person} onClose={this.deletePersonDialogClosed} />
       </div>
     );
@@ -162,3 +160,4 @@ PersonListEntry.propTypes = {
 }
 
 export default withStyles(styles)(PersonListEntry);
+
