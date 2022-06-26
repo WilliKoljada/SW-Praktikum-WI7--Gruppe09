@@ -22,12 +22,6 @@ class ArbeitszeitkontoEntry extends Component {
     };
   }
 
-  componentDidMount(){
-    console.log(
-      "konto", this.props.arbeitszeitkonto
-    )
-  }
-
   expansionPanelStateChanged = () => {
     this.props.onExpandedStateChange(this.props.arbeitszeitkonto);
   }
