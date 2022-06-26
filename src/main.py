@@ -81,10 +81,16 @@ bo = api.model("BusinessObject", {
 })
 
 aktivitaet = api.inherit("Aktivitaet", bo, {
-    "name": fields.String(attribute="_name", description="der NAme der Aktivitaet"),
+    "name": fields.String(attribute="_name", description="der Name der Aktivitaet"),
     "beschreibung": fields.String(attribute="_beschreibung", description="die Beschreibung der Aktivitaet"),
     "dauert": fields.String(attribute="_dauert", description="die Dauert der Aktivitaet"),
     "projektID": fields.Integer(attribute="_projektID", description="der ID des Projekt zum dem die Aktivitaet gehört")
+})
+
+konto = api.inherit("Aktivitaet", bo, {
+    "arbeit": fields.String(attribute="_arbeit", description="die Arbeitzeit der Person"),
+    "urlaub": fields.String(attribute="_urlaub", description="die Urlaubzeit der Person"),
+    "krankheit": fields.String(attribute="_krankheit", description="die Krankheitzeit der Person")
 })
 
 person = api.inherit("Person", bo, {
@@ -267,7 +273,6 @@ class PersonOperations(Resource):
         """
         adm = Administration()
         p = Person.from_dict(api.payload)
-        print(p)
         if p is not None:
             p.set_id(id)
             adm.update_person(p)
@@ -551,7 +556,7 @@ class ZeintervallAktivitaetIDOperations(Resource):
 
 @zeiterfassungapp.route("/zeitintervall/<int:personID>")
 @zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
-@zeiterfassungapp.param("personID", "Der aktivitaet id des Zeitintervall-Objekts")
+@zeiterfassungapp.param("personID", "Der Person id des Zeitintervall-Objekts")
 class ZeintervallPersonIDOperations(Resource):
     @zeiterfassungapp.marshal_with(zeitintervall)
     @secured
@@ -562,6 +567,21 @@ class ZeintervallPersonIDOperations(Resource):
         adm = Administration()
         zi = adm.get_zeitintervall_by_personID(personID)
         return zi
+
+
+@zeiterfassungapp.route("/arbeitkonto/<int:personID>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("personID", "Der Person id des Zeitintervall-Objekts")
+class ArbeitKontoOperations(Resource):
+    @zeiterfassungapp.marshal_with(konto)
+    @secured
+    def get(self, personID):
+        """Auslesen einer Arbeitkonto einer person.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        konto = adm.get_arbeit_konto(personID)
+        return konto
 
 
 """
