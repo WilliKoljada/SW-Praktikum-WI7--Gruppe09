@@ -29,10 +29,6 @@ class ArbeitszeitkontoDetail extends Component{
     }
   }
 
-  componentDidMount() {
-    //this.getArbeitszeitkonto();
-  }
-
   getArbeitszeitkonto = () => {
     ZeiterfassungAPI.getAPI().getArbeitszeitkonto(this.props.arbeitszeitkonto.getID()).then(arbeitszeitkonto =>
       this.setState({
