@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { ZeiterfassungAPI } from "../../api";
-import ContextErrorMessage from "./ContextErrorMessage";
-import LoadingProgress from "./LoadingProgress";
 import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-
+import ZeiterfassungAPI from "./../../api/ZeiterfassungAPI";
+import ContextErrorMessage from "./ContextErrorMessage";
+import LoadingProgress from "./LoadingProgress";
 
 /**
  * Shows a modal delete/cancle dialog, which asks for deleting a projekt. The ProjektBO to be deleted must be given in prop projekt.
@@ -26,7 +25,7 @@ class PersonDeleteDialog extends Component {
     };
   }
 
- /** Delete the projekt */
+  /** Delete the projekt */
   deletePerson = () => {
     ZeiterfassungAPI.getAPI().deletePerson(this.props.person.getID()).then(person => {
       this.setState({
