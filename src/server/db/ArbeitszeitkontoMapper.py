@@ -57,6 +57,27 @@ class ArbeitszeitkontoMapper(Mapper):
         cursor.close()
         return str(dauert)
 
+    def _rechne_pause(self, personID):
+        zeiten = []
+        cursor = self._cnx.cursor()
+        command = "SELECT datum, startzeit, endzeit from ereignis WHERE type='pause' AND personID={}".format(personID)
+        cursor.execute(command)
+        zeiten = cursor.fetchall()
+        dauert = timedelta(0)
+        for (datum, startzeit, endzeit) in zeiten:
+            begin_time = datetime.strptime(str(startzeit), "%H:%M:%S").time()
+            end_time = datetime.strptime(str(endzeit), "%H:%M:%S").time()
+            begin = datetime.combine(datum, begin_time)
+            end = datetime.combine(datum, end_time)
+
+            if end > begin:
+                dauert += (end - begin)
+            else:
+                dauert += timedelta(0)
+
+        cursor.close()
+        return str(dauert)
+
     def _rechne_arbeit(self, personID):
         zeiten = []
         cursor = self._cnx.cursor()
@@ -91,11 +112,12 @@ class ArbeitszeitkontoMapper(Mapper):
         cursor.close()
         return result
 
-    def find_arbeit_konto_by_key(self, key):
+    def find_arbeitszeit_konto_by_key(self, key):
         konto = Arbeitszeitkonto()
         konto.set_id(key)
         # konto.set_creation_date(self._get_creation_date(key))
         konto.set_arbeit(self._rechne_arbeit(key))
+        konto.set_pause(self._rechne_pause(key))
         konto.set_urlaub(self._rechne_urlaub(key))
         konto.set_krankheit(self._rechne_krankheit(key))
 

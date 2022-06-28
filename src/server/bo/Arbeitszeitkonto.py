@@ -8,6 +8,7 @@ class Arbeitszeitkonto(bo.BusinessObject):
         self._urlaub = ""
         self._krankheit = ""
         self._arbeit = ""
+        self._pause = ""
 
     def get_urlaub(self):
         return self._urlaub
@@ -27,6 +28,12 @@ class Arbeitszeitkonto(bo.BusinessObject):
     def set_arbeit(self, value):
         self._arbeit = value
 
+    def get_pause(self):
+        return self._pause
+
+    def set_pause(self, value):
+        self._pause = value
+
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -37,5 +44,6 @@ class Arbeitszeitkonto(bo.BusinessObject):
         obj.set_urlaub(dictionary["urlaub"])
         obj.set_krankheit(dictionary["krankheit"])
         obj.set_arbeit(dictionary["arbeit"])
+        obj.set_pause(dictionary["pause"])
 
         return obj
