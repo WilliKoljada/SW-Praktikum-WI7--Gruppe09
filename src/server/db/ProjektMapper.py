@@ -159,7 +159,7 @@ class ProjektMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 projekt.set_id(1)
 
-        creation_date = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
+        creation_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         projekt.set_creation_date(creation_date)
         command = "INSERT INTO projekt (id, creation_date, name, auftraggeber, beschreibung, personID) VALUES (%s,%s,%s,%s,%s,%s)"
         data = (
