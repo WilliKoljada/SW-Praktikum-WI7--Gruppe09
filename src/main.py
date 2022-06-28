@@ -89,6 +89,7 @@ aktivitaet = api.inherit("Aktivitaet", bo, {
 
 konto = api.inherit("Aktivitaet", bo, {
     "arbeit": fields.String(attribute="_arbeit", description="die Arbeitzeit der Person"),
+    "pause": fields.String(attribute="_pause", description="die Pausezeit der Person"),
     "urlaub": fields.String(attribute="_urlaub", description="die Urlaubzeit der Person"),
     "krankheit": fields.String(attribute="_krankheit", description="die Krankheitzeit der Person")
 })
