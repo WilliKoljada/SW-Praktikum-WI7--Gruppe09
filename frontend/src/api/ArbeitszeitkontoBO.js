@@ -5,13 +5,14 @@ import BusinessObject from "./BusinessObject";
  */
 export default class ArbeitszeitkontoBO extends BusinessObject {
   /**
-  * Constructs a new aktivitaet
+  * Constructs a new Areitszeitkonto
   */
-  constructor(arbeit, urlaub, krankheit) {
+  constructor(arbeit, urlaub, krankheit, pause) {
     super();
     this.arbeit = arbeit;
     this.urlaub = urlaub;
     this.krankheit = krankheit;
+    this.pause = pause;
   }
 	/** Sets the arbeit of the arbeitszeitkontoBO */
   setArbeit(arbeit){
@@ -20,6 +21,14 @@ export default class ArbeitszeitkontoBO extends BusinessObject {
 	/** gets the arbeit of the arbeitszeitkontoBO */
   getArbeit(){
     return this.arbeit;
+  }
+	/** Sets the pause of the arbeitszeitkontoBO */
+  setPause(pause){
+    this.pause = pause;
+  }
+	/** gets the pause of the arbeitszeitkontoBO */
+  getPause(){
+    return this.pause;
   }
 	/** Sets the urlaub of the arbeitszeitkontoBO */
   setUrlaub(urlaub){
@@ -39,7 +48,7 @@ export default class ArbeitszeitkontoBO extends BusinessObject {
   }
 
   /**
-  * Returns an Array of  ArbeitszeitkontoBO from a given JSON structure
+  * Returns an Array of ArbeitszeitkontoBO from a given JSON structure
   */
 
   static fromJSON(konto) {
