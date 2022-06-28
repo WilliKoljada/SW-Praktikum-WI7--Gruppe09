@@ -61,13 +61,16 @@ class ArbeitszeitkontoDetail extends Component{
           arbeitszeitkonto ?
           (<div>
             <Typography>
-              Arbeit zeit: <strong>{arbeitszeitkonto.getArbeit()}</strong>
+              working times: <strong>{arbeitszeitkonto.getArbeit()}</strong>
             </Typography>
             <Typography>
-              krankheit zeit: <strong>{arbeitszeitkonto.getKrankheit()}</strong>
+              times of sickness: <strong>{arbeitszeitkonto.getKrankheit()}</strong>
             </Typography>
             <Typography>
-              Urlaub zeit: <strong>{arbeitszeitkonto.getUrlaub()}</strong>
+              vacation times: <strong>{arbeitszeitkonto.getUrlaub()}</strong>
+            </Typography>
+            <Typography>
+              times of breaks: <strong>{arbeitKonto.getPause()}</strong>
             </Typography>
           </div>)
             : null
