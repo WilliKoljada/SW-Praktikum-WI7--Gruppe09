@@ -70,7 +70,7 @@ class ArbeitszeitkontoDetail extends Component{
               vacation times: <strong>{arbeitszeitkonto.getUrlaub()}</strong>
             </Typography>
             <Typography>
-              times of breaks: <strong>{arbeitKonto.getPause()}</strong>
+              times of breaks: <strong>{arbeitszeitkonto.getPause()}</strong>
             </Typography>
           </div>)
             : null
