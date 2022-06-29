@@ -570,14 +570,14 @@ class ZeintervallPersonIDOperations(Resource):
         return zi
 
 
-@zeiterfassungapp.route("/arbeitkonto/<int:personID>")
+@zeiterfassungapp.route("/arbeitszeitkonto/<int:personID>")
 @zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
 @zeiterfassungapp.param("personID", "Der Person id des Zeitintervall-Objekts")
-class ArbeitKontoOperations(Resource):
+class ArbeitszeitkontoOperations(Resource):
     @zeiterfassungapp.marshal_with(konto)
     @secured
     def get(self, personID):
-        """Auslesen einer Arbeitkonto einer person.
+        """Auslesen einer Arbeitszeitkonto einer person.
         Objekt wird durch die id in bestimmt.
         """
         adm = Administration()
