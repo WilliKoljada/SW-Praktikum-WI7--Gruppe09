@@ -16,17 +16,16 @@ class ProjektMapper(Mapper):
     def _rechne_kapaziteat(self, projektID):
         zeiten = []
         cursor = self._cnx.cursor()
-        command = "SELECT datum, startzeit, endzeit from zeitintervall WHERE aktivitaetID IN (SELECT id from aktivitaet WHERE projektID={})".format(
-            projektID)
+        command = "SELECT datum, startzeit, endzeit from zeitintervall WHERE aktivitaetID IN (SELECT id from aktivitaet WHERE projektID={})".format(projektID)
         cursor.execute(command)
         zeiten = cursor.fetchall()
         kapaziteat = timedelta(0)
         for (datum, startzeit, endzeit) in zeiten:
             begin_time = datetime.strptime(str(startzeit), "%H:%M:%S").time()
-            end_time = datetime.strptime(str(endzeit), "%H:%M:%S").time()
+            end_time =datetime.strptime(str(endzeit), "%H:%M:%S").time()
             begin = datetime.combine(datum, begin_time)
             end = datetime.combine(datum, end_time)
-
+            
             if end > begin:
                 kapaziteat += (end - begin)
             else:
@@ -45,7 +44,7 @@ class ProjektMapper(Mapper):
         tuples = cursor.fetchall()
 
         for (id, creation_date, name, auftraggeber, beschreibung, personID) in tuples:
-            projekt = Projekt()
+            projekt= Projekt()
             projekt.set_id(id)
             projekt.set_creation_date(creation_date)
             projekt.set_name(name)
@@ -70,12 +69,11 @@ class ProjektMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date, name, auftraggeber, beschreibung, personID FROM projekt WHERE id={}".format(
-            key)
+        command = "SELECT id, creation_date, name, auftraggeber, beschreibung, personID FROM projekt WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
         for (id, creation_date, name, auftraggeber, beschreibung, personID) in tuples:
-            projekt = Projekt()
+            projekt= Projekt()
             projekt.set_id(id)
             projekt.set_creation_date(creation_date)
             projekt.set_name(name)
@@ -93,13 +91,12 @@ class ProjektMapper(Mapper):
     def find_by_name(self, name):
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date, name, auftraggeber, beschreibung, personID FROM projekt WHERE name LIKE '{}'".format(
-            name)
+        command = "SELECT id, creation_date, name, auftraggeber, beschreibung, personID FROM projekt WHERE name LIKE '{}'".format(name)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         for (id, creation_date, name, auftraggeber, beschreibung, personID) in tuples:
-            projekt = Projekt()
+            projekt= Projekt()
             projekt.set_id(id)
             projekt.set_creation_date(creation_date)
             projekt.set_name(name)
@@ -117,13 +114,12 @@ class ProjektMapper(Mapper):
     def find_by_personID(self, personID):
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date, name, auftraggeber, beschreibung, personID FROM projekt WHERE personID={}".format(
-            personID)
+        command = "SELECT id, creation_date, name, auftraggeber, beschreibung, personID FROM projekt WHERE personID={}".format(personID)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         for (id, creation_date, name, auftraggeber, beschreibung, personID) in tuples:
-            projekt = Projekt()
+            projekt= Projekt()
             projekt.set_id(id)
             projekt.set_creation_date(creation_date)
             projekt.set_name(name)
@@ -162,10 +158,8 @@ class ProjektMapper(Mapper):
         creation_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         projekt.set_creation_date(creation_date)
         command = "INSERT INTO projekt (id, creation_date, name, auftraggeber, beschreibung, personID) VALUES (%s,%s,%s,%s,%s,%s)"
-        data = (
-        projekt.get_id(), creation_date, projekt.get_name(), projekt.get_auftraggeber(), projekt.get_beschreibung(),
-        projekt.get_personID())
-
+        data = (projekt.get_id(), creation_date, projekt.get_name(), projekt.get_auftraggeber(), projekt.get_beschreibung(), projekt.get_personID())
+        
         cursor.execute(command, data)
         self._cnx.commit()
         cursor.close()
@@ -179,8 +173,7 @@ class ProjektMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "UPDATE projekt SET name=%s, auftraggeber=%s, beschreibung=%s, personID=%s WHERE id=%s"
-        data = (projekt.get_name(), projekt.get_auftraggeber(), projekt.get_beschreibung(), projekt.get_personID(),
-                projekt.get_id())
+        data = (projekt.get_name(), projekt.get_auftraggeber(), projekt.get_beschreibung(), projekt.get_personID(), projekt.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -201,9 +194,8 @@ class ProjektMapper(Mapper):
 
         return projekt
 
+
     # Zum Testen ausführen
-
-
 if (__name__ == "__main__"):
     with ProjektMapper() as mapper:
         projekt = Projekt()

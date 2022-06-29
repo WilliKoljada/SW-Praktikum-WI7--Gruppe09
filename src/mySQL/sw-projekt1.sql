@@ -3,14 +3,14 @@ USE `sw-projekt1`;
 
 -- MySQL dump 10.13  Distrib 8.0.24, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: sw-projekt
+-- Host: 127.0.0.1    Database: sw-projekt1
 -- ------------------------------------------------------
 -- Server version	8.0.24
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -34,7 +34,7 @@ CREATE TABLE `aktivitaet` (
   PRIMARY KEY (`id`),
   KEY `projektID` (`projektID`),
   CONSTRAINT `aktivitaet_ibfk_1` FOREIGN KEY (`projektID`) REFERENCES `projekt` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `aktivitaet` (
 
 LOCK TABLES `aktivitaet` WRITE;
 /*!40000 ALTER TABLE `aktivitaet` DISABLE KEYS */;
-INSERT INTO `aktivitaet` VALUES (1,'2022-06-22 00:05:24','first akt','Beschreibung der Akt 1',1);
+INSERT INTO `aktivitaet` VALUES (1,'2022-06-22 00:05:24','first akt','Beschreibung der Akt 1',1),(2,'2022-06-25 07:32:40','second aktivitaet','Beschreibung der zweite Aktivitaet',1);
 /*!40000 ALTER TABLE `aktivitaet` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -65,7 +65,7 @@ CREATE TABLE `ereignis` (
   PRIMARY KEY (`id`),
   KEY `personID` (`personID`),
   CONSTRAINT `ereignis_ibfk_1` FOREIGN KEY (`personID`) REFERENCES `person` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,7 +74,7 @@ CREATE TABLE `ereignis` (
 
 LOCK TABLES `ereignis` WRITE;
 /*!40000 ALTER TABLE `ereignis` DISABLE KEYS */;
-INSERT INTO `ereignis` VALUES (1,'2022-06-22 02:13:42','krankheit','2022-06-22','10:00:00','18:00:00',1);
+INSERT INTO `ereignis` VALUES (1,'2022-06-22 02:13:42','urlaub','2022-06-22','10:00:00','18:00:00',1),(2,'2022-06-25 10:40:49','krankheit','2022-06-19','10:00:00','15:00:00',1);
 /*!40000 ALTER TABLE `ereignis` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,7 +125,7 @@ CREATE TABLE `projekt` (
   PRIMARY KEY (`id`),
   KEY `personID` (`personID`),
   CONSTRAINT `projekt_ibfk_1` FOREIGN KEY (`personID`) REFERENCES `person` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -158,7 +158,7 @@ CREATE TABLE `zeitintervall` (
   KEY `personID` (`personID`),
   CONSTRAINT `zeitintervall_ibfk_1` FOREIGN KEY (`aktivitaetID`) REFERENCES `aktivitaet` (`id`),
   CONSTRAINT `zeitintervall_ibfk_2` FOREIGN KEY (`personID`) REFERENCES `person` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -167,7 +167,7 @@ CREATE TABLE `zeitintervall` (
 
 LOCK TABLES `zeitintervall` WRITE;
 /*!40000 ALTER TABLE `zeitintervall` DISABLE KEYS */;
-INSERT INTO `zeitintervall` VALUES (2,'2022-06-22 03:09:41','2022-06-23','07:00:00','17:00:00',1,1);
+INSERT INTO `zeitintervall` VALUES (2,'2022-06-22 03:09:41','2022-06-23','07:00:00','17:00:00',1,1),(3,'2022-06-23 22:39:55','2022-06-24','08:00:00','14:30:00',1,1),(4,'2022-06-25 07:33:26','2022-06-25','11:30:00','17:30:00',1,1);
 /*!40000 ALTER TABLE `zeitintervall` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -180,4 +180,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-22 15:39:49
+-- Dump completed on 2022-06-26 12:46:20

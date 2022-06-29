@@ -11,19 +11,19 @@ import ProjektList from "./components/ProjektList";
 import PersonList from "./components/PersonList";
 import EreignisList from "./components/EreignisList";
 import ZeitenList from "./components/ZeitenList";
-import Arbeitszeitkonto from "./components/Arbeitszeitkonto";
+import ArbeitKonto from "./components/ArbeitKonto";
 import AktivitaetList from "./components/AktivitaetList";
 import LoadingProgress from "./components/dialogs/LoadingProgress";
 import ContextErrorMessage from "./components/dialogs/ContextErrorMessage";
 import firebaseConfig from "./firebaseconfig";
 /**
- * The main bank administration app. It uses Googles firebase to log into the bank end. For routing the
+ * The main bank administration app. It uses Googles firebase to log into the bank end. For routing the 
  * user to the respective pages, react-router-dom ist used.
- *
+ * 
  * @see See Google [firebase.auth()](https://firebase.google.com/docs/reference/js/firebase.auth.Auth)
  * @see See Google [firebase.auth().signInWithRedirect](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signinwithredirect)
  * @see [react-router-dom](https://reacttraining.com/react-router/web/guides/quick-start)
- *
+ * 
  */
 class App extends React.Component {
 
@@ -40,9 +40,9 @@ class App extends React.Component {
 		};
 	}
 
-	/**
+	/** 
 	 * Create an error boundary for this app and recieve all errors from below the component tree.
-	 *
+	 * 
 	 * @See See Reacts [Error Boundaries](https://reactjs.org/docs/error-boundaries.html)
  	 */
 	static getDerivedStateFromError(error) {
@@ -90,7 +90,7 @@ class App extends React.Component {
 		}
 	}
 
-  /**
+  /** 
    * Handles the sign in request of the SignIn component uses the firebase.auth() component to sign in.
 	 * @see See Google [firebase.auth()](https://firebase.google.com/docs/reference/js/firebase.auth.Auth)
 	 * @see See Google [firebase.auth().signInWithRedirect](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signinwithredirect)
@@ -106,7 +106,7 @@ class App extends React.Component {
 	/**
 	 * Lifecycle method, which is called when the component gets inserted into the browsers DOM.
 	 * Initializes the firebase SDK.
-	 *
+	 * 
 	 * @see See Googles [firebase init process](https://firebase.google.com/docs/web/setup)
 	 */
 	componentDidMount() {
@@ -150,11 +150,11 @@ class App extends React.Component {
 									<Route exact path="/zeitintervall">
 										<ZeitenList user={currentUser} />
 									</Route>
-									<Route exact path="/arbeitszeitkonto">
-										<Arbeitszeitkonto user={currentUser} />
+									<Route exact path="/arbeitkonto">
+										<ArbeitKonto user={currentUser} />
 									</Route>
 								</>
-
+								
 								:
 								// else show the sign in page
 								<>

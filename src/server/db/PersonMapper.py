@@ -167,7 +167,8 @@ class PersonMapper(Mapper):
 
                 person.set_id(maxid[0] + 1)
 
-        creation_date = datetime.now()
+        creation_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        person.set_creation_date(creation_date)
         command = "INSERT INTO person (id, creation_date, vorname, nachname, email, benutzername, role, google_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
         data = (person.get_id(), creation_date, person.get_vorname(), person.get_nachname(),
         person.get_email(), person.get_benutzername(), person.get_role(), person.get_google_id())
