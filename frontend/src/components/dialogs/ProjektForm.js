@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent,
-InputLabel, NativeSelect, DialogContentText, DialogActions, TextField } from "@material-ui/core";
+  DialogContentText, DialogActions, TextField } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import ZeiterfassungAPI from "../../api/ZeiterfassungAPI";
 import ProjektBO from "../../api/ProjektBO";
