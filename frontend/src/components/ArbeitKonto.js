@@ -5,9 +5,9 @@ import { withRouter } from "react-router-dom";
 import ZeiterfassungAPI from "../api/ZeiterfassungAPI";
 import ContextErrorMessage from "./dialogs/ContextErrorMessage";
 import LoadingProgress from "./dialogs/LoadingProgress";
-import ArbeitszeitkontoEntry from "./entries/ArbeitszeitkontoEntry";
+import ArbeitKontoEntry from "./entries/ArbeitKontoEntry";
 
-class Arbeitszeitkonto extends Component {
+class Arbeitkonto extends Component {
 
   constructor(props) {
     super(props);
@@ -15,20 +15,20 @@ class Arbeitszeitkonto extends Component {
     // console.log(props);
     let expandedID = null;
     let personID = 1;
-    if (this.props.location.expandedArbeitszeitkontoID) {
-      expandedID = this.props.location.expandedArbeitszeitkontoID.getID();
+    if (this.props.location.expandedArbeitKontoID) {
+      expandedID = this.props.location.expandedArbeitKontoID.getID();
     }
 
     // Init the state
     this.state = {
-      arbeitszeitkonto: null,
+      arbeitKonto: null,
       personID: personID,
       error: null,
       loadingInProgress: false,
-      expandedArbeitszeitkontoID: expandedID
+      expandedArbeitKontoID: expandedID
     };
     //this.getPersonByGoogleID();
-    //this.getArbeitszeitkonto();
+    //this.getArbeitKonto();
   }
 
   getPersonByGoogleID = () => {
@@ -44,17 +44,16 @@ class Arbeitszeitkonto extends Component {
     );
   }
 
-	getArbeitszeitkonto = () => {
-    ZeiterfassungAPI.getAPI().getArbeitszeitkonto(this.state.personID).then(arbeitszeitkonto =>{
+	getArbeitKonto = () => {
+    ZeiterfassungAPI.getAPI().getArbeitKonto(this.state.personID).then(arbeitKonto =>{
       this.setState({
-        arbeitszeitkonto: arbeitszeitkonto[0],
+        arbeitKonto: arbeitKonto[0],
         loadingInProgress: false,
         loadingError: null
       });
-
     }).catch(e =>
         this.setState({ // Reset state with error from catch
-          arbeitszeitkonto: null,
+          arbeitKonto: null,
           loadingInProgress: false,
           loadingError: e
         })
@@ -66,37 +65,37 @@ class Arbeitszeitkonto extends Component {
   componentDidMount() {
     console.log("user", this.props.user.uid);
     this.getPersonByGoogleID();
-		this.getArbeitszeitkonto();
+		this.getArbeitKonto();
   }
 
   /**
    * Handles onExpandedStateChange events from the EreignisListEntry component. Toggels the expanded state of
-   * the ArbeitszeitkontoListEntry of the given EreignisBO.
+   * the ArbeitKontoListEntry of the given EreignisBO.
    *
-   * @param {arbeitszeitkonto} ArbeitszeitkontoBO of the ArbeitszeitkontoListEntry to be toggeled
+   * @param {arbeitKonto} ArbeitKontoBO of the ArbeitKonListEntry to be toggeled
    */
-   onExpandedStateChange = arbeitszeitkonto => {
+   onExpandedStateChange = arbeitKonto => {
     let newID = null;
 
     // If same ereignis entry is clicked, collapse it else expand a new one
-    if (arbeitszeitkonto.getID() !== this.state.expandedArbeitszeitkontoID) {
-      newID = arbeitszeitkonto.getID();
+    if (arbeitKonto.getID() !== this.state.expandedArbeitKontoID) {
+      newID = arbeitKonto.getID();
     }
     this.setState({
-      expandedArbeitszeitkontoID: newID,
+      expandedArbeitKontoID: newID,
     });
   }
 
   /** Renders the component */
   render() {
     const { classes, user } = this.props;
-    const { arbeitszeitkonto, loadingInProgress, error } = this.state;
+    const { arbeitKonto, loadingInProgress, error } = this.state;
 
     return (
       <div className={classes.root}>
         <div>
-          {arbeitszeitkonto && <ArbeitszeitkontoEntry
-						arbeitszeitkonto={arbeitszeitkonto}
+          {arbeitKonto && <ArbeitKontoEntry
+						arbeitKonto={arbeitKonto}
 						user={user}
 						expandedState={true}
             onExpandedStateChange={this.onExpandedStateChange}
@@ -105,7 +104,7 @@ class Arbeitszeitkonto extends Component {
           <Grid item xs />
           </div>
         <LoadingProgress show={loadingInProgress} />
-        <ContextErrorMessage error={error} contextErrorMsg={`arbeitszeitkonto could not be loaded.`} onReload={this.getArbeitszeitkonto} />
+        <ContextErrorMessage error={error} contextErrorMsg={`arbeitKonto could not be loaded.`} onReload={this.getArbeitKonto} />
       </div>
     );
   }
@@ -123,7 +122,7 @@ const styles = theme => ({
 });
 
 /** PropTypes */
-Arbeitszeitkonto.propTypes = {
+Arbeitkonto.propTypes = {
   /** @ignore */
   classes: PropTypes.object.isRequired,
   /** @ignore */
@@ -131,4 +130,4 @@ Arbeitszeitkonto.propTypes = {
   user: PropTypes.object.isRequired
 }
 
-export default withRouter(withStyles(styles)(Arbeitszeitkonto));
+export default withRouter(withStyles(styles)(Arbeitkonto));

@@ -3,7 +3,7 @@ import PersonBO from "./PersonBO";
 import ProjektBO from "./ProjektBO";
 import ZeitintervallBO from "./ZeitintervallBO";
 import EreignisBO from "./EreignisBO";
-import ArbeitszeitkontoBO from "./ArbeitszeitkontoBO";
+import ArbeitKontoBO from "./ArbeitKontoBO";
 
 
 /**
@@ -60,11 +60,11 @@ export default class ZeiterfassungAPI {
   #updateZeitintervallURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervall/${id}`;
   #deleteZeitintervallURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervall/${id}`;
 
-  // Arbeitszeitkonto related
-  #getArbeitszeitkontoURL = (id) => `${this.#ZeiterfassungServerBaseURL}/arbeitszeitkonto/${id}`;
+  // Arbeitkonto related
+  #getArbeitkontoURL = (id) => `${this.#ZeiterfassungServerBaseURL}/arbeitkonto/${id}`;
 
   /**
-   * Get the Singleton instance
+   * Get the Singelton instance
    *
    * @public
    */
@@ -536,12 +536,12 @@ export default class ZeiterfassungAPI {
    * @param {Number} personID to be retrieved
    * @public
    */
-  getArbeitszeitkonto(personID) {
-    return this.#fetchAdvanced(this.#getArbeitszeitkontoURL(personID)).then((responseJSON) => {
-      // We always get an array of ArbeitszeitkontoBOs.fromJSON, but only need one object
-      let responseArbeitszeitkontoBO = ArbeitszeitkontoBO.fromJSON(responseJSON);
+  getArbeitKonto(personID) {
+    return this.#fetchAdvanced(this.#getArbeitkontoURL(personID)).then((responseJSON) => {
+      // We always get an array of ArbeitkontoBOs.fromJSON, but only need one object
+      let responseArbeitkontoBO = ArbeitKontoBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve(responseArbeitszeitkontoBO);
+        resolve(responseArbeitkontoBO);
       })
     })
   }

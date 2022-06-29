@@ -2,40 +2,41 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, Grid } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ArbeitszeitkontoDetail from "../details/ArbeitszeitkontoDetail";
+import ArbeitKontoDetail from "../details/ArbeitKontoDetail";
 
 /**
- * Renders a ArbeitszeitkontoBO object within a expandable/collapsible ArbeitszeitkontoListEntry with the Arbeitszeitkonto manipulation
+ * Renders a AktivitaetBO object within a expandable/collapsible AktivitaetListEntry with the aktivitaet manipulation
  * functions. If expanded, it renders a AccountList.
  *
+ * @see See [AktivitaetList](#aktivitaetlist)
  *
  * @author
  */
-class ArbeitszeitkontoEntry extends Component {
+class ArbeitKontoEntry extends Component {
 
   constructor(props) {
     super(props);
 
     // Init the state
     this.state = {
-      arbeitszeitkonto: props.arbeitszeitkonto,
+      arbeitKonto: props.arbeitKonto,
     };
   }
 
   expansionPanelStateChanged = () => {
-    this.props.onExpandedStateChange(this.props.arbeitszeitkonto);
+    this.props.onExpandedStateChange(this.props.arbeitKonto);
   }
 
   render() {
     const { classes, expandedState } = this.props;
-    const { arbeitszeitkonto } = this.state;
+    const { arbeitKonto } = this.state;
 
     return (
       <div>
         <Accordion defaultExpanded={false} expanded={expandedState} onChange={this.expansionPanelStateChanged}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            id={`arbeitszeitkontopanel-header`}
+            id={`arbeitKontoarbeitKontopanel-header`}
           >
             <Grid container spacing={1} justifyContent="flex-start" alignItems="center">
               <Grid item>
@@ -47,7 +48,7 @@ class ArbeitszeitkontoEntry extends Component {
           </AccordionSummary>
           <AccordionDetails>
             <Grid container spacing={1} justifyContent="flex-start" alignItems="center">
-              <ArbeitszeitkontoDetail arbeitszeitkonto={arbeitszeitkonto} />
+              <ArbeitKontoDetail arbeitKonto={arbeitKonto} />
             </Grid>
           </AccordionDetails>
         </Accordion>
@@ -64,12 +65,12 @@ const styles = theme => ({
 });
 
 /** PropTypes */
-ArbeitszeitkontoEntry.propTypes = {
+ArbeitKontoEntry.propTypes = {
   /** @ignore */
   classes: PropTypes.object.isRequired,
-  arbeitszeitkonto: PropTypes.object.isRequired,
+  arbeitKonto: PropTypes.object.isRequired,
   expandedState: PropTypes.bool.isRequired,
   onExpandedStateChange: PropTypes.func.isRequired,
 }
 
-export default withStyles(styles)(ArbeitszeitkontoEntry);
+export default withStyles(styles)(ArbeitKontoEntry);

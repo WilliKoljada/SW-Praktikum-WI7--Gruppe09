@@ -39,6 +39,7 @@ class EreignisList extends Component {
     ZeiterfassungAPI.getAPI().getEreigniss().then(ereignisBOs =>
       this.setState({  // Set new state when EreignisBOs have been fetched
         ereigniss: ereignisBOs,
+        filteredEreigniss: ereignisBOs,
         loadingInProgress: false, // loading indicator
         loadingEreignisError: null
       })).catch(e =>
@@ -130,8 +131,8 @@ class EreignisList extends Component {
     const value = event.target.value.toLowerCase();
     this.setState({
       filteredEreigniss: this.state.ereigniss.filter(ereignis => {
-        let nameContainsValue = ereignis.getName().toLowerCase().includes(value);
-        return nameContainsValue;
+        let typeContainsValue = ereignis.getType().toLowerCase().includes(value);
+        return typeContainsValue;
       }),
       ereignisFilter: value
     });
@@ -148,7 +149,7 @@ class EreignisList extends Component {
 
   /** Renders the component */
   render() {
-    const { classes } = this.props;
+    const { classes, user } = this.props;
     const { filteredEreigniss, ereignisFilter, expandedEreignisID, loadingInProgress, error, showEreignisForm } = this.state;
 
     return (
@@ -156,7 +157,7 @@ class EreignisList extends Component {
         <Grid className={classes.ereignisFilter} container spacing={1} justifyContent="flex-start" alignItems="center">
           <Grid item>
             <Typography>
-              Filter ereignis list by name:
+              Filter ereignis list by type:
               </Typography>
           </Grid>
           <Grid item xs={4}>
@@ -183,18 +184,27 @@ class EreignisList extends Component {
           </Button>
           </Grid>
         </Grid>
+        <Grid item xs />
+        <Grid item>
+          <Typography variant="body2" color={"textSecondary"}>List of ereignis</Typography>
+        </Grid>
         {
           // Show the list of EreignisListEntry components
           // Do not use strict comparison, since expandedEreignisID maybe a string if given from the URL parameters
           filteredEreigniss.map(ereignis =>
-            <EreignisListEntry key={ereignis.getID()} ereignis={ereignis} expandedState={expandedEreignisID === ereignis.getID()}
-              onExpandedStateChange={this.onExpandedStateChange}
-              onEreignisDeleted={this.ereignisDeleted}
-            />)
+            (<div key={ereignis.getID()}>
+              <EreignisListEntry key={ereignis.getID()} ereignis={ereignis} user={user} expandedState={expandedEreignisID === ereignis.getID()}
+                onExpandedStateChange={this.onExpandedStateChange}
+                onEreignisDeleted={this.ereignisDeleted}
+              />
+              <br />
+              <Grid item xs />
+            </div>)
+          )
         }
         <LoadingProgress show={loadingInProgress} />
         <ContextErrorMessage error={error} contextErrorMsg={`The list of ereignis could not be loaded.`} onReload={this.getEreigniss} />
-        <EreignisForm show={showEreignisForm} onClose={this.ereignisFormClosed} />
+        <EreignisForm show={showEreignisForm} user={user} onClose={this.ereignisFormClosed} />
       </div>
     );
   }

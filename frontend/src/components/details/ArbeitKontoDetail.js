@@ -13,31 +13,31 @@ import LoadingProgress from "../dialogs/LoadingProgress";
  *
  * @author
  */
-class ArbeitszeitkontoDetail extends Component{
+class ArbeitKontoDetail extends Component{
   constructor(props) {
     super(props);
 
     // Init state
     this.state = {
-      arbeitszeitkonto: null,
+      arbeitKonto: null,
       loadingInProgress: false,
       loadingError: null,
     };
 
-    if(this.props.Arbeitszeitkonto){
-      this.state.arbeitszeitkonto = this.props.arbeitszeitkonto;
+    if(this.props.arbeitKonto){
+      this.state.arbeitKonto = this.props.arbeitKonto;
     }
   }
 
-  getArbeitszeitkonto = () => {
-    ZeiterfassungAPI.getAPI().getArbeitszeitkonto(this.props.arbeitszeitkonto.getID()).then(arbeitszeitkonto =>
+  getArbeitKonto = () => {
+    ZeiterfassungAPI.getAPI().getArbeitKonto(this.props.arbeitKonto.getID()).then(arbeitKonto =>
       this.setState({
-        arbeitszeitkonto: arbeitszeitkonto[0],
+        arbeitKonto: arbeitKonto[0],
         loadingInProgress: false,
         loadingError: null
       })).catch(e =>
         this.setState({ // Reset state with error from catch
-          arbeitszeitkonto: null,
+          arbeitKonto: null,
           loadingInProgress: false,
           loadingError: e
         })
@@ -53,30 +53,30 @@ class ArbeitszeitkontoDetail extends Component{
   /** Renders the component */
   render() {
     const { classes } = this.props;
-    const { arbeitszeitkonto, loadingInProgress, loadingError } = this.state;
+    const { arbeitKonto, loadingInProgress, loadingError } = this.state;
 
     return (
       <Paper variant="outlined" className={classes.root}>
         {
-          arbeitszeitkonto ?
+          arbeitKonto ?
           (<div>
             <Typography>
-              working times: <strong>{arbeitszeitkonto.getArbeit()}</strong>
+              Arbeit zeit: <strong>{arbeitKonto.getArbeit()}</strong>
             </Typography>
             <Typography>
-              times of sickness: <strong>{arbeitszeitkonto.getKrankheit()}</strong>
+              krankheit zeit: <strong>{arbeitKonto.getKrankheit()}</strong>
             </Typography>
             <Typography>
-              vacation times: <strong>{arbeitszeitkonto.getUrlaub()}</strong>
+              Urlaub zeit: <strong>{arbeitKonto.getUrlaub()}</strong>
             </Typography>
             <Typography>
-              times of breaks: <strong>{arbeitszeitkonto.getPause()}</strong>
+              Pause zeit: <strong>{arbeitKonto.getPause()}</strong>
             </Typography>
           </div>)
             : null
         }
         <LoadingProgress show={loadingInProgress} />
-        <ContextErrorMessage error={loadingError} contextErrorMsg={`The data of arbeit konto id ${arbeitszeitkonto.getID()} could not be loaded.`} onReload={this.getArbeitszeitkonto} />
+        <ContextErrorMessage error={loadingError} contextErrorMsg={`The data of arbeit konto id ${arbeitKonto.getID()} could not be loaded.`} onReload={this.getArbeitKonto} />
       </Paper>
     );
   }
@@ -92,11 +92,11 @@ const styles = theme => ({
 });
 
 /** PropTypes */
-ArbeitszeitkontoDetail.propTypes = {
+ArbeitKontoDetail.propTypes = {
   /** @ignore */
   classes: PropTypes.object.isRequired,
   /** The ereignis to be rendered */
-  arbeitszeitkonto: PropTypes.object.isRequired,
+  arbeitKonto: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(ArbeitszeitkontoDetail);
+export default withStyles(styles)(ArbeitKontoDetail);

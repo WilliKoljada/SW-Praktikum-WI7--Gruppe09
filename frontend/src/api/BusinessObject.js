@@ -8,6 +8,7 @@
      */
     constructor() {
       this.id = 0;
+      this.creation_date = ""
     }
 
     /**
@@ -24,6 +25,22 @@
      */
     getID() {
       return this.id;
+    }
+
+    /**
+     * Sets the creation_date of this BusinessObject.
+     *
+     * @param {*} date - the new creation Date of this BusinessObject
+     */
+    set_creation_date(date) {
+      this.creation_date = date;
+    }
+
+    /**
+     * Returns the creation_date of this BusinessObject.
+     */
+    get_creation_date() {
+      return this.creation_date;
     }
 
     /**
