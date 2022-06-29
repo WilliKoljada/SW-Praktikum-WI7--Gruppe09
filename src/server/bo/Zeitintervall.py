@@ -53,5 +53,6 @@ class Zeitintervall (bo.BusinessObject):
         obj.set_startzeit(dictionary["startzeit"])
         obj.set_endzeit(dictionary["endzeit"])
         obj.set_aktivitaetID(dictionary["aktivitaetID"])
+        obj.set_personID(dictionary["personID"])
 
         return obj
