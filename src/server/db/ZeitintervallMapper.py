@@ -146,7 +146,8 @@ class ZeitintervallMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 zeitintervall.set_id(1)
 
-        creation_date = datetime.now()
+        creation_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        zeitintervall.set_creation_date(creation_date)
         command = "INSERT INTO zeitintervall (id, creation_date, datum, startzeit, endzeit, aktivitaetID, personID) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         data = (zeitintervall.get_id(), creation_date, zeitintervall.get_datum(), zeitintervall.get_startzeit(), zeitintervall.get_endzeit(), zeitintervall.get_aktivitaetID(), zeitintervall.get_personID())
         cursor.execute(command, data)
@@ -174,6 +175,7 @@ class ZeitintervallMapper(Mapper):
         :param zeitintervall das aus der DB zu löschende "Objekt"
         """
         cursor = self._cnx.cursor()
+        zeitintervall = self.find_by_key(id)
 
         command = "DELETE FROM zeitintervall WHERE id={}".format(id)
         cursor.execute(command)

@@ -23,10 +23,10 @@ class AktivitaetMapper(Mapper):
         dauert = timedelta(0)
         for (datum, startzeit, endzeit) in zeiten:
             begin_time = datetime.strptime(str(startzeit), "%H:%M:%S").time()
-            end_time = datetime.strptime(str(endzeit), "%H:%M:%S").time()
+            end_time =datetime.strptime(str(endzeit), "%H:%M:%S").time()
             begin = datetime.combine(datum, begin_time)
             end = datetime.combine(datum, end_time)
-
+            
             if end > begin:
                 dauert += (end - begin)
             else:
@@ -34,6 +34,7 @@ class AktivitaetMapper(Mapper):
 
         cursor.close()
         return str(dauert)
+
 
     def find_all(self):
         """Auslesen aller Aktivitaet.
@@ -61,6 +62,7 @@ class AktivitaetMapper(Mapper):
     def find_by_key(self, key):
         """Suchen eines Kunden mit vorgegebener Kundennummer. Da diese eindeutig ist,
         wird genau ein Objekt zurückgegeben.
+
         :param key Primärschlüsselattribut (->DB)
         :return Customer-Objekt, das dem übergebenen Schlüssel entspricht, None bei
             nicht vorhandenem DB-Tupel.
@@ -90,6 +92,7 @@ class AktivitaetMapper(Mapper):
     def find_by_projektID(self, projektID):
         """Suchen eines Kunden mit vorgegebener Kundennummer. Da diese eindeutig ist,
         wird genau ein Objekt zurückgegeben.
+
         :param key Primärschlüsselattribut (->DB)
         :return Customer-Objekt, das dem übergebenen Schlüssel entspricht, None bei
             nicht vorhandenem DB-Tupel.
@@ -97,8 +100,7 @@ class AktivitaetMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date, name, beschreibung, projektID FROM aktivitaet WHERE projektID={}".format(
-            projektID)
+        command = "SELECT id, creation_date, name, beschreibung, projektID FROM aktivitaet WHERE projektID={}".format(projektID)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -121,8 +123,7 @@ class AktivitaetMapper(Mapper):
         result = []
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date, name, beschreibung, projektID FROM aktivitaet WHERE name LIKE '{}'".format(
-            key)
+        command = "SELECT id, creation_date, name, beschreibung, projektID FROM aktivitaet WHERE name LIKE '{}'".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -165,8 +166,7 @@ class AktivitaetMapper(Mapper):
         creation_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         aktivitaet.set_creation_date(creation_date)
         command = "INSERT INTO aktivitaet (id, creation_date, name, beschreibung, projektID) VALUES (%s,%s,%s,%s,%s)"
-        data = (aktivitaet.get_id(), creation_date, aktivitaet.get_name(), aktivitaet.get_beschreibung(),
-                aktivitaet.get_projektID())
+        data = (aktivitaet.get_id(), creation_date, aktivitaet.get_name(), aktivitaet.get_beschreibung(), aktivitaet.get_projektID())
         cursor.execute(command, data)
         self._cnx.commit()
         cursor.close()
@@ -199,9 +199,9 @@ class AktivitaetMapper(Mapper):
 
         return aktivitaet
 
+
+
     # Zum Testen ausführen
-
-
 if (__name__ == "__main__"):
     with AktivitaetMapper() as mapper:
         aktivitaet = Aktivitaet()
