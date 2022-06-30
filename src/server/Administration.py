@@ -4,12 +4,13 @@ from .bo.Projekt import Projekt
 from .bo.Zeitintervall import Zeitintervall
 from .bo.Ereignis import Ereignis
 
-
 from .db.PersonMapper import PersonMapper
 from .db.ProjektMapper import ProjektMapper
 from .db.AktivitaetMapper import AktivitaetMapper
 from .db.ZeitintervallMapper import ZeitintervallMapper
 from .db.EreignisMapper import EreignisMapper
+from .db.ArbeitKontoMapper import ArbeitKontoMapper
+
 
 class Administration(object):
 
@@ -32,18 +33,15 @@ class Administration(object):
         with PersonMapper() as mapper:
             return mapper.insert(p)
 
-
     def get_person_by_id(self, id):
         """Die Person mit der gegebenen ID auslesen."""
         with PersonMapper() as mapper:
             return mapper.find_by_key(id)
 
-
     def get_person_by_email(self, email):
         """Die Person mit der gegebenen email auslesen."""
         with PersonMapper() as mapper:
             return mapper.find_by_email(email)
-
 
     def get_user_by_google_user_id(self, id):
         """Den Benutzer mit der gegebenen Google ID auslesen."""
@@ -55,6 +53,11 @@ class Administration(object):
         with PersonMapper() as mapper:
             return mapper.find_all()
 
+    def get_person_in_projekt(self, projektID):
+        """Alle Personen auslesen die ein  Projekt zugewiesen sind."""
+        with PersonMapper() as mapper:
+            return mapper.find_person_in_projekt(projektID)
+
     def update_person(self, person):
         """Die gegebene Person speichern."""
         with PersonMapper() as mapper:
@@ -64,7 +67,6 @@ class Administration(object):
         """Die gegebenen Person aus unserem System löschen."""
         with PersonMapper() as mapper:
             mapper.delete(person)
-
 
     """aktivitaet-spezifische Methoden"""
 
@@ -141,6 +143,11 @@ class Administration(object):
         with ProjektMapper() as mapper:
             return mapper.find_all()
 
+    def add_person_to_projekt(self, projektID, personID):
+        """Fügt eine Person zu einem Projekt hinzu."""
+        with ProjektMapper() as mapper:
+            return mapper.fuegt_person_zu_projekt_hinzu(projektID, personID)
+
     def update_projekt(self, projekt):
         """Die gegebene Projekte speichern."""
         with ProjektMapper() as mapper:
@@ -151,9 +158,12 @@ class Administration(object):
         with ProjektMapper() as mapper:
             mapper.delete(projekt)
 
+    def delete_person_aus_projekt(self, personID, projektID):
+        """Die gegebenen Person aus Projekt löschen."""
+        with ProjektMapper() as mapper:
+            mapper.delete_person_aus_projekt(personID, projektID)
 
     """zeitintervall-spezifische Methoden"""
-
 
     def create_zeitintervall(self, datum, startzeit, endzeit, aktivitaetID, personID):
         """Eine Zeitintervall anlegen"""
@@ -197,11 +207,9 @@ class Administration(object):
         with ZeitintervallMapper() as mapper:
             mapper.delete(zeitintervall)
 
-
     """ereignis-spezifische Methoden"""
 
-
-    def create_ereignis (self, type, datum, startzeit, endzeit, personID):
+    def create_ereignis(self, type, datum, startzeit, endzeit, personID):
         ereignis = Ereignis()
         ereignis.set_type(type)
         ereignis.set_datum(datum)
@@ -224,14 +232,20 @@ class Administration(object):
         with EreignisMapper() as mapper:
             return mapper.find_by_key(id)
 
-    def get_all_ereignisse (self):
+    def get_all_ereignisse(self):
         with EreignisMapper() as mapper:
             return mapper.find_all()
 
-    def update_ereignis (self, ereignis):
+    def update_ereignis(self, ereignis):
         with EreignisMapper() as mapper:
             return mapper.update(ereignis)
 
     def delete_ereignis(self, ereignis):
         with EreignisMapper() as mapper:
             return mapper.delete(ereignis)
+
+    """ereignis-spezifische Methoden"""
+
+    def get_arbeit_konto(self, personID):
+        with ArbeitKontoMapper() as mapper:
+            return mapper.find_arbeit_konto_by_key(personID)
