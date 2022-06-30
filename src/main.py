@@ -1,5 +1,4 @@
 """Unser Service basiert auf Flask"""
-from inspect import Attribute
 from flask import Flask
 """Auf Flask aufbauend nutzen wir RestX"""
 from flask_restx import Api, Resource, fields
@@ -73,7 +72,7 @@ zeitintervall = api.inherit("Zeitintervall", bo, {
     "datum": fields.String(attribute="_datum", description="Datum des Zeitintervall"),
     "startzeit": fields.String(attribute="_startzeit", description="Begin Zeit des Zeitintervall"),
     "endzeit": fields.String(attribute="_endzeit", description="End Zeit des Zeitintervall"),
-    "aktivitaetID": fields.Integer(attribute= "aktivitaetID", description="aktivitaet ID des Zeitintervall"),
+    "aktivitaetID": fields.Integer(attribute= "_aktivitaetID", description="aktivitaet ID des Zeitintervall"),
     "personID": fields.Integer(attribute= "_personID", description="ID des Erstellers vom Zeitintervall")
 })
 
@@ -253,6 +252,38 @@ class PersonGoogleIdOperations(Resource):
         adm = Administration()
         person = adm.get_user_by_google_user_id(google_id)
         return person
+
+
+@zeiterfassungapp.route("/person-in-projekt/<int:projektID>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("projektID", "Die Projekt Id des Projekt-Objekts")
+class PersonInProjekt(Resource):
+    @zeiterfassungapp.marshal_with(person)
+    @secured
+    def get(self, projektID):
+        """Auslesen einer bestimmten Person-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        person = adm.get_person_in_projekt(projektID)
+        return person
+
+
+@zeiterfassungapp.route("/person-in-projekt/<int:personID>/<int:projektID>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("personID", "Die Person Id des Person-Objekts")
+@zeiterfassungapp.param("projektID", "Die Projekt Id des Projekt-Objekts")
+class PersonInAusProjekt(Resource):
+    @secured
+    def post(self, personID, projektID):
+        """Add person to projekt."""
+        adm = Administration()
+        adm.add_person_to_projekt(projektID, personID)
+
+    def delete(self, personID, projektID):
+        """Delete person zu Projekt."""
+        adm = Administration()
+        adm.delete_person_aus_projekt(personID, projektID)
 
 
 @zeiterfassungapp.route("/person-by-email/<string:email>")
@@ -546,11 +577,9 @@ class ArbeitKontoOperations(Resource):
 """
 Nachdem wir nun sämtliche Resourcen definiert haben, die wir via REST bereitstellen möchten,
 müssen nun die App auch tatsächlich zu starten.
-
 Diese Zeile ist leider nicht Teil der Flask-Doku! In jener Doku wird von einem Start via Kommandozeile ausgegangen.
 Dies ist jedoch für uns in der Entwicklungsumgebung wenig komfortabel. Deshlab kommt es also schließlich zu den 
 folgenden Zeilen. 
-
 **ACHTUNG:** Diese Zeile wird nur in der lokalen Entwicklungsumgebung ausgeführt und hat in der Cloud keine Wirkung!
 """
 if __name__ == "__main__":
