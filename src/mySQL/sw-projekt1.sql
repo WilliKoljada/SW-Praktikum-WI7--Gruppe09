@@ -34,7 +34,7 @@ CREATE TABLE `aktivitaet` (
   PRIMARY KEY (`id`),
   KEY `projektID` (`projektID`),
   CONSTRAINT `aktivitaet_ibfk_1` FOREIGN KEY (`projektID`) REFERENCES `projekt` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,6 @@ CREATE TABLE `aktivitaet` (
 
 LOCK TABLES `aktivitaet` WRITE;
 /*!40000 ALTER TABLE `aktivitaet` DISABLE KEYS */;
-INSERT INTO `aktivitaet` VALUES (1,'2022-06-22 00:05:24','first akt','Beschreibung der Akt 1',1),(2,'2022-06-25 07:32:40','second aktivitaet','Beschreibung der zweite Aktivitaet',1);
 /*!40000 ALTER TABLE `aktivitaet` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -65,7 +64,7 @@ CREATE TABLE `ereignis` (
   PRIMARY KEY (`id`),
   KEY `personID` (`personID`),
   CONSTRAINT `ereignis_ibfk_1` FOREIGN KEY (`personID`) REFERENCES `person` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,7 +73,6 @@ CREATE TABLE `ereignis` (
 
 LOCK TABLES `ereignis` WRITE;
 /*!40000 ALTER TABLE `ereignis` DISABLE KEYS */;
-INSERT INTO `ereignis` VALUES (1,'2022-06-22 02:13:42','urlaub','2022-06-22','10:00:00','18:00:00',1),(2,'2022-06-25 10:40:49','krankheit','2022-06-19','10:00:00','15:00:00',1);
 /*!40000 ALTER TABLE `ereignis` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +93,7 @@ CREATE TABLE `person` (
   `role` varchar(255) DEFAULT NULL,
   `google_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,7 +102,6 @@ CREATE TABLE `person` (
 
 LOCK TABLES `person` WRITE;
 /*!40000 ALTER TABLE `person` DISABLE KEYS */;
-INSERT INTO `person` VALUES (1,'2022-06-20 00:00:00','test','user','testuser@app.de','test','admin','ajgDdfjavuMLv9ncZPlvLRHtL0D2');
 /*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,7 +122,7 @@ CREATE TABLE `projekt` (
   PRIMARY KEY (`id`),
   KEY `personID` (`personID`),
   CONSTRAINT `projekt_ibfk_1` FOREIGN KEY (`personID`) REFERENCES `person` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,8 +131,33 @@ CREATE TABLE `projekt` (
 
 LOCK TABLES `projekt` WRITE;
 /*!40000 ALTER TABLE `projekt` DISABLE KEYS */;
-INSERT INTO `projekt` VALUES (1,'2022-06-21 23:48:58','Projekt 1','Tesla','Beschreibung des Projekts 1',1);
 /*!40000 ALTER TABLE `projekt` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `projektperson`
+--
+
+DROP TABLE IF EXISTS `projektperson`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `projektperson` (
+  `projektID` int(11) DEFAULT NULL,
+  `personID` int(11) DEFAULT NULL,
+  KEY `projektID` (`projektID`),
+  KEY `personID` (`personID`),
+  CONSTRAINT `projektperson_ibfk_1` FOREIGN KEY (`projektID`) REFERENCES `projekt` (`id`),
+  CONSTRAINT `projektperson_ibfk_2` FOREIGN KEY (`personID`) REFERENCES `person` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `projektperson`
+--
+
+LOCK TABLES `projektperson` WRITE;
+/*!40000 ALTER TABLE `projektperson` DISABLE KEYS */;
+/*!40000 ALTER TABLE `projektperson` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -158,7 +180,7 @@ CREATE TABLE `zeitintervall` (
   KEY `personID` (`personID`),
   CONSTRAINT `zeitintervall_ibfk_1` FOREIGN KEY (`aktivitaetID`) REFERENCES `aktivitaet` (`id`),
   CONSTRAINT `zeitintervall_ibfk_2` FOREIGN KEY (`personID`) REFERENCES `person` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -167,7 +189,6 @@ CREATE TABLE `zeitintervall` (
 
 LOCK TABLES `zeitintervall` WRITE;
 /*!40000 ALTER TABLE `zeitintervall` DISABLE KEYS */;
-INSERT INTO `zeitintervall` VALUES (2,'2022-06-22 03:09:41','2022-06-23','07:00:00','17:00:00',1,1),(3,'2022-06-23 22:39:55','2022-06-24','08:00:00','14:30:00',1,1),(4,'2022-06-25 07:33:26','2022-06-25','11:30:00','17:30:00',1,1);
 /*!40000 ALTER TABLE `zeitintervall` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -180,4 +201,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-26 12:46:20
+-- Dump completed on 2022-06-29 22:30:01
