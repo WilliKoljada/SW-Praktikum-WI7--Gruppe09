@@ -66,6 +66,7 @@ def secured(function):
                             nachname=name.split(" ")[-1],
                             email=email,
                             benutzername="",
+                            role="",
                             google_id=google_user_id
                         )
 
