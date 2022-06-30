@@ -1,4 +1,3 @@
-from click import command
 from server.bo.Aktivitaet import Aktivitaet
 from server.db.Mapper import Mapper
 from datetime import datetime, timedelta
