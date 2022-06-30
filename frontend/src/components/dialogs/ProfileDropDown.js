@@ -1,7 +1,7 @@
-import React, { Component, createRef } from 'react';
-import PropTypes from 'prop-types';
-import { Popover, IconButton, Avatar, ClickAwayListener, withStyles, Typography, Paper, Button, Grid, Divider } from '@material-ui/core';
-import firebase from 'firebase/app';
+import React, { Component, createRef } from "react";
+import PropTypes from "prop-types";
+import { Popover, IconButton, Avatar, ClickAwayListener, withStyles, Typography, Paper, Button, Grid, Divider } from "@material-ui/core";
+import firebase from "firebase/app";
 
 /**
  * Zeigt das Profil an und gibt dem User die Möglichkeit sich auszuloggen.
@@ -28,7 +28,7 @@ class ProfileDropDown extends Component {
     });
   }
 
-  /** 
+  /**
    * Schließen beim Klicken in ein anderes Feld
    */
   handleClose = () => {
@@ -37,7 +37,7 @@ class ProfileDropDown extends Component {
     });
   }
 
-  /** 
+  /**
 	 * Ausloggen wenn man Authentifiziert ist.
 	 */
   handleSignOutButtonClicked = () => {
@@ -58,23 +58,23 @@ class ProfileDropDown extends Component {
 
           <Popover open={open} anchorEl={this.#avatarButtonRef.current} onClose={this.handleClose}
             anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
+              vertical: "top",
+              horizontal: "left",
             }}
             transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
+              vertical: "top",
+              horizontal: "right",
             }}>
             <ClickAwayListener onClickAway={this.handleClose}>
               <Paper className={classes.profileBox}>
-                <Typography align='center'>Signed in with Google</Typography>
+                <Typography align="center">Signed in with Google</Typography>
                 <Divider className={classes.divider} />
-                <Typography align='center' variant='body2'>{user.displayName}</Typography>
-                <Typography align='center' variant='body2'>{user.email}</Typography>
+                <Typography align="center" variant="body2">{user.displayName}</Typography>
+                <Typography align="center" variant="body2">{user.email}</Typography>
                 <Divider className={classes.divider} />
-                <Grid container justify='center'>
+                <Grid container justifyContent="center">
                   <Grid item>
-                    <Button variant='contained' color='secondary' onClick={this.handleSignOutButtonClicked}>Logout</Button>
+                    <Button variant="contained" color="secondary" onClick={this.handleSignOutButtonClicked}>Logout</Button>
                   </Grid>
                 </Grid>
               </Paper>
@@ -89,7 +89,7 @@ class ProfileDropDown extends Component {
 /** Style der Komponente */
 const styles = theme => ({
   avatarButton: {
-    float: 'right'
+    float: "right"
   },
   divider: {
     margin: theme.spacing(1),

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { withStyles, LinearProgress } from '@material-ui/core';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { withStyles, LinearProgress } from "@material-ui/core";
 
 /**
  * Shows a loading progress, if the show prop is true.
@@ -18,7 +18,7 @@ class LoadingProgress extends Component {
     return (
       show ?
         <div className={classes.root}>
-          <LinearProgress color='secondary' />
+          <LinearProgress color="secondary" />
         </div>
         : null
     );
@@ -28,7 +28,7 @@ class LoadingProgress extends Component {
 /** Component specific styles */
 const styles = theme => ({
   root: {
-    width: '100%',
+    width: "100%",
     marginTop: theme.spacing(2),
   }
 });

@@ -138,19 +138,6 @@ class ProjektMapper(Mapper):
 
         return result
 
-    def fuegt_person_zu_projekt_hinzu(self, projektID, personID):
-        """Einfügen eines Person zu einem Projekt.
-        :param projekt: Das zu speichernde Projekt.
-        :return: Das Projekt, das in der Datenbank eingefügt wurde.
-        """
-
-        cursor = self._cnx.cursor()
-
-        command = "INSERT INTO projektperson (projektID, personID) VALUES (%s,%s)"
-        data = (projektID, personID)
-        cursor.execute(command, data)
-        self._cnx.commit()
-
     def insert(self, projekt):
         """Einfügen eines Projekt-Objekts in die Datenbank.
         Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
@@ -213,17 +200,6 @@ class ProjektMapper(Mapper):
         cursor.close()
 
         return projekt
-
-    def delete_person_aus_projekt(self, personID, projektID):
-        """Löschen eine Person aus einem Projekt."""
-
-        cursor = self._cnx.cursor()
-
-        command = "DELETE FROM projektperson WHERE personID={} AND projektID={}".format(personID, projektID)
-        cursor.execute(command)
-
-        self._cnx.commit()
-        cursor.close()
 
     # Zum Testen ausführen
 

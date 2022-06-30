@@ -1,46 +1,3 @@
-"""
-A. Allgemeine Hinweise zu diesem Module:
-
-Normalerweise würde man eine Datei dieser Länge bzw. ein Module
-dieser Größe in mehrere Dateien bzw. Modules untergliedern. So könnte
-man z.B. pro Resource Class ein eigenes Module anlegen. Dadurch
-ergäben sich erhebliche Vorteile bzgl. der Wartungsfreundlichkeit
-dieses Modules. Es ergäben sich aber auch Nachteile! So haben Sie
-etwa mit einer Reihe von Abhängigkeiten z.B. zwischen der API-Definition
-und den Decorators zu tun. Außerdem verschlechtert sich aufgrund der Länge
-der Datei die Übersichtlichkeit der Inhalte und Strukturen.
-
-Abgesehen von Lehrbüchern und Vorlesungen müssen Sie in realen Projekten
-häufig die Vor- und Nachteile von Entscheidungen abwägen und sich dann
-bewusst für einen Weg entscheiden. Hier wurde die Entscheidung getroffen,
-die Einfachheit und Verständlichkeit des Source Codes höher zu werten als
-die Optimierung des Kopplungsgrads und damit die Wartbarkeit des Modules.
-
-B. Konventionen für dieses Module:
-
-    B.1. HTTP response status codes:
-
-        Folgende Codes werden verwendet:
-        200 OK           :      bei erfolgreichen requests. Af die Verwendung von
-                                weiter differenzierenden Statusmeldungen wie etwa
-                                '204 No Content' für erfolgreiche requests, die
-                                außer evtl. im Header keine weiteren Daten zurückliefern,
-                                wird in dieser Fallstudie auch aus Gründen einer
-                                möglichst einfachen Umsetzung verzichtet.
-        401 Unauthorized :      falls der User sich nicht gegenüber dem System
-                                authentisiert hat und daher keinen Zugriff erhält.
-        404 Not Found    :      falls eine angefragte Resource nicht verfügbar ist
-        500 Internal Server Error : falls der Server einen Fehler erkennt,
-                                diesen aber nicht genauer zu bearbeiten weiß.
-
-    B.2. Name des Moduls:
-        Der Name dieses Moduls lautet main.py. Grund hierfür ist, dass Google
-        App Engine, diesen Namen bevorzugt und sich dadurch das Deployment
-        einfacher gestaltet. Natürlich wären auch andere Namen möglich. Dies
-        wäre aber mit zusätzlichem Konfigurationsaufwand in der Datei app.yaml
-        verbunden.
-"""
-
 """Unser Service basiert auf Flask"""
 from flask import Flask
 """Auf Flask aufbauend nutzen wir RestX"""
@@ -115,7 +72,7 @@ zeitintervall = api.inherit("Zeitintervall", bo, {
     "datum": fields.String(attribute="_datum", description="Datum des Zeitintervall"),
     "startzeit": fields.String(attribute="_startzeit", description="Begin Zeit des Zeitintervall"),
     "endzeit": fields.String(attribute="_endzeit", description="End Zeit des Zeitintervall"),
-    "aktivitaetID": fields.Integer(attribute= "aktivitaetID", description="aktivitaet ID des Zeitintervall"),
+    "aktivitaetID": fields.Integer(attribute= "_aktivitaetID", description="aktivitaet ID des Zeitintervall"),
     "personID": fields.Integer(attribute= "_personID", description="ID des Erstellers vom Zeitintervall")
 })
 
@@ -295,6 +252,38 @@ class PersonGoogleIdOperations(Resource):
         adm = Administration()
         person = adm.get_user_by_google_user_id(google_id)
         return person
+
+
+@zeiterfassungapp.route("/person-in-projekt/<int:projektID>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("projektID", "Die Projekt Id des Projekt-Objekts")
+class PersonInProjekt(Resource):
+    @zeiterfassungapp.marshal_with(person)
+    @secured
+    def get(self, projektID):
+        """Auslesen einer bestimmten Person-BO.
+        Objekt wird durch die id in bestimmt.
+        """
+        adm = Administration()
+        person = adm.get_person_in_projekt(projektID)
+        return person
+
+
+@zeiterfassungapp.route("/person-in-projekt/<int:personID>/<int:projektID>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("personID", "Die Person Id des Person-Objekts")
+@zeiterfassungapp.param("projektID", "Die Projekt Id des Projekt-Objekts")
+class PersonInAusProjekt(Resource):
+    @secured
+    def post(self, personID, projektID):
+        """Add person to projekt."""
+        adm = Administration()
+        adm.add_person_to_projekt(projektID, personID)
+
+    def delete(self, personID, projektID):
+        """Delete person zu Projekt."""
+        adm = Administration()
+        adm.delete_person_aus_projekt(personID, projektID)
 
 
 @zeiterfassungapp.route("/person-by-email/<string:email>")
@@ -570,14 +559,14 @@ class ZeintervallPersonIDOperations(Resource):
         return zi
 
 
-@zeiterfassungapp.route("/arbeitszeitkonto/<int:personID>")
+@zeiterfassungapp.route("/arbeitkonto/<int:personID>")
 @zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
 @zeiterfassungapp.param("personID", "Der Person id des Zeitintervall-Objekts")
-class ArbeitszeitkontoOperations(Resource):
+class ArbeitKontoOperations(Resource):
     @zeiterfassungapp.marshal_with(konto)
     @secured
     def get(self, personID):
-        """Auslesen einer Arbeitszeitkonto einer person.
+        """Auslesen einer Arbeitkonto einer person.
         Objekt wird durch die id in bestimmt.
         """
         adm = Administration()

@@ -16,22 +16,22 @@ class Mapper (AbstractContextManager, ABC):
         """Wir testen, ob der Code im Kontext der lokalen Entwicklungsumgebung oder in der Cloud ausgeführt wird.
         Dies ist erforderlich, da die Modalitäten für den Verbindungsaufbau mit der Datenbank kontextabhängig sind."""
 
-        if os.getenv("GAE_ENV", "").startswith("standard"):
+        if os.getenv('GAE_ENV', '').startswith('standard'):
             """Landen wir in diesem Zweig, so haben wir festgestellt, dass der Code in der Cloud abläuft.
             Die App befindet sich somit im **Production Mode** und zwar im *Standard Environment*.
             Hierbei handelt es sich also um die Verbindung zwischen Google App Engine und Cloud SQL."""
 
-            self._cnx = connector.connect(user="root", password="Einhorn100?",
-                                          unix_socket="",
-                                          database="")
+            self._cnx = connector.connect(user='root', password='Einhorn100?',
+                                          unix_socket='   ',
+                                          database='   ')
         else:
             """Wenn wir hier ankommen, dann handelt sich offenbar um die Ausführung des Codes in einer lokalen Umgebung,
             also auf einem Local Development Server. Hierbei stellen wir eine einfache Verbindung zu einer lokal
             installierten mySQL-Datenbank her."""
 
-            self._cnx = connector.connect(user="db_user", password="db_password",
-                                  host="127.0.0.1",
-                                  database="app_db")
+            self._cnx = connector.connect(user='root', password='Germany611',
+                                  host='127.0.0.1',
+                                  database='sw-projekt1')
 
         return self
 
