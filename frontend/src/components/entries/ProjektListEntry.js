@@ -4,6 +4,7 @@ import { withStyles, Typography, Accordion, AccordionSummary, AccordionDetails, 
 import { Button, ButtonGroup } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ProjektForm from "../dialogs/ProjektForm";
+import PersonProjektForm from "../dialogs/PersonProjektForm";
 import ProjektDeleteDialog from "../dialogs/ProjektDeleteDialog";
 import ProjektDetail from "../details/ProjektDetail";
 
@@ -26,6 +27,7 @@ class ProjektListEntry extends Component {
       person: this.props.person,
       showProjektForm: false,
       showProjektDeleteDialog: false,
+      showPersonProjektForm: false,
     };
   }
 
@@ -40,6 +42,14 @@ class ProjektListEntry extends Component {
     this.setState({
       projekte: this.state.projekte.filter(projekt => projekt.getID() !== deletedProjekt.getID())
     })
+  }
+
+  /** Handles the onClick event of the add person projekt button */
+  addPersonProjektButtonClicked = (event) => {
+    event.stopPropagation();
+    this.setState({
+      showPersonProjektForm: true
+    });
   }
 
   /** Handles the onClick event of the edit projekt button */
@@ -65,6 +75,13 @@ class ProjektListEntry extends Component {
     }
   }
 
+  /** Handles the onClose event of the PersonProjektForm */
+  personProjektFormClosed = () => {
+    this.setState({
+      showPersonProjektForm: false
+    });
+  }
+
   /** Handles the onClick event of the delete projekt button */
   deleteProjektButtonClicked = (event) => {
     event.stopPropagation();
@@ -88,11 +105,10 @@ class ProjektListEntry extends Component {
 
   /** Renders the component */
   render() {
-    const { classes, expandedState, user, person } = this.props;
+    const { classes, expandedState, projekt, user, person } = this.props;
     // Use the states projekt
-    const { projekt, showProjektForm, showProjektDeleteDialog } = this.state;
+    const { showProjektForm, showPersonProjektForm, showProjektDeleteDialog } = this.state;
 
-    // console.log(this.state);
     return (
       <div>
         <Accordion defaultExpanded={false} expanded={expandedState} onChange={this.expansionPanelStateChanged}>
@@ -111,9 +127,12 @@ class ProjektListEntry extends Component {
           <AccordionDetails>
             <Grid container justifyContent="flex-start" alignItems="center">
               <ProjektDetail projekt={projekt} />
-              {person.getID() === projekt.getPersonID &&
+              {person.getID() === projekt.getPersonID() &&
                 <Grid item>
                   <ButtonGroup variant="text" size="small">
+                    <Button color="primary" onClick={this.addPersonProjektButtonClicked}>
+                      Add Person
+                    </Button>
                     <Button color="primary" onClick={this.editProjektButtonClicked}>
                       edit
                     </Button>
@@ -127,6 +146,7 @@ class ProjektListEntry extends Component {
           </AccordionDetails>
         </Accordion>
         <ProjektForm show={showProjektForm} projekt={projekt} user={user} onClose={this.projektFormClosed} />
+        <PersonProjektForm show={showPersonProjektForm} person={person} user={user} onClose={this.personProjektFormClosed} />
         <ProjektDeleteDialog show={showProjektDeleteDialog} projekt={projekt} onClose={this.deleteProjektDialogClosed} />
       </div>
     );
