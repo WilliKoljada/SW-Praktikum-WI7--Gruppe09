@@ -1,8 +1,7 @@
 from server.bo import BusinessObject as bo
 
 
-
-class Projekt (bo.BusinessObject):
+class Projekt(bo.BusinessObject):
 
     def __init__(self):
         super().__init__()
@@ -32,13 +31,13 @@ class Projekt (bo.BusinessObject):
 
     def get_personID(self):
         return self._personID
-    
+
     def set_kapazitaet(self, kapazitaet):
         self._kapazitaet = kapazitaet
 
     def get_kapazitaet(self):
         return self._kapazitaet
-    
+
     def set_personID(self, personID):
         self._personID = personID
 
@@ -52,6 +51,5 @@ class Projekt (bo.BusinessObject):
         obj.set_auftraggeber((dictionary["auftraggeber"]))
         obj.set_beschreibung(dictionary["beschreibung"])
         obj.set_personID(dictionary["personID"])
-        obj.set_kapazitaet(dictionary["kapaziteat"])
 
         return obj
