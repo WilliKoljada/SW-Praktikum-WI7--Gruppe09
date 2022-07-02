@@ -64,3 +64,39 @@ class PersonProjektForm extends Component {
     this.getPersons();
   }
 
+  /** Adds person to projekt */
+  addPersonToProjekt = () => {
+    ZeiterfassungAPI.getAPI().addPersonInProjekt(this.state.personID, this.state.projektID)
+    .then(() => {
+      this.setState({
+        personID: 0,
+        projektID: 0
+      });
+      this.props.onClose();
+    }).catch(e =>
+      this.setState({
+        updatingInProgress: false,
+        updatingError: e
+      })
+    );
+
+    // set loading to true
+    this.setState({
+      updatingInProgress: true,       // show loading indicator
+      updatingError: null             // disable error message
+    });
+  }
+
+  handleSelect = (event) => {
+    this.setState({
+      [event.target.id]: event.target.value
+    })
+  };
+
+  /** Handles the close / cancel button click event */
+  handleClose = () => {
+    // Reset the state
+    this.setState(this.baseState);
+    this.props.onClose();
+  };
+
