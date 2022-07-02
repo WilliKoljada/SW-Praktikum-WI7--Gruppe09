@@ -25,6 +25,7 @@ class EreignisList extends Component {
     // Init the state
     this.state = {
       ereigniss: [],
+      person: null,
       filteredEreigniss: [],
       ereignisFilter: "",
       error: null,
@@ -32,6 +33,20 @@ class EreignisList extends Component {
       expandedEreignisID: expandedID,
       showEreignisForm: false
     };
+  }
+
+  getPersonByGoogleID = () => {
+    ZeiterfassungAPI.getAPI().getPersonByGoogleID(this.props.user.uid).then(person => {
+      this.setState({
+        person: person[0]
+      })
+    }).catch(e =>
+      this.setState({
+        person: null,
+        updatingInProgress: false,    // disable loading indicator
+        updatingError: e              // show error message
+      })
+    );
   }
 
   /** Fetches EreignisBOs for the current person */
@@ -61,6 +76,7 @@ class EreignisList extends Component {
   /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
   componentDidMount() {
     this.getEreigniss();
+    this.getPersonByGoogleID();
   }
 
   /**
@@ -150,7 +166,7 @@ class EreignisList extends Component {
   /** Renders the component */
   render() {
     const { classes, user } = this.props;
-    const { filteredEreigniss, ereignisFilter, expandedEreignisID, loadingInProgress, error, showEreignisForm } = this.state;
+    const { filteredEreigniss, person, ereignisFilter, expandedEreignisID, loadingInProgress, error, showEreignisForm } = this.state;
 
     return (
       <div className={classes.root}>
@@ -193,7 +209,12 @@ class EreignisList extends Component {
           // Do not use strict comparison, since expandedEreignisID maybe a string if given from the URL parameters
           filteredEreigniss.map(ereignis =>
             (<div key={ereignis.getID()}>
-              <EreignisListEntry key={ereignis.getID()} ereignis={ereignis} user={user} expandedState={expandedEreignisID === ereignis.getID()}
+              <EreignisListEntry
+                key={ereignis.getID()}
+                ereignis={ereignis}
+                user={user}
+                person={person}
+                expandedState={expandedEreignisID === ereignis.getID()}
                 onExpandedStateChange={this.onExpandedStateChange}
                 onEreignisDeleted={this.ereignisDeleted}
               />
