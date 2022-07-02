@@ -25,11 +25,26 @@ class ZeitenList extends Component {
     // Init the state
     this.state = {
       zeiten: [],
+      person: null,
       error: null,
       loadingInProgress: false,
       expandedZeitenID: expandedID,
       showZeitenForm: false
     };
+  }
+
+  getPersonByGoogleID = () => {
+    ZeiterfassungAPI.getAPI().getPersonByGoogleID(this.props.user.uid).then(person => {
+      this.setState({
+        person: person[0]
+      })
+    }).catch(e =>
+      this.setState({
+        person: null,
+        updatingInProgress: false,    // disable loading indicator
+        updatingError: e              // show error message
+      })
+    );
   }
 
   /** Fetches ZeitintervallBOs for the current person */
@@ -58,6 +73,7 @@ class ZeitenList extends Component {
   /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
   componentDidMount() {
     this.getZeiten();
+    this.getPersonByGoogleID();
   }
 
   /**
@@ -124,7 +140,7 @@ class ZeitenList extends Component {
   /** Renders the component */
   render() {
     const { classes, user } = this.props;
-    const { zeiten, expandedZeitenID, loadingInProgress, error, showZeitenForm } = this.state;
+    const { zeiten, person, expandedZeitenID, loadingInProgress, error, showZeitenForm } = this.state;
 
     return (
       <div className={classes.root}>
@@ -142,7 +158,12 @@ class ZeitenList extends Component {
         {
           zeiten.map(zeit =>
             (<div key={zeit.getID()}>
-              <ZeitenListEntry key={zeit.getID()} zeit={zeit} user={user} expandedState={expandedZeitenID === zeit.getID()}
+              <ZeitenListEntry
+                key={zeit.getID()}
+                zeit={zeit}
+                user={user}
+                person={person}
+                expandedState={expandedZeitenID === zeit.getID()}
                 onExpandedStateChange={this.onExpandedStateChange}
                 onZeitenDeleted={this.zeitDeleted}
               />
@@ -179,3 +200,4 @@ ZeitenList.propTypes = {
 }
 
 export default withRouter(withStyles(styles)(ZeitenList));
+
