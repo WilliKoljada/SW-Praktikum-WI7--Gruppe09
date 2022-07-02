@@ -14,7 +14,6 @@ class AktivitaetList extends Component {
   constructor(props) {
     super(props);
 
-    // console.log(props);
     let expandedID = null;
 
     if (this.props.location.expandAktivitaet) {
@@ -24,6 +23,7 @@ class AktivitaetList extends Component {
     // Init the state
     this.state = {
       aktivitaets: [],
+      person: null,
       filteredAktivitaets: [],
       aktivitaetFilter: "",
       error: null,
@@ -33,12 +33,27 @@ class AktivitaetList extends Component {
     };
   }
 
+  getPersonByGoogleID = () => {
+    ZeiterfassungAPI.getAPI().getPersonByGoogleID(this.props.user.uid).then(person => {
+      this.setState({
+        person: person[0]
+      })
+    }).catch(e =>
+      this.setState({
+        person: null,
+        updatingInProgress: false,    // disable loading indicator
+        updatingError: e              // show error message
+      })
+    );
+  }
+
   /** Fetches AktivitaetBOs for the current person */
   getAktivitaets = () => {
     ZeiterfassungAPI.getAPI().getAktivitaets()
       .then(aktivitaetBOs =>
         this.setState({  // Set new state when AktivitaetBOs have been fetched
           aktivitaets: aktivitaetBOs,
+          filteredAktivitaets: aktivitaetBOs,
           loadingInProgress: false, // loading indicator
           loadinAktivitaettError: null
         })).catch(e =>
@@ -60,6 +75,7 @@ class AktivitaetList extends Component {
   /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
   componentDidMount() {
     this.getAktivitaets();
+    this.getPersonByGoogleID();
   }
 
   /**
@@ -111,7 +127,7 @@ class AktivitaetList extends Component {
   /** Handles the onClose event of the AktivitaetForm */
   aktivitaetFormClosed = aktivitaet => {
     // aktivitaet is not null and therefore created
-    if (aktivitaet) {
+    if(aktivitaet){
       const newAktivitaetList = [...this.state.aktivitaets, aktivitaet];
       this.setState({
         aktivitaets: newAktivitaetList,
@@ -148,8 +164,8 @@ class AktivitaetList extends Component {
 
   /** Renders the component */
   render() {
-    const { classes } = this.props;
-    const { filteredAktivitaets, aktivitaetFilter, expandedAktivitaetID, loadingInProgress, error, showAktivitaetForm } = this.state;
+    const { classes, user } = this.props;
+    const { filteredAktivitaets, person, aktivitaetFilter, expandedAktivitaetID, loadingInProgress, error, showAktivitaetForm } = this.state;
 
     return (
       <div className={classes.root}>
@@ -183,18 +199,32 @@ class AktivitaetList extends Component {
           </Button>
           </Grid>
         </Grid>
+        <Grid item xs />
+        <Grid item>
+          <Typography variant="body2" color={"textSecondary"}>List of aktivitäten</Typography>
+        </Grid>
         {
           // Show the list of AktivitaetListEntry components
           // Do not use strict comparison, since expandedAktivitaetID maybe a string if given from the URL parameters
           filteredAktivitaets.map(aktivitaet =>
-            <AktivitaetListEntry key={aktivitaet.getID()} aktivitaet={aktivitaet} expandedState={expandedAktivitaetID === aktivitaet.getID()}
-              onExpandedStateChange={this.onExpandedStateChange}
-              onAktivitaetDeleted={this.aktivitaetDeleted}
-            />)
+            (<div key={aktivitaet.getID()}>
+              <AktivitaetListEntry
+                key={aktivitaet.getID()}
+                aktivitaet={aktivitaet}
+                user={user}
+                person={person}
+                expandedState={expandedAktivitaetID === aktivitaet.getID()}
+                onExpandedStateChange={this.onExpandedStateChange}
+                onAktivitaetDeleted={this.aktivitaetDeleted}
+              />
+              <br />
+              <Grid item xs />
+            </div>)
+          )
         }
         <LoadingProgress show={loadingInProgress} />
         <ContextErrorMessage error={error} contextErrorMsg={`The list of aktivität could not be loaded.`} onReload={this.getAktivitaets} />
-        <AktivitaetForm show={showAktivitaetForm} onClose={this.aktivitaetFormClosed} />
+        <AktivitaetForm show={showAktivitaetForm} user={user} onClose={this.aktivitaetFormClosed} />
       </div>
     );
   }
@@ -220,3 +250,4 @@ AktivitaetList.propTypes = {
 }
 
 export default withRouter(withStyles(styles)(AktivitaetList));
+
