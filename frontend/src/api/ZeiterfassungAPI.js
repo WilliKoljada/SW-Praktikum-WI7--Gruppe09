@@ -35,6 +35,7 @@ export default class ZeiterfassungAPI {
   // Projekt related
   #getAllProjektsURL = () => `${this.#ZeiterfassungServerBaseURL}/projekt`;
   #getProjektByIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
+  #getProjektByPersonIdURL = (personID) => `${this.#ZeiterfassungServerBaseURL}/projekt-von-person/${personID}`;
   #addProjektURL = () => `${this.#ZeiterfassungServerBaseURL}/projekt`;
   #updateProjektURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
   #deleteProjektURL = (id) => `${this.#ZeiterfassungServerBaseURL}/projekt/${id}`;
@@ -399,7 +400,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to a ProjektBO
-   * 
+   *
    * @param {Number} projektID to be retrieved
    * @public
    */
@@ -408,6 +409,24 @@ export default class ZeiterfassungAPI {
       .then((responseJSON) => {
       // We always get an array of ProjektBOs.fromJSON, but only need one object
       let responseProjektBO = ProjektBO.fromJSON(responseJSON)[0];
+      // console.info(responseProjektBO);
+      return new Promise(function (resolve) {
+        resolve(responseProjektBO);
+      })
+    })
+  }
+
+  /**
+   * Returns a Promise, which resolves to a ProjektBO
+   *
+   * @param {Number} personID to be retrieved
+   * @public
+   */
+   getProjektVonPerson(personID) {
+    return this.#fetchAdvanced(this.#getProjektByPersonIdURL(personID))
+      .then((responseJSON) => {
+      // We always get an array of ProjektBOs.fromJSON, but only need one object
+      let responseProjektBO = ProjektBO.fromJSON(responseJSON);
       // console.info(responseProjektBO);
       return new Promise(function (resolve) {
         resolve(responseProjektBO);
