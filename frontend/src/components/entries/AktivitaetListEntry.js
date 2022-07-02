@@ -143,6 +143,7 @@ AktivitaetListEntry.propTypes = {
   classes: PropTypes.object.isRequired,
   /** The AktivitaetBO to be rendered */
   aktivitaet: PropTypes.object.isRequired,
+  person: PropTypes.object.isRequired,
   /** The state of this AktivitaetListEntry. If true the aktivitaet is shown with its accounts */
   expandedState: PropTypes.bool.isRequired,
   /** The handler responsible for handle expanded state changes (exanding/collapsing) of this AktivitaetListEntry

@@ -23,6 +23,7 @@ class ProjektListEntry extends Component {
     // Init the state
     this.state = {
       projekt: props.projekt,
+      person: this.props.person,
       showProjektForm: false,
       showProjektDeleteDialog: false,
     };
@@ -87,7 +88,7 @@ class ProjektListEntry extends Component {
 
   /** Renders the component */
   render() {
-    const { classes, expandedState, user } = this.props;
+    const { classes, expandedState, user, person } = this.props;
     // Use the states projekt
     const { projekt, showProjektForm, showProjektDeleteDialog } = this.state;
 
@@ -110,16 +111,18 @@ class ProjektListEntry extends Component {
           <AccordionDetails>
             <Grid container justifyContent="flex-start" alignItems="center">
               <ProjektDetail projekt={projekt} />
-              <Grid item>
-                <ButtonGroup variant="text" size="small">
-                  <Button color="primary" onClick={this.editProjektButtonClicked}>
-                    edit
-                  </Button>
-                  <Button color="secondary" onClick={this.deleteProjektButtonClicked}>
-                    delete
-                  </Button>
-                </ButtonGroup>
-              </Grid>
+              {person.getID() === projekt.getPersonID &&
+                <Grid item>
+                  <ButtonGroup variant="text" size="small">
+                    <Button color="primary" onClick={this.editProjektButtonClicked}>
+                      edit
+                    </Button>
+                    <Button color="secondary" onClick={this.deleteProjektButtonClicked}>
+                      delete
+                    </Button>
+                  </ButtonGroup>
+                </Grid>
+              }
             </Grid>
           </AccordionDetails>
         </Accordion>
@@ -143,6 +146,7 @@ ProjektListEntry.propTypes = {
   classes: PropTypes.object.isRequired,
   /** The ProjektBO to be rendered */
   projekt: PropTypes.object.isRequired,
+  person: PropTypes.object.isRequired,
   /** The state of this ProjektListEntry. If true the projekt is shown with its accounts */
   expandedState: PropTypes.bool.isRequired,
   /** The handler responsible for handle expanded state changes (exanding/collapsing) of this ProjektListEntry
