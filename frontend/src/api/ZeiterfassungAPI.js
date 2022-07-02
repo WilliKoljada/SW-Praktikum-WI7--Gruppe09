@@ -63,6 +63,11 @@ export default class ZeiterfassungAPI {
   // Arbeitkonto related
   #getArbeitkontoURL = (id) => `${this.#ZeiterfassungServerBaseURL}/arbeitkonto/${id}`;
 
+  // Person Projekt
+  #addPersonProjekt = (personID, projektID) => `${this.#ZeiterfassungServerBaseURL}/person-in-projekt/${personID}/${projektID}`;
+  #getPersonProjekt = (personID, projektID) => `${this.#ZeiterfassungServerBaseURL}/person-in-projekt/${projektID}`;
+  #deletePersonProjekt = (personID, projektID) => `${this.#ZeiterfassungServerBaseURL}/person-in-projekt/${personID}/${projektID}`;
+
   /**
    * Get the Singelton instance
    *
@@ -331,6 +336,53 @@ export default class ZeiterfassungAPI {
   }
 
   /**
+   * Get all the person in a given Projekt
+   *
+   * @param projektID
+   * @public
+   */
+  getPersonInProjekt(projektID) {
+    return this.#fetchAdvanced(this.#getPersonProjekt(projektID), {
+      method: "GET"
+    }).then((responseJSON) => {
+      let responsePersonBO = PersonBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve(responsePersonBO);
+      })
+    })
+  }
+
+  /**
+   * Add the given Person to the given Projekt
+   *
+   * @param personID
+   * @param projektID
+   * @public
+   */
+  addPersonInProjekt(personID, projektID) {
+    return this.#fetchAdvanced(this.#addPersonProjekt(personID, projektID), {
+      method: "POST"
+    }).then(() => {
+      console.log("person added")
+    })
+  }
+
+  /**
+   * Delete the given Person to the given Projekt
+   *
+   * @param personID
+   * @param projektID
+   * @public
+   */
+  deletePersonInProjekt(personID, projektID) {
+    return this.#fetchAdvanced(this.#deletePersonProjekt(personID, projektID), {
+      method: "DELETE"
+    }).then(() => {
+      console.log("person deleted")
+    })
+  }
+
+  /**
    * Returns a Promise, which resolves to an Array of ProjektBOs
    *
    * @public
@@ -347,7 +399,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to a ProjektBO
-   *
+   * 
    * @param {Number} projektID to be retrieved
    * @public
    */
@@ -364,8 +416,8 @@ export default class ZeiterfassungAPI {
   }
 
   /**
-   * Adds a projekt and returns a Promise, which resolves to a new ProjektBO object with the
-   *
+   * Adds a projekt and returns a Promise, which resolves to a new ProjektBO object with the 
+   * 
    * @param {ProjektBO} projektBO to be added. The ID of the new Projekt is set by the backend
    * @public
    */
@@ -389,7 +441,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Updates a project and returns a Promise, which resolves to a ProjektBO.
-   *
+   * 
    * @param {ProjektBO} projektBO to be updated
    * @public
    */
@@ -413,7 +465,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to an Array of projektIDs
-   *
+   * 
    * @param {Number} projektID to be deleted
    * @public
    */
@@ -432,7 +484,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to an Array of EreignisBO
-   *
+   * 
    * @public
    */
    getEreigniss() {
@@ -447,7 +499,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to a EreignisBO
-   *
+   * 
    * @param {Number} EreignisID to be retrieved
    * @public
    */
@@ -463,8 +515,8 @@ export default class ZeiterfassungAPI {
   }
 
   /**
-   * Adds a ereignis and returns a Promise, which resolves to a new EreignisBO object with the
-   *
+   * Adds a ereignis and returns a Promise, which resolves to a new EreignisBO object with the 
+   * 
    * @param {EreignisBO} ereignisBO to be added. The ID of the new Ereignis is set by the backend
    * @public
    */
@@ -488,7 +540,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Updates a ereignis and returns a Promise, which resolves to a EreignisBO.
-   *
+   * 
    * @param {EreignisBO} EreignisBO to be updated
    * @public
    */
@@ -512,7 +564,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to an Array of EreignisBO
-   *
+   * 
    * @param {Number} ereignisID to be deleted
    * @public
    */
@@ -532,7 +584,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to a ArbeitszeitkontoBO
-   *
+   * 
    * @param {Number} personID to be retrieved
    * @public
    */
@@ -548,7 +600,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to an Array of ZeitIntervallBO
-   *
+   * 
    * @public
    */
    getZeitIntervalls() {
@@ -563,7 +615,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to a ZeitintervallBO
-   *
+   * 
    * @param {Number} zeitintervallID to be retrieved
    * @public
    */
@@ -580,7 +632,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Adds a zeitintervall and returns a Promise, which resolves to a new ZeitintervallBO object with the
-   *
+   * 
    * @param {ZeitintervallBO} zeitintervallID to be added. The ID of the new Zeitintervall is set by the backend
    * @public
    */
@@ -604,7 +656,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Updates a zeitintervall and returns a Promise, which resolves to a zeitintervallBO.
-   *
+   * 
    * @param {ZeitintervallBO} zeitintervallBO to be updated
    * @public
    */
@@ -628,7 +680,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to an Array of ZeitintervallBO
-   *
+   * 
    * @param {Number} ZeitintervallID to be deleted
    * @public
    */
