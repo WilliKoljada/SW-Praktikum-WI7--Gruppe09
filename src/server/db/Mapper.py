@@ -21,15 +21,15 @@ class Mapper (AbstractContextManager, ABC):
             Die App befindet sich somit im **Production Mode** und zwar im *Standard Environment*.
             Hierbei handelt es sich also um die Verbindung zwischen Google App Engine und Cloud SQL."""
 
-            self._cnx = connector.connect(user="root", password="Einhorn100?",
-                                          unix_socket="   ",
-                                          database="   ")
+            self._cnx = connector.connect(user="root", password="root",
+                                          unix_socket="/cloudsql/zeitproject-88e13:europe-west3:zeitproject-db-gruppe09",
+                                          database="sw-projekt1")
         else:
             """Wenn wir hier ankommen, dann handelt sich offenbar um die Ausführung des Codes in einer lokalen Umgebung,
             also auf einem Local Development Server. Hierbei stellen wir eine einfache Verbindung zu einer lokal
             installierten mySQL-Datenbank her."""
 
-            self._cnx = connector.connect(user="root", password="Germany611",
+            self._cnx = connector.connect(user="root", password="root",
                                   host="127.0.0.1",
                                   database="sw-projekt1")
 

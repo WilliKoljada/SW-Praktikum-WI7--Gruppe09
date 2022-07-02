@@ -1,5 +1,5 @@
 """Unser Service basiert auf Flask"""
-from flask import Flask
+from flask import Flask, request, redirect, url_for
 """Auf Flask aufbauend nutzen wir RestX"""
 from flask_restx import Api, Resource, fields
 """Wir benutzen noch eine Flask-Erweiterung für Cross-Origin Resource Sharing"""
@@ -17,13 +17,26 @@ from server.bo.Ereignis import Ereignis
 from SecurityDecorator import secured
 
 """Hier wird Flask instanziert"""
-app = Flask(__name__)
+app = Flask(__name__, static_folder="./build", static_url_path='/')
 
-"""Flask-Erweiterung für Cross-Origin Resource Sharing"""
-CORS(app, resources=r"/zeiterfassungapp/*")
+app.config['ERROR_404_HELP'] = False
 
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 api = Api(app, version="1.0", title="Zeiterfassungapp API",
           description="Eine rudimentäre Demo-Api für Listenerstellung.")
+
+"""Flask-Erweiterung für Cross-Origin Resource Sharing"""
+CORS(app, resources=r"/Zeiterfassungapp/*")
+
+
+@app.errorhandler(404)
+def handle_404(e):
+    if request.path.startswith('/zeiterfassungapp'):
+        return "Fehler", 404
+    else:
+        return redirect(url_for('index'))
 
 """Namespaces"""
 zeiterfassungapp = api.namespace("Zeiterfassungapp", description="Funktionen der App") #Name der App?
@@ -455,6 +468,21 @@ class ProjektOperations(Resource):
             return p, 200
         else:
             return "", 500
+
+
+@zeiterfassungapp.route("/projekt-von-person/<int:personID>")
+@zeiterfassungapp.response(500, "Falls es zu einem Server-seitigen Fehler kommt.")
+@zeiterfassungapp.param("personID", "Der Type des Ereignis-Objekts")
+class ProjektVonPersonOperations(Resource):
+    @zeiterfassungapp.marshal_with(projekt)
+    @secured
+    def get(self, personID):
+        """Auslesen Projekt die von einer Person erstellt wurde.
+        """
+        adm = Administration()
+        projekts = adm.get_projekt_by_personID(personID)
+        return projekts
+
 
 # Alle weiteren bo´s wie bei Zeitintervall erstellen
 
