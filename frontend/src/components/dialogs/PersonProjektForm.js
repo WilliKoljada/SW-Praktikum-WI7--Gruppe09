@@ -100,3 +100,79 @@ class PersonProjektForm extends Component {
     this.props.onClose();
   };
 
+ /** Renders the component */
+  render() {
+    const { classes, aktivitaet, show } = this.props;
+    const { projekts, persons, personID, projektID, addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
+
+    let title = "Fügt einer Person zu einem Projekt";
+    let header = "Select the Person and the Projekt";
+
+    return (
+      show ?
+        <Dialog open={show} onClose={this.handleClose} maxWidth="xs">
+          <DialogTitle id="form-dialog-title">{title}
+            <IconButton className={classes.closeButton} onClick={this.handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {header}
+            </DialogContentText>
+            <form className={classes.root} noValidate autoComplete="off">
+              <InputLabel variant="standard" htmlFor="personID">
+								Person
+							</InputLabel>
+              <NativeSelect
+								fullWidth
+                onChange={this.handleSelect}
+								value={personID}
+								inputProps={{
+									name: "PersonID",
+									id: "personID"
+								}}
+							>
+                {
+                  persons.map(person =>
+                    {person.getGoogle_id() !== this.props.user.uid &&
+                      <option key={person.getID()} value={person.getID()}>{person.getBenutzername()}</option>
+                    }
+                  )
+                }
+							</NativeSelect>
+              <InputLabel variant="standard" htmlFor="projektID">
+								Projekt
+							</InputLabel>
+              <NativeSelect
+								fullWidth
+                onChange={this.handleSelect}
+								value={projektID}
+								inputProps={{
+									name: "ProjektID",
+									id: "projektID"
+								}}
+							>
+                {
+                  projekts.map(projekt =>
+                    <option key={projekt.getID()} value={projekt.getID()}>{projekt.getName()}</option>
+                  )
+                }
+							</NativeSelect>
+            </form>
+            <LoadingProgress show={addingInProgress || updatingInProgress} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="secondary">
+              Cancel
+            </Button>
+            <Button variant="contained" onClick={this.addPersonToProjekt} color="primary">
+              Add
+             </Button>
+          </DialogActions>
+        </Dialog>
+        : null
+    );
+  }
+}
+
