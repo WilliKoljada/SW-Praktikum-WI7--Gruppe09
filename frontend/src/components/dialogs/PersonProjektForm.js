@@ -100,10 +100,10 @@ class PersonProjektForm extends Component {
     this.props.onClose();
   };
 
- /** Renders the component */
+  /** Renders the component */
   render() {
-    const { classes, aktivitaet, show } = this.props;
-    const { projekts, persons, personID, projektID, addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
+    const { classes, show } = this.props;
+    const { projekts, persons, personID, projektID, addingInProgress, updatingInProgress } = this.state;
 
     let title = "Fügt einer Person zu einem Projekt";
     let header = "Select the Person and the Projekt";
@@ -133,11 +133,13 @@ class PersonProjektForm extends Component {
 									id: "personID"
 								}}
 							>
+                <option key="initPerson" value="0">Select a Person</option>
                 {
-                  persons.map(person =>
-                    {person.getGoogle_id() !== this.props.user.uid &&
-                      <option key={person.getID()} value={person.getID()}>{person.getBenutzername()}</option>
+                  persons.map(pers =>
+                    {if(pers.getGoogle_id() != this.props.user.uid){
+                      return <option key={pers.getID()} value={pers.getID()}>{pers.getBenutzername()}</option>
                     }
+                  }
                   )
                 }
 							</NativeSelect>
@@ -153,6 +155,7 @@ class PersonProjektForm extends Component {
 									id: "projektID"
 								}}
 							>
+                <option key="initProjekt" value="0">Select a Projekt</option>
                 {
                   projekts.map(projekt =>
                     <option key={projekt.getID()} value={projekt.getID()}>{projekt.getName()}</option>
@@ -176,3 +179,35 @@ class PersonProjektForm extends Component {
   }
 }
 
+/** Component specific styles */
+const styles = theme => ({
+  root: {
+    width: "100%",
+  },
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+});
+
+/** PropTypes */
+PersonProjektForm.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** The AktivitaetBO to be edited */
+  person: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  /** If true, the form is rendered */
+  show: PropTypes.bool.isRequired,
+  /**
+   * Handler function which is called, when the dialog is closed.
+   * Sends the edited or created AktivitaetBO as parameter or null, if cancel was pressed.
+   *
+   * Signature: onClose(AktivitaetBO aktivitaet);
+   */
+  onClose: PropTypes.func.isRequired,
+}
+
+export default withStyles(styles)(PersonProjektForm);
