@@ -24,6 +24,7 @@ class ProjektList extends Component {
     // Init the state
     this.state = {
       projekte: [],
+      person: null,
       filteredProjekte: [],
       projektFilter: "",
       error: null,
@@ -31,6 +32,20 @@ class ProjektList extends Component {
       expandedProjektID: expandedID,
       showProjektForm: false
     };
+  }
+
+  getPersonByGoogleID = () => {
+    ZeiterfassungAPI.getAPI().getPersonByGoogleID(this.props.user.uid).then(person => {
+      this.setState({
+        person: person[0]
+      })
+    }).catch(e =>
+      this.setState({
+        person: null,
+        updatingInProgress: false,    // disable loading indicator
+        updatingError: e              // show error message
+      })
+    );
   }
 
   /** Fetches ProjektBOs for the current person */
@@ -61,6 +76,7 @@ class ProjektList extends Component {
   /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
   componentDidMount() {
     this.getProjekts();
+    this.getPersonByGoogleID();
   }
 
   /**
@@ -150,7 +166,7 @@ class ProjektList extends Component {
   /** Renders the component */
   render() {
     const { classes, user } = this.props;
-    const { filteredProjekte, projektFilter, expandedProjektID, loadingInProgress, error, showProjektForm } = this.state;
+    const { filteredProjekte, person, projektFilter, expandedProjektID, loadingInProgress, error, showProjektForm } = this.state;
 
     return (
       <div className={classes.root}>
@@ -193,7 +209,12 @@ class ProjektList extends Component {
           // Do not use strict comparison, since expandedProjektID maybe a string if given from the URL parameters
           filteredProjekte.map(projekt =>
             (<div key={projekt.getID()}>
-              <ProjektListEntry key={projekt.getID()} user={user} projekt={projekt} expandedState={expandedProjektID === projekt.getID()}
+              <ProjektListEntry
+                key={projekt.getID()}
+                user={user}
+                projekt={projekt}
+                person={person}
+                expandedState={expandedProjektID === projekt.getID()}
                 onExpandedStateChange={this.onExpandedStateChange}
                 onProjektDeleted={this.projektDeleted}
               />
