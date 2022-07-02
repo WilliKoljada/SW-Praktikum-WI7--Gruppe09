@@ -143,6 +143,7 @@ ZeitenListEntry.propTypes = {
   classes: PropTypes.object.isRequired,
   /** The ZeitintervallBO to be rendered */
   zeit: PropTypes.object.isRequired,
+  person: PropTypes.object.isRequired,
   /** The state of this ZeitenListEntry. If true the zeit is shown with its accounts */
   expandedState: PropTypes.bool.isRequired,
   /** The handler responsible for handle expanded state changes (exanding/collapsing) of this ZeitenListEntry

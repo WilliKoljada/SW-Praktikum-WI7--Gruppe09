@@ -143,6 +143,7 @@ EreignisListEntry.propTypes = {
   classes: PropTypes.object.isRequired,
   /** The EreignisBO to be rendered */
   ereignis: PropTypes.object.isRequired,
+  person: PropTypes.object.isRequired,
   /** The state of this EreignisListEntry. If true the ereignis is shown with its accounts */
   expandedState: PropTypes.bool.isRequired,
   /** The handler responsible for handle expanded state changes (exanding/collapsing) of this EreignisListEntry
