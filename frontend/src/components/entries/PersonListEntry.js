@@ -160,4 +160,3 @@ PersonListEntry.propTypes = {
 }
 
 export default withStyles(styles)(PersonListEntry);
-

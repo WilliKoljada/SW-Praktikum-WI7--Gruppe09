@@ -217,7 +217,8 @@ class EreignisForm extends Component {
 								}}
 							>
 								<option value={"urlaub"}>Urlaub</option>
-								<option value={"krankheit"}>krankheit</option>
+								<option value={"krankheit"}>Krankheit</option>
+								<option value={"pause"}>Pause</option>
 							</NativeSelect>
               <TextField
 								autoFocus

@@ -1,3 +1,4 @@
+from unittest import result
 from server.bo.Person import Person
 from server.db.Mapper import Mapper
 from datetime import datetime
@@ -71,7 +72,6 @@ class PersonMapper(Mapper):
     def find_by_google_user_id(self, google_user_id):
         """Suchen eines Benutzers mit vorgegebener Google ID. Da diese eindeutig ist,
         wird genau ein Objekt zurückgegeben.
-
         :param google_user_id die Google ID des gesuchten Users.
         :return User-Objekt, das die übergebene Google ID besitzt,
             None bei nicht vorhandenem DB-Tupel.
@@ -143,6 +143,33 @@ class PersonMapper(Mapper):
 
         return result
 
+    def find_person_in_projekt(self, projektID):
+        """Auslesen aller Person, die zu eine Projekt zugeordnet sind."""
+
+        result = []
+        cursor = self._cnx.cursor()
+        command = "SELECT id, creation_date, vorname, nachname, email, benutzername, role, google_id, \
+            FROM person WHERE id IN (SELECT personID FROM projektperson WHERE projektID={})".format(projektID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for (id, creation_date, vorname, nachname, Email, Benutzername, role, google_id) in tuples:
+            person = Person()
+            person.set_id(id)
+            person.set_creation_date(creation_date)
+            person.set_vorname(vorname)
+            person.set_nachname(nachname)
+            person.set_email(Email)
+            person.set_benutzername(Benutzername)
+            person.set_google_id(google_id)
+            person.set_role(role)
+            result.append(person)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
     def insert(self, person):
         """Einfügen eines Person-Objekts in die Datenbank.
         Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
@@ -167,7 +194,8 @@ class PersonMapper(Mapper):
 
                 person.set_id(maxid[0] + 1)
 
-        creation_date = datetime.utcnow()
+        creation_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        person.set_creation_date(creation_date)
         command = "INSERT INTO person (id, creation_date, vorname, nachname, email, benutzername, role, google_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
         data = (person.get_id(), creation_date, person.get_vorname(), person.get_nachname(),
         person.get_email(), person.get_benutzername(), person.get_role(), person.get_google_id())

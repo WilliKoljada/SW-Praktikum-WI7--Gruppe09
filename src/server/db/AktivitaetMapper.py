@@ -1,4 +1,3 @@
-from click import command
 from server.bo.Aktivitaet import Aktivitaet
 from server.db.Mapper import Mapper
 from datetime import datetime, timedelta
@@ -56,7 +55,6 @@ class AktivitaetMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
-        print(result)
         return result
 
     def find_by_key(self, key):
@@ -163,7 +161,7 @@ class AktivitaetMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 aktivitaet.set_id(1)
 
-        creation_date = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
+        creation_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         aktivitaet.set_creation_date(creation_date)
         command = "INSERT INTO aktivitaet (id, creation_date, name, beschreibung, projektID) VALUES (%s,%s,%s,%s,%s)"
         data = (aktivitaet.get_id(), creation_date, aktivitaet.get_name(), aktivitaet.get_beschreibung(),

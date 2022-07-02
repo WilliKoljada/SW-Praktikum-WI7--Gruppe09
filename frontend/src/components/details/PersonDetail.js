@@ -64,7 +64,7 @@ class PersonDetail extends Component {
       <Paper variant="outlined" className={classes.root}>
         {
           person ?
-          (<di>
+          (<div>
             <Typography>
               Vorname: <strong>{person.getVorname()}</strong>
             </Typography>
@@ -74,7 +74,7 @@ class PersonDetail extends Component {
             <Typography>
               Email: <strong>{person.getEmail()}</strong>
             </Typography>
-          </di>)
+          </div>)
             : null
         }
         <LoadingProgress show={loadingInProgress} />

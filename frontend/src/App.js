@@ -11,6 +11,7 @@ import ProjektList from "./components/ProjektList";
 import PersonList from "./components/PersonList";
 import EreignisList from "./components/EreignisList";
 import ZeitenList from "./components/ZeitenList";
+import ArbeitKonto from "./components/ArbeitKonto";
 import AktivitaetList from "./components/AktivitaetList";
 import LoadingProgress from "./components/dialogs/LoadingProgress";
 import ContextErrorMessage from "./components/dialogs/ContextErrorMessage";
@@ -64,7 +65,8 @@ class App extends React.Component {
 				// user information.
 				document.cookie = `token=${token};path=/`;
 
-				// Set the user not before the token arrived 
+				// Set the user not before the token arrived
+				console.log(user);
 				this.setState({
 					currentUser: user,
 					authError: null,
@@ -134,19 +136,22 @@ class App extends React.Component {
 									</Route>
 
 									<Route exact path="/persons">
-										<PersonList />
+										<PersonList user={currentUser} />
 									</Route>
 									<Route exact path="/projekte">
-										<ProjektList />
+										<ProjektList user={currentUser} />
 									</Route>
 									<Route exact path="/aktivitaeten">
-										<AktivitaetList />
+										<AktivitaetList user={currentUser} />
 									</Route>
 									<Route exact path="/ereignis">
-										<EreignisList />
+										<EreignisList user={currentUser} />
 									</Route>
 									<Route exact path="/zeitintervall">
-										<ZeitenList />
+										<ZeitenList user={currentUser} />
+									</Route>
+									<Route exact path="/arbeitkonto">
+										<ArbeitKonto user={currentUser} />
 									</Route>
 								</>
 								

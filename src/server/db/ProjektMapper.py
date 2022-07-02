@@ -138,6 +138,19 @@ class ProjektMapper(Mapper):
 
         return result
 
+    def fuegt_person_zu_projekt_hinzu(self, projektID, personID):
+        """Einfügen eines Person zu einem Projekt.
+        :param projekt: Das zu speichernde Projekt.
+        :return: Das Projekt, das in der Datenbank eingefügt wurde.
+        """
+
+        cursor = self._cnx.cursor()
+
+        command = "INSERT INTO projektperson (projektID, personID) VALUES (%s,%s)"
+        data = (projektID, personID)
+        cursor.execute(command, data)
+        self._cnx.commit()
+
     def insert(self, projekt):
         """Einfügen eines Projekt-Objekts in die Datenbank.
         Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
@@ -159,7 +172,7 @@ class ProjektMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 projekt.set_id(1)
 
-        creation_date = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
+        creation_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         projekt.set_creation_date(creation_date)
         command = "INSERT INTO projekt (id, creation_date, name, auftraggeber, beschreibung, personID) VALUES (%s,%s,%s,%s,%s,%s)"
         data = (
@@ -181,7 +194,6 @@ class ProjektMapper(Mapper):
         command = "UPDATE projekt SET name=%s, auftraggeber=%s, beschreibung=%s, personID=%s WHERE id=%s"
         data = (projekt.get_name(), projekt.get_auftraggeber(), projekt.get_beschreibung(), projekt.get_personID(),
                 projekt.get_id())
-        print(data)
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -201,6 +213,17 @@ class ProjektMapper(Mapper):
         cursor.close()
 
         return projekt
+
+    def delete_person_aus_projekt(self, personID, projektID):
+        """Löschen eine Person aus einem Projekt."""
+
+        cursor = self._cnx.cursor()
+
+        command = "DELETE FROM projektperson WHERE personID={} AND projektID={}".format(personID, projektID)
+        cursor.execute(command)
+
+        self._cnx.commit()
+        cursor.close()
 
     # Zum Testen ausführen
 

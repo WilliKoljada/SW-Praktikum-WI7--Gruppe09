@@ -1,7 +1,7 @@
 from server.bo import BusinessObject as bo
 
 
-class Arbeitszeitkonto(bo.BusinessObject):
+class ArbeitKonto(bo.BusinessObject):
 
     def __init__(self):
         super().__init__()
@@ -38,7 +38,7 @@ class Arbeitszeitkonto(bo.BusinessObject):
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in ein Rating()."""
-        obj = Arbeitszeitkonto()
+        obj = ArbeitKonto()
         obj.set_id(dictionary["id"])  # eigentlich Teil von BusinessObject !
         obj.set_creation_date(dictionary["creation_date"])
         obj.set_urlaub(dictionary["urlaub"])

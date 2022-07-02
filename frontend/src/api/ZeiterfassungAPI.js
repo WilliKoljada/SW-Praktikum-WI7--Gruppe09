@@ -1,9 +1,9 @@
 import AktivitaetBO from "./AktivitaetBO";
 import PersonBO from "./PersonBO";
 import ProjektBO from "./ProjektBO";
-import ArbeitszeitkontoBO from "./ArbeitszeitkontoBO";
 import ZeitintervallBO from "./ZeitintervallBO";
 import EreignisBO from "./EreignisBO";
+import ArbeitKontoBO from "./ArbeitKontoBO";
 
 
 /**
@@ -19,6 +19,9 @@ export default class ZeiterfassungAPI {
 
   // Local Python backend
   #ZeiterfassungServerBaseURL = "/Zeiterfassungapp";
+
+  // Local http-fake-backend
+  //#ZeiterfassungServerBaseURL = "/api/zeiterfassungapp";
 
   // Person related
   #getAllPersonURL = () => `${this.#ZeiterfassungServerBaseURL}/person`;
@@ -57,9 +60,8 @@ export default class ZeiterfassungAPI {
   #updateZeitintervallURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervall/${id}`;
   #deleteZeitintervallURL = (id) => `${this.#ZeiterfassungServerBaseURL}/zeitintervall/${id}`;
 
-  // Arbeitszeitkonto related
-  #getAllArbeitszeitkontoURL = () => `${this.#ZeiterfassungServerBaseURL}/arbeitszeitkonto`;
-  #getArbeitszeitkontoByUserIdURL = (id) => `${this.#ZeiterfassungServerBaseURL}/arbeitszeitkonto/${id}`;
+  // Arbeitkonto related
+  #getArbeitkontoURL = (id) => `${this.#ZeiterfassungServerBaseURL}/arbeitkonto/${id}`;
 
   /**
    * Get the Singelton instance
@@ -527,38 +529,22 @@ export default class ZeiterfassungAPI {
     })
   }
 
-  /**
-   * Returns a Promise, which resolves to an Array of ArbeitszeitkontoBO
-   *
-   * @public
-   */
-   getArbeitszeitkonten() {
-    return this.#fetchAdvanced(this.#getAllArbeitszeitkontoURL()).then((responseJSON) => {
-      let ArbeitszeitkontoBOs = ArbeitszeitkontoBO.fromJSON(responseJSON);
-      // console.info(arbeitZeiBOs);
-      return new Promise(function (resolve) {
-        resolve(ArbeitszeitkontoBOs);
-      })
-    })
-  }
 
   /**
    * Returns a Promise, which resolves to a ArbeitszeitkontoBO
    *
-   * @param {Number} userID to be retrieved
+   * @param {Number} personID to be retrieved
    * @public
    */
-  getArbeitszeitkonto(userID) {
-    return this.#fetchAdvanced(this.#getArbeitszeitkontoByUserIdURL(userID)).then((responseJSON) => {
-      // We always get an array of ArbeitszeitkontoBOs.fromJSON, but only need one object
-      let responseArbeitszeitkontoBO = ArbeitszeitkontoBO.fromJSON(responseJSON)[0];
-      // console.info(responseArbeitszeitkontoBO);
+  getArbeitKonto(personID) {
+    return this.#fetchAdvanced(this.#getArbeitkontoURL(personID)).then((responseJSON) => {
+      // We always get an array of ArbeitkontoBOs.fromJSON, but only need one object
+      let responseArbeitkontoBO = ArbeitKontoBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve(responseArbeitszeitkontoBO);
+        resolve(responseArbeitkontoBO);
       })
     })
   }
-
 
   /**
    * Returns a Promise, which resolves to an Array of ZeitIntervallBO

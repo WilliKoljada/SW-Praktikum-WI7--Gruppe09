@@ -146,7 +146,7 @@ class EreignisMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 ereignis.set_id(1)
 
-        creation_date = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
+        creation_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         ereignis.set_creation_date(creation_date)
         command = "INSERT INTO ereignis (id, creation_date, type, datum, startzeit, endzeit, personID) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         data = (ereignis.get_id(), creation_date, ereignis.get_type(), ereignis.get_datum(), ereignis.get_startzeit(), ereignis.get_endzeit(), ereignis.get_personID())

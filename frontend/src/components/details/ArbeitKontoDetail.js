@@ -6,44 +6,38 @@ import ContextErrorMessage from "../dialogs/ContextErrorMessage";
 import LoadingProgress from "../dialogs/LoadingProgress";
 
 /**
- * Renders a ZeitenBO object within a ListEntry and provides a delete button to delete it.
+ * Renders a EreignisBO object within a ListEntry and provides a delete button to delete it.
  *
  * @see See Material-UIs [Lists](https://material-ui.com/components/lists/)
  * @see See Material-UIs [ListItem](https://material-ui.com/api/list-item/)
  *
  * @author
  */
-class ZeitenDetail extends Component{
+class ArbeitKontoDetail extends Component{
   constructor(props) {
     super(props);
 
     // Init state
     this.state = {
-      zeit: null,
+      arbeitKonto: null,
       loadingInProgress: false,
       loadingError: null,
     };
 
-    if(this.props.zeit){
-      this.state.zeit = this.props.zeit;
+    if(this.props.arbeitKonto){
+      this.state.arbeitKonto = this.props.arbeitKonto;
     }
   }
 
-  /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
-  componentDidMount() {
-    //this.getZeitintervall();
-  }
-
-  /** gets the balance for this person */
-  getZeitintervall = () => {
-    ZeiterfassungAPI.getAPI().getZeitintervall(this.props.zeit.getID()).then(zeit =>
+  getArbeitKonto = () => {
+    ZeiterfassungAPI.getAPI().getArbeitKonto(this.props.arbeitKonto.getID()).then(arbeitKonto =>
       this.setState({
-        zeit: zeit,
+        arbeitKonto: arbeitKonto[0],
         loadingInProgress: false,
         loadingError: null
       })).catch(e =>
         this.setState({ // Reset state with error from catch
-          zeit: null,
+          arbeitKonto: null,
           loadingInProgress: false,
           loadingError: e
         })
@@ -59,27 +53,30 @@ class ZeitenDetail extends Component{
   /** Renders the component */
   render() {
     const { classes } = this.props;
-    const { zeit, loadingInProgress, loadingError } = this.state;
+    const { arbeitKonto, loadingInProgress, loadingError } = this.state;
 
     return (
       <Paper variant="outlined" className={classes.root}>
         {
-          zeit ?
+          arbeitKonto ?
           (<div>
             <Typography>
-              Datum: <strong>{zeit.getDatum()}</strong>
+              Arbeit zeit: <strong>{arbeitKonto.getArbeit()}</strong>
             </Typography>
             <Typography>
-              Startzeit: <strong>{zeit.getStartzeit()}</strong>
+              krankheit zeit: <strong>{arbeitKonto.getKrankheit()}</strong>
             </Typography>
             <Typography>
-              Endzeit: <strong>{zeit.getEndzeit()}</strong>
+              Urlaub zeit: <strong>{arbeitKonto.getUrlaub()}</strong>
+            </Typography>
+            <Typography>
+              Pause zeit: <strong>{arbeitKonto.getPause()}</strong>
             </Typography>
           </div>)
             : null
         }
         <LoadingProgress show={loadingInProgress} />
-        <ContextErrorMessage error={loadingError} contextErrorMsg={`The data of zeitintervall id ${zeit.getID()} could not be loaded.`} onReload={this.getZeitintervall} />
+        <ContextErrorMessage error={loadingError} contextErrorMsg={`The data of arbeit konto id ${arbeitKonto.getID()} could not be loaded.`} onReload={this.getArbeitKonto} />
       </Paper>
     );
   }
@@ -95,11 +92,11 @@ const styles = theme => ({
 });
 
 /** PropTypes */
-ZeitenDetail.propTypes = {
+ArbeitKontoDetail.propTypes = {
   /** @ignore */
   classes: PropTypes.object.isRequired,
-  /** The projekt to be rendered */
-  zeit: PropTypes.object.isRequired,
+  /** The ereignis to be rendered */
+  arbeitKonto: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(ZeitenDetail);
+export default withStyles(styles)(ArbeitKontoDetail);

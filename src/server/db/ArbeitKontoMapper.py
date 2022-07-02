@@ -1,10 +1,10 @@
 from requests import delete
-from server.bo.Arbeitszeitkonto import Arbeitszeitkonto
+from server.bo.ArbeitKonto import ArbeitKonto
 from server.db.Mapper import Mapper
 from datetime import datetime, timedelta
 
 
-class ArbeitszeitkontoMapper(Mapper):
+class ArbeitKontoMapper(Mapper):
     """Mapper-Klasse, die Konversation-Objekte auf eine relationale
     Datenbank abbildet. Hierzu wird eine Reihe von Methoden zur Verfügung
     gestellt, mit deren Hilfe z.B. Objekte gesucht, erzeugt, modifiziert und
@@ -23,10 +23,10 @@ class ArbeitszeitkontoMapper(Mapper):
         dauert = timedelta(0)
         for (datum, startzeit, endzeit) in zeiten:
             begin_time = datetime.strptime(str(startzeit), "%H:%M:%S").time()
-            end_time = datetime.strptime(str(endzeit), "%H:%M:%S").time()
+            end_time =datetime.strptime(str(endzeit), "%H:%M:%S").time()
             begin = datetime.combine(datum, begin_time)
             end = datetime.combine(datum, end_time)
-
+            
             if end > begin:
                 dauert += (end - begin)
             else:
@@ -38,17 +38,16 @@ class ArbeitszeitkontoMapper(Mapper):
     def _rechne_krankheit(self, personID):
         zeiten = []
         cursor = self._cnx.cursor()
-        command = "SELECT datum, startzeit, endzeit from ereignis WHERE type='krankheit' AND personID={}".format(
-            personID)
+        command = "SELECT datum, startzeit, endzeit from ereignis WHERE type='krankheit' AND personID={}".format(personID)
         cursor.execute(command)
         zeiten = cursor.fetchall()
         dauert = timedelta(0)
         for (datum, startzeit, endzeit) in zeiten:
             begin_time = datetime.strptime(str(startzeit), "%H:%M:%S").time()
-            end_time = datetime.strptime(str(endzeit), "%H:%M:%S").time()
+            end_time =datetime.strptime(str(endzeit), "%H:%M:%S").time()
             begin = datetime.combine(datum, begin_time)
             end = datetime.combine(datum, end_time)
-
+            
             if end > begin:
                 dauert += (end - begin)
             else:
@@ -66,10 +65,10 @@ class ArbeitszeitkontoMapper(Mapper):
         dauert = timedelta(0)
         for (datum, startzeit, endzeit) in zeiten:
             begin_time = datetime.strptime(str(startzeit), "%H:%M:%S").time()
-            end_time = datetime.strptime(str(endzeit), "%H:%M:%S").time()
+            end_time =datetime.strptime(str(endzeit), "%H:%M:%S").time()
             begin = datetime.combine(datum, begin_time)
             end = datetime.combine(datum, end_time)
-
+            
             if end > begin:
                 dauert += (end - begin)
             else:
@@ -87,10 +86,10 @@ class ArbeitszeitkontoMapper(Mapper):
         dauert = timedelta(0)
         for (datum, startzeit, endzeit) in zeiten:
             begin_time = datetime.strptime(str(startzeit), "%H:%M:%S").time()
-            end_time = datetime.strptime(str(endzeit), "%H:%M:%S").time()
+            end_time =datetime.strptime(str(endzeit), "%H:%M:%S").time()
             begin = datetime.combine(datum, begin_time)
             end = datetime.combine(datum, end_time)
-
+            
             if end > begin:
                 dauert += (end - begin)
             else:
@@ -112,10 +111,11 @@ class ArbeitszeitkontoMapper(Mapper):
         cursor.close()
         return result
 
-    def find_arbeitszeit_konto_by_key(self, key):
-        konto = Arbeitszeitkonto()
+    
+    def find_arbeit_konto_by_key(self, key):
+        konto = ArbeitKonto()
         konto.set_id(key)
-        # konto.set_creation_date(self._get_creation_date(key))
+        #konto.set_creation_date(self._get_creation_date(key))
         konto.set_arbeit(self._rechne_arbeit(key))
         konto.set_pause(self._rechne_pause(key))
         konto.set_urlaub(self._rechne_urlaub(key))
@@ -123,8 +123,9 @@ class ArbeitszeitkontoMapper(Mapper):
 
         return konto
 
+
     def find_all(self):
-        return super().find_all()
+       return super().find_all()
 
     def find_by_key(self, id):
         return super().find_by_key(id)
@@ -139,11 +140,9 @@ class ArbeitszeitkontoMapper(Mapper):
         return super().delete()
 
     # Zum Testen ausführen
-
-
 if (__name__ == "__main__"):
-    with ArbeitszeitkontoMapper() as mapper:
-        aktivitaet = Arbeitszeitkonto()
+    with ArbeitKontoMapper() as mapper:
+        aktivitaet = ArbeitKonto()
         aktivitaet.set_arbeit("48:55:00")
         aktivitaet.set_id(2)
         aktivitaet.set_creation_date("2022-06-10 00:00:00.0000")
