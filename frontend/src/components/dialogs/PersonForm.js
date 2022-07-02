@@ -7,7 +7,6 @@ import ZeiterfassungAPI from "../../api/ZeiterfassungAPI";
 import PersonBO from "../../api/PersonBO";
 import ContextErrorMessage from "./ContextErrorMessage";
 import LoadingProgress from "./LoadingProgress";
-import firebase from "firebase/app";
 
 /**
  * Shows a modal form dialog for a PersonBO in prop person. If the person is set, the dialog is configured
@@ -44,6 +43,7 @@ class PersonForm extends Component {
 
     if(props.user){
       google_id = props.user.uid;
+      email = props.user.email;
       console.log("user", props.user)
     }
 
