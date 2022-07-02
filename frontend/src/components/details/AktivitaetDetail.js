@@ -20,6 +20,7 @@ class AktivitaetDetail extends Component{
     // Init state
     this.state = {
       aktivitaet: null,
+      projektName: "",
       loadingInProgress: false,
       loadingError: null,
     };
@@ -56,10 +57,31 @@ class AktivitaetDetail extends Component{
     });
   }
 
+  getProjektName = () => {
+    ZeiterfassungAPI.getAPI().getProjekt(this.props.aktivitaet.getProjektID()).then(projekt =>
+      this.setState({
+        projektName: projekt.getName(),
+        loadingInProgress: false,
+        loadingError: null
+      })).catch(e =>
+        this.setState({
+          projektName: "",
+          loadingInProgress: false,
+          loadingError: e
+        })
+      );
+
+    // set loading to true
+    this.setState({
+      loadingInProgress: true,
+      loadingError: null
+    });
+  }
+
   /** Renders the component */
   render() {
     const { classes } = this.props;
-    const { aktivitaet, loadingInProgress, loadingError } = this.state;
+    const { aktivitaet, projektName, loadingInProgress, loadingError } = this.state;
 
     return (
       <Paper variant="outlined" className={classes.root}>
@@ -75,8 +97,13 @@ class AktivitaetDetail extends Component{
             <Typography>
               Dauert: <strong>{aktivitaet.getDauert()}</strong>
             </Typography>
+            {projektName !== "" &&
+              <Typography>
+                Projekt: <strong>{projektName}</strong>
+              </Typography>
+            }
           </div>)
-            : null
+          : null
         }
         <LoadingProgress show={loadingInProgress} />
         <ContextErrorMessage error={loadingError} contextErrorMsg={`The data of aktivitaet id ${aktivitaet.getID()} could not be loaded.`} onReload={this.getAktivitaet} />
@@ -103,3 +130,4 @@ AktivitaetDetail.propTypes = {
 }
 
 export default withStyles(styles)(AktivitaetDetail);
+
