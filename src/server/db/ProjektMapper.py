@@ -146,10 +146,16 @@ class ProjektMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "INSERT INTO projektperson (projektID, personID) VALUES (%s,%s)"
-        data = (projektID, personID)
-        cursor.execute(command, data)
-        self._cnx.commit()
+        cursor.execute("SELECT * FROM projektperson WHERE personID={} AND projektID={}".format(
+            personID, projektID
+        ))
+        tuples = cursor.fetchall()
+
+        if len(tuples) == 0:
+            command = "INSERT INTO projektperson (projektID, personID) VALUES (%s,%s)"
+            data = (projektID, personID)
+            cursor.execute(command, data)
+            self._cnx.commit()
 
     def insert(self, projekt):
         """Einfügen eines Projekt-Objekts in die Datenbank.
@@ -179,7 +185,13 @@ class ProjektMapper(Mapper):
         projekt.get_id(), creation_date, projekt.get_name(), projekt.get_auftraggeber(), projekt.get_beschreibung(),
         projekt.get_personID())
 
+        command2 = "INSERT INTO projektperson (projektID, personID) VALUES (%s,%s)"
+        data2 = (projekt.get_id(), projekt.get_personID())
+
+        # first add the projekt
         cursor.execute(command, data)
+        # and then add the person zu projekt
+        cursor.execute(command2, data2)
         self._cnx.commit()
         cursor.close()
 
