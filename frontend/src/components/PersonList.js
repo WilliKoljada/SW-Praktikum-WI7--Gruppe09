@@ -25,6 +25,7 @@ class PersonList extends Component {
     // Init the state
     this.state = {
       persons: [],
+      person: null,
       filteredPersons: [],
       personFilter: "",
       error: null,
@@ -32,6 +33,20 @@ class PersonList extends Component {
       expandedPersonID: expandedID,
       showPersonForm: false
     };
+  }
+
+  getPersonByGoogleID = () => {
+    ZeiterfassungAPI.getAPI().getPersonByGoogleID(this.props.user.uid).then(person => {
+      this.setState({
+        person: person[0]
+      })
+    }).catch(e =>
+      this.setState({
+        person: null,
+        updatingInProgress: false,    // disable loading indicator
+        updatingError: e              // show error message
+      })
+    );
   }
 
   /** Fetches PersonBOs for the current person */
