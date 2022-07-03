@@ -126,7 +126,9 @@ class ProjektListEntry extends Component {
           </AccordionSummary>
           <AccordionDetails>
             <Grid container justifyContent="flex-start" alignItems="center">
-              <ProjektDetail projekt={projekt} />
+              {person && projekt &&
+                <ProjektDetail person={person} projekt={projekt} />
+              }
               {person.getID() === projekt.getPersonID() &&
                 <Grid item>
                   <ButtonGroup variant="text" size="small">
