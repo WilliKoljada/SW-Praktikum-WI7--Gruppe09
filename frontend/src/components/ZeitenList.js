@@ -156,7 +156,7 @@ class ZeitenList extends Component {
           <Typography variant="body2" color={"textSecondary"}>List of Zeitintervall</Typography>
         </Grid>
         {
-          zeiten.map(zeit =>
+          zeiten.length > 0 && person && zeiten.map(zeit =>
             (<div key={zeit.getID()}>
               <ZeitenListEntry
                 key={zeit.getID()}
@@ -200,4 +200,3 @@ ZeitenList.propTypes = {
 }
 
 export default withRouter(withStyles(styles)(ZeitenList));
-
