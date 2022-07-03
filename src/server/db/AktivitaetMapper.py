@@ -71,7 +71,7 @@ class AktivitaetMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, name, creation_date, beschreibung, projektID) in tuples:
+        for (id, creation_date, name, beschreibung, projektID) in tuples:
             aktivitaet = Aktivitaet()
             aktivitaet.set_id(id)
             aktivitaet.set_creation_date(creation_date)
@@ -101,7 +101,7 @@ class AktivitaetMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, name, creation_date, beschreibung, projektID) in tuples:
+        for (id, creation_date, name, beschreibung, projektID) in tuples:
             aktivitaet = Aktivitaet()
             aktivitaet.set_id(id)
             aktivitaet.set_creation_date(creation_date)

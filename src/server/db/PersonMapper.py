@@ -148,7 +148,7 @@ class PersonMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creation_date, vorname, nachname, email, benutzername, role, google_id, \
+        command = "SELECT id, creation_date, vorname, nachname, email, benutzername, role, google_id \
             FROM person WHERE id IN (SELECT personID FROM projektperson WHERE projektID={})".format(projektID)
         cursor.execute(command)
         tuples = cursor.fetchall()
