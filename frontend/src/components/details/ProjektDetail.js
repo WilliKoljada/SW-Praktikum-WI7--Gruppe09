@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { withStyles, Typography, Paper } from "@material-ui/core";
+import { withStyles, Typography, Paper, Button } from "@material-ui/core";
 import ZeiterfassungAPI from "../../api/ZeiterfassungAPI";
 import ContextErrorMessage from "../dialogs/ContextErrorMessage";
 import LoadingProgress from "../dialogs/LoadingProgress";
+import PersonProjektDeleteDialog from "../dialogs/PersonProjektDeleteDialog";
 
 /**
  * Renders a ProjektBO object within a ListEntry and provides a delete button to delete it.
@@ -20,6 +21,9 @@ class ProjektDetail extends Component {
     // Init state
     this.state = {
       projekt: null,
+      persons: [],
+      deletedPersonID: 0,
+      deletedProjektID: props.projekt.getID(),
       loadingInProgress: false,
       loadingError: null,
     };
@@ -31,19 +35,21 @@ class ProjektDetail extends Component {
 
   /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
   componentDidMount() {
-    //this.getProjekt();
+    this.getProjektPersonen();
   }
 
   /** gets the balance for this person */
-  getProjekt = () => {
-    ZeiterfassungAPI.getAPI().getProjekt(this.props.projekt.getID()).then(projekt =>
+  getProjektPersonen = () => {
+    console.log(this.props.projekt.getID())
+    ZeiterfassungAPI.getAPI().getPersonInProjekt(this.props.projekt.getID()).then(personBos =>
       this.setState({
-        projekt: projekt,
+        persons: personBos,
+        showPersonProjektDeleteDialog: false,
         loadingInProgress: false,
         loadingError: null
       })).catch(e =>
         this.setState({ // Reset state with error from catch
-          projekt: null,
+          persons: [],
           loadingInProgress: false,
           loadingError: e
         })
@@ -56,33 +62,76 @@ class ProjektDetail extends Component {
     });
   }
 
+  showRemovePersonDialog = (personID) => {
+    console.log(personID);
+    this.setState({
+      deletedPersonID: personID,
+      showPersonProjektDeleteDialog: true
+    });
+  }
+
+  deletePersonProjektDialogClosed = () => {
+    this.setState({
+      showPersonProjektDeleteDialog: false
+    });
+  }
+
   /** Renders the component */
   render() {
-    const { classes } = this.props;
-    const { projekt, loadingInProgress, loadingError } = this.state;
+    const { classes, person } = this.props;
+    const { projekt, persons, showPersonProjektDeleteDialog, loadingInProgress, loadingError,
+    deletedPersonID, deletedProjektID } = this.state;
 
     return (
       <Paper variant="outlined" className={classes.root}>
         {
           projekt ?
-            (<div>
-              <Typography>
-                Name: <strong>{projekt.getName()}</strong>
-              </Typography>
-              <Typography>
-                Auftraggeber: <strong>{projekt.getAuftraggeber()}</strong>
-              </Typography>
-              <Typography>
-                Beschreibung: <strong>{projekt.getBeschreibung()}</strong>
-              </Typography>
-              <Typography>
-                Kapazitaet: <strong>{projekt.getKapazitaet()}</strong>
-              </Typography>
+            (<div className={classes.parent}>
+              <div className={classes.child}>
+                <Typography>
+                  Name: <strong>{projekt.getName()}</strong>
+                </Typography>
+                <Typography>
+                  Auftraggeber: <strong>{projekt.getAuftraggeber()}</strong>
+                </Typography>
+                <Typography>
+                  Beschreibung: <strong>{projekt.getBeschreibung()}</strong>
+                </Typography>
+                <Typography>
+                  Kapazitaet: <strong>{projekt.getKapazitaet()}</strong>
+                </Typography>
+              </div>
+              <div>
+                <Typography><strong>List of person in Projekt</strong></Typography>
+                {persons.length !== 0 && persons.map(pers =>(
+                  <div key={pers.getID()}>
+                     <Typography>{pers.getBenutzername()}</Typography>
+                     {projekt.getPersonID() === person.getID() &&
+                      <Button color="secondary" onClick={() => this.showRemovePersonDialog(pers.getID())}>
+                        remove Person
+                      </Button>
+                     }
+                  </div>
+                )
+                )}
+              </div>
             </div>)
             : null
         }
         <LoadingProgress show={loadingInProgress} />
-        <ContextErrorMessage error={loadingError} contextErrorMsg={`The data of projekt id ${projekt.getID()} could not be loaded.`} onReload={this.getProjekt} />
+        <ContextErrorMessage
+          error={loadingError}
+          contextErrorMsg={`The data of projekt id ${projekt.getID()} could not be loaded.`}
+          onReload={this.getProjektPersonen}
+        />
+        {persons.length > 0 &&
+          <PersonProjektDeleteDialog
+            show={showPersonProjektDeleteDialog}
+            personID={deletedPersonID}
+            projektID={deletedProjektID}
+            onClose={this.deletePersonProjektDialogClosed}
+          />
+        }
       </Paper>
     );
   }
@@ -94,6 +143,12 @@ const styles = theme => ({
     width: "100%",
     padding: theme.spacing(1),
     marginTop: theme.spacing(1)
+  },
+  parent: {
+    display: "flex"
+  },
+  child: {
+    flex: "50%"
   }
 });
 

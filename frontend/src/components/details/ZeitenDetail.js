@@ -20,6 +20,8 @@ class ZeitenDetail extends Component{
     // Init state
     this.state = {
       zeit: null,
+      aktivitaetName: "",
+      personName: "",
       loadingInProgress: false,
       loadingError: null,
     };
@@ -31,7 +33,8 @@ class ZeitenDetail extends Component{
 
   /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
   componentDidMount() {
-    //this.getZeitintervall();
+    this.getAktivitaetInfos();
+    this.getPersonInfos();
   }
 
   /** gets the balance for this person */
@@ -56,10 +59,52 @@ class ZeitenDetail extends Component{
     });
   }
 
+  getAktivitaetInfos = () => {
+    ZeiterfassungAPI.getAPI().getAktivitaet(this.props.zeit.getAktivitaetID()).then(aktivitaet =>
+      this.setState({
+        aktivitaetName: aktivitaet.getName(),
+        loadingInProgress: false,
+        loadingError: null
+      })).catch(e =>
+        this.setState({
+          aktivitaetName: "",
+          loadingInProgress: false,
+          loadingError: e
+        })
+      );
+
+    // set loading to true
+    this.setState({
+      loadingInProgress: true,
+      loadingError: null
+    });
+  }
+
+  getPersonInfos = () => {
+    ZeiterfassungAPI.getAPI().getPersonByID(this.props.zeit.getPersonID()).then(person =>
+      this.setState({
+        personName: person.getBenutzername(),
+        loadingInProgress: false,
+        loadingError: null
+      })).catch(e =>
+        this.setState({
+          personName: "",
+          loadingInProgress: false,
+          loadingError: e
+        })
+      );
+
+    // set loading to true
+    this.setState({
+      loadingInProgress: true,
+      loadingError: null
+    });
+  }
+
   /** Renders the component */
   render() {
     const { classes } = this.props;
-    const { zeit, loadingInProgress, loadingError } = this.state;
+    const { zeit, personName, aktivitaetName, loadingInProgress, loadingError } = this.state;
 
     return (
       <Paper variant="outlined" className={classes.root}>
@@ -75,11 +120,21 @@ class ZeitenDetail extends Component{
             <Typography>
               Endzeit: <strong>{zeit.getEndzeit()}</strong>
             </Typography>
+            {aktivitaetName !== "" &&
+              <Typography>
+                Aktivitaet: <strong>{aktivitaetName}</strong>
+              </Typography>
+            }
+            {personName !== "" &&
+              <Typography>
+                Person: <strong>{personName}</strong>
+              </Typography>
+            }
           </div>)
-            : null
+          : null
         }
         <LoadingProgress show={loadingInProgress} />
-        <ContextErrorMessage error={loadingError} contextErrorMsg={`The data of zeitintervall id ${zeit.getID()} could not be loaded.`} onReload={this.getZeitintervall} />
+        <ContextErrorMessage error={loadingError} contextErrorMsg={`The data of zeitintervall id ${zeit.getID()} could not be loaded.`} onReload={this.componentDidMount} />
       </Paper>
     );
   }

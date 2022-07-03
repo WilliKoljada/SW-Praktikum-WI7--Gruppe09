@@ -32,7 +32,7 @@ class AktivitaetDetail extends Component{
 
   /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
   componentDidMount() {
-    //this.getAktivitaet();
+    this.getProjektName();
   }
 
   /** gets the balance for this person */
@@ -130,4 +130,3 @@ AktivitaetDetail.propTypes = {
 }
 
 export default withStyles(styles)(AktivitaetDetail);
-
