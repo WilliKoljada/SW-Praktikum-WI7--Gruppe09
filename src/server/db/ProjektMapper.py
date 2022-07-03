@@ -140,6 +140,7 @@ class ProjektMapper(Mapper):
 
     def fuegt_person_zu_projekt_hinzu(self, projektID, personID):
         """Einfügen eines Person zu einem Projekt.
+
         :param projekt: Das zu speichernde Projekt.
         :return: Das Projekt, das in der Datenbank eingefügt wurde.
         """
@@ -218,9 +219,12 @@ class ProjektMapper(Mapper):
         cursor = self._cnx.cursor()
         projekt = self.find_by_key(id)
 
-        command = "DELETE FROM projekt WHERE id={}".format(id)
-        cursor.execute(command)
+        command1 = "DELETE FROM projektperson WHERE projektID={}".format(id)
+        cursor.execute(command1)
+        self._cnx.commit()
 
+        command2 = "DELETE FROM projekt WHERE id={}".format(id)
+        cursor.execute(command2)
         self._cnx.commit()
         cursor.close()
 

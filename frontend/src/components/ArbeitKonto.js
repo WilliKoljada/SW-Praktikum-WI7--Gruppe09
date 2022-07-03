@@ -14,7 +14,7 @@ class Arbeitkonto extends Component {
 
     // console.log(props);
     let expandedID = null;
-    let personID = 1;
+    let personID = null;
     if (this.props.location.expandedArbeitKontoID) {
       expandedID = this.props.location.expandedArbeitKontoID.getID();
     }
@@ -27,8 +27,6 @@ class Arbeitkonto extends Component {
       loadingInProgress: false,
       expandedArbeitKontoID: expandedID
     };
-    //this.getPersonByGoogleID();
-    //this.getArbeitKonto();
   }
 
   getPersonByGoogleID = () => {
@@ -36,6 +34,19 @@ class Arbeitkonto extends Component {
       this.setState({
         personID: person[0].getID()
       })
+      ZeiterfassungAPI.getAPI().getArbeitKonto(person[0].getID()).then(arbeitKonto =>{
+        this.setState({
+          arbeitKonto: arbeitKonto[0],
+          loadingInProgress: false,
+          loadingError: null
+        });
+      }).catch(e =>
+          this.setState({ // Reset state with error from catch
+            arbeitKonto: null,
+            loadingInProgress: false,
+            loadingError: e
+          })
+      );
     }).catch(e =>
       this.setState({
         updatingInProgress: false,    // disable loading indicator
@@ -62,10 +73,9 @@ class Arbeitkonto extends Component {
 
 
   /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
-  componentDidMount() {
-    console.log("user", this.props.user.uid);
-    this.getPersonByGoogleID();
-		this.getArbeitKonto();
+  componentWillMount = async() => {
+    await this.getPersonByGoogleID();
+		//await this.getArbeitKonto();
   }
 
   /**
@@ -89,12 +99,12 @@ class Arbeitkonto extends Component {
   /** Renders the component */
   render() {
     const { classes, user } = this.props;
-    const { arbeitKonto, loadingInProgress, error } = this.state;
+    const { arbeitKonto, personID, loadingInProgress, error } = this.state;
 
     return (
       <div className={classes.root}>
         <div>
-          {arbeitKonto && <ArbeitKontoEntry
+          {personID && arbeitKonto && <ArbeitKontoEntry
 						arbeitKonto={arbeitKonto}
 						user={user}
 						expandedState={true}
