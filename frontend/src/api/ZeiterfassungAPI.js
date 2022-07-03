@@ -66,7 +66,7 @@ export default class ZeiterfassungAPI {
 
   // Person Projekt
   #addPersonProjekt = (personID, projektID) => `${this.#ZeiterfassungServerBaseURL}/person-in-projekt/${personID}/${projektID}`;
-  #getPersonProjekt = (personID, projektID) => `${this.#ZeiterfassungServerBaseURL}/person-in-projekt/${projektID}`;
+  #getPersonProjekt = (projektID) => `${this.#ZeiterfassungServerBaseURL}/person-in-projekt/${projektID}`;
   #deletePersonProjekt = (personID, projektID) => `${this.#ZeiterfassungServerBaseURL}/person-in-projekt/${personID}/${projektID}`;
 
   /**
@@ -120,7 +120,7 @@ export default class ZeiterfassungAPI {
   getAktivitaet(AktivitaetID) {
     return this.#fetchAdvanced(this.#getAktivitaetURL(AktivitaetID)).then((responseJSON) => {
       // We always get an array of AktivitaetBOs.fromJSON, but only need one object
-      let responseAktivitaetID = AktivitaetID.fromJSON(responseJSON)[0];
+      let responseAktivitaetID = AktivitaetBO.fromJSON(responseJSON)[0];
       // console.info(responseAktivitaetBO);
       return new Promise(function (resolve) {
         resolve(responseAktivitaetID);
@@ -221,10 +221,10 @@ export default class ZeiterfassungAPI {
   getPersonByID(PersonID) {
     return this.#fetchAdvanced(this.#getPersonByIdURL(PersonID))
       .then((responseJSON) => {
-        let PersonID = PersonBO.fromJSON(responseJSON);
+        let Person = PersonBO.fromJSON(responseJSON)[0];
         // console.info(personBOs);
         return new Promise(function (resolve) {
-          resolve(PersonID);
+          resolve(Person);
         })
       })
   }
@@ -435,8 +435,8 @@ export default class ZeiterfassungAPI {
   }
 
   /**
-   * Adds a projekt and returns a Promise, which resolves to a new ProjektBO object with the 
-   * 
+   * Adds a projekt and returns a Promise, which resolves to a new ProjektBO object with the
+   *
    * @param {ProjektBO} projektBO to be added. The ID of the new Projekt is set by the backend
    * @public
    */
@@ -460,7 +460,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Updates a project and returns a Promise, which resolves to a ProjektBO.
-   * 
+   *
    * @param {ProjektBO} projektBO to be updated
    * @public
    */
@@ -484,7 +484,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to an Array of projektIDs
-   * 
+   *
    * @param {Number} projektID to be deleted
    * @public
    */
@@ -503,7 +503,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to an Array of EreignisBO
-   * 
+   *
    * @public
    */
    getEreigniss() {
@@ -518,7 +518,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to a EreignisBO
-   * 
+   *
    * @param {Number} EreignisID to be retrieved
    * @public
    */
@@ -534,8 +534,8 @@ export default class ZeiterfassungAPI {
   }
 
   /**
-   * Adds a ereignis and returns a Promise, which resolves to a new EreignisBO object with the 
-   * 
+   * Adds a ereignis and returns a Promise, which resolves to a new EreignisBO object with the
+   *
    * @param {EreignisBO} ereignisBO to be added. The ID of the new Ereignis is set by the backend
    * @public
    */
@@ -559,7 +559,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Updates a ereignis and returns a Promise, which resolves to a EreignisBO.
-   * 
+   *
    * @param {EreignisBO} EreignisBO to be updated
    * @public
    */
@@ -583,7 +583,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to an Array of EreignisBO
-   * 
+   *
    * @param {Number} ereignisID to be deleted
    * @public
    */
@@ -603,7 +603,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to a ArbeitszeitkontoBO
-   * 
+   *
    * @param {Number} personID to be retrieved
    * @public
    */
@@ -619,7 +619,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to an Array of ZeitIntervallBO
-   * 
+   *
    * @public
    */
    getZeitIntervalls() {
@@ -634,7 +634,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to a ZeitintervallBO
-   * 
+   *
    * @param {Number} zeitintervallID to be retrieved
    * @public
    */
@@ -651,7 +651,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Adds a zeitintervall and returns a Promise, which resolves to a new ZeitintervallBO object with the
-   * 
+   *
    * @param {ZeitintervallBO} zeitintervallID to be added. The ID of the new Zeitintervall is set by the backend
    * @public
    */
@@ -675,7 +675,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Updates a zeitintervall and returns a Promise, which resolves to a zeitintervallBO.
-   * 
+   *
    * @param {ZeitintervallBO} zeitintervallBO to be updated
    * @public
    */
@@ -699,7 +699,7 @@ export default class ZeiterfassungAPI {
 
   /**
    * Returns a Promise, which resolves to an Array of ZeitintervallBO
-   * 
+   *
    * @param {Number} ZeitintervallID to be deleted
    * @public
    */

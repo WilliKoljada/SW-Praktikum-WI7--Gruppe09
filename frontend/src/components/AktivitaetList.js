@@ -23,6 +23,7 @@ class AktivitaetList extends Component {
     // Init the state
     this.state = {
       aktivitaets: [],
+      person: null,
       filteredAktivitaets: [],
       aktivitaetFilter: "",
       error: null,
@@ -30,6 +31,20 @@ class AktivitaetList extends Component {
       expandedAktivitaetID: expandedID,
       showAktivitaetForm: false
     };
+  }
+
+  getPersonByGoogleID = () => {
+    ZeiterfassungAPI.getAPI().getPersonByGoogleID(this.props.user.uid).then(person => {
+      this.setState({
+        person: person[0]
+      })
+    }).catch(e =>
+      this.setState({
+        person: null,
+        updatingInProgress: false,    // disable loading indicator
+        updatingError: e              // show error message
+      })
+    );
   }
 
   /** Fetches AktivitaetBOs for the current person */
@@ -60,6 +75,7 @@ class AktivitaetList extends Component {
   /** Lifecycle method, which is called when the component gets inserted into the browsers DOM */
   componentDidMount() {
     this.getAktivitaets();
+    this.getPersonByGoogleID();
   }
 
   /**
@@ -149,7 +165,7 @@ class AktivitaetList extends Component {
   /** Renders the component */
   render() {
     const { classes, user } = this.props;
-    const { filteredAktivitaets, aktivitaetFilter, expandedAktivitaetID, loadingInProgress, error, showAktivitaetForm } = this.state;
+    const { filteredAktivitaets, person, aktivitaetFilter, expandedAktivitaetID, loadingInProgress, error, showAktivitaetForm } = this.state;
 
     return (
       <div className={classes.root}>
@@ -190,9 +206,14 @@ class AktivitaetList extends Component {
         {
           // Show the list of AktivitaetListEntry components
           // Do not use strict comparison, since expandedAktivitaetID maybe a string if given from the URL parameters
-          filteredAktivitaets.map(aktivitaet =>
+          person && filteredAktivitaets.map(aktivitaet =>
             (<div key={aktivitaet.getID()}>
-              <AktivitaetListEntry key={aktivitaet.getID()} aktivitaet={aktivitaet} user={user} expandedState={expandedAktivitaetID === aktivitaet.getID()}
+              <AktivitaetListEntry
+                key={aktivitaet.getID()}
+                aktivitaet={aktivitaet}
+                user={user}
+                person={person}
+                expandedState={expandedAktivitaetID === aktivitaet.getID()}
                 onExpandedStateChange={this.onExpandedStateChange}
                 onAktivitaetDeleted={this.aktivitaetDeleted}
               />

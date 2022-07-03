@@ -207,7 +207,7 @@ class EreignisList extends Component {
         {
           // Show the list of EreignisListEntry components
           // Do not use strict comparison, since expandedEreignisID maybe a string if given from the URL parameters
-          filteredEreigniss.map(ereignis =>
+          person && filteredEreigniss.map(ereignis =>
             (<div key={ereignis.getID()}>
               <EreignisListEntry
                 key={ereignis.getID()}
